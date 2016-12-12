@@ -1,0 +1,135 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: NEBackup Plugin\n"
+"POT-Creation-Date: 2016-12-09 17:55+0100\n"
+"PO-Revision-Date: 2016-12-09 17:55+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_EN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: front/config.form.php:41 front/entity.form.php:41
+msgid "Saving configuration..."
+msgstr "Saving configuration..."
+
+#: front/config.form.php:52
+msgid "Backup interval must be a number."
+msgstr "Backup interval must be a number."
+
+#: front/config.form.php:64
+msgid "Error on save"
+msgstr ""
+
+#: front/config.form.php:68 front/entity.form.php:56
+msgid "Configuration saved"
+msgstr ""
+
+#: inc/config.class.php:53
+msgid "NEBackup"
+msgstr "NEBackup"
+
+#: inc/config.class.php:59
+msgid "NEBackup plugin"
+msgstr "NEBackup plugin"
+
+#: inc/config.class.php:76
+msgid "nebackup"
+msgstr "nebackup"
+
+#: inc/config.class.php:79
+msgid "Backup of network equipments configuration"
+msgstr "Backup of network equipments configuration"
+
+#: inc/config.class.php:102
+msgid "NEBackup Setup"
+msgstr "NEBackup Setup"
+
+#: inc/config.class.php:104
+msgid "Backup interval: "
+msgstr "Backup interval: "
+
+#: inc/config.class.php:107
+msgid "hours"
+msgstr "hours"
+
+#: inc/config.class.php:110
+msgid "Select type to switch backup: "
+msgstr "Select type to switch backup: "
+
+#: inc/config.class.php:121
+msgid "Select manufacturer for "
+msgstr "Select manufacturer for "
+
+#: inc/config.class.php:121
+msgid " network equipments: "
+msgstr " network equipments: "
+
+#: inc/config.class.php:155
+msgid ""
+"To activate the backup go to the entity configuration and select the "
+"NEBackup tab, click here to go: "
+msgstr ""
+
+#: inc/config.class.php:155
+msgid "Entities"
+msgstr ""
+
+#: inc/entity.class.php:44
+msgid "Entity"
+msgstr "Entity"
+
+#: inc/entity.class.php:99
+msgid "TFTP server"
+msgstr "TFTP server"
+
+#: inc/entity.class.php:105
+msgid "SNMP Community"
+msgstr "SNMP Community"
+
+#: inc/entity.class.php:115
+msgid ""
+"Once you have configured the entity you can go to automatic actions to run "
+"for the first time: "
+msgstr ""
+
+#: inc/entity.class.php:115
+msgid "NEBackup Task"
+msgstr ""
+
+#: inc/networkequipment.class.php:50
+msgid "Database Error"
+msgstr "Database Error"
+
+#: inc/networkequipment.class.php:57
+msgid "Backup Information (from NEBackup plugin)"
+msgstr "Backup Information (from NEBackup plugin)"
+
+#: inc/networkequipment.class.php:81
+msgid "Download backup"
+msgstr "Download backup"
+
+#: inc/networkequipment.class.php:87
+msgid "Last run: "
+msgstr ""
+
+#: inc/networkequipment.class.php:90
+msgid "Install TFTP client on server to view the backup file"
+msgstr "Install TFTP client on server to view the backup file"
+
+#: inc/networkequipment.class.php:95
+msgid "Backup file not found"
+msgstr "Backup file not found"
+
+#~ msgid ""
+#~ "You must delete the configuration in the parent entity to delete this "
+#~ "configuration."
+#~ msgstr ""
+#~ "You must delete the configuration in the parent entity to delete this "
+#~ "configuration."
