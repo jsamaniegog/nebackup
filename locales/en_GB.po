@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NEBackup Plugin\n"
-"POT-Creation-Date: 2016-12-09 17:55+0100\n"
-"PO-Revision-Date: 2016-12-09 17:55+0100\n"
+"POT-Creation-Date: 2016-12-13 09:58+0100\n"
+"PO-Revision-Date: 2016-12-13 09:58+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_EN\n"
@@ -15,117 +15,128 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: front/config.form.php:41 front/entity.form.php:41
+#: front/config.form.php:32 front/entity.form.php:32
 msgid "Saving configuration..."
 msgstr "Saving configuration..."
 
-#: front/config.form.php:52
+#: front/config.form.php:44
 msgid "Backup interval must be a number."
 msgstr "Backup interval must be a number."
 
-#: front/config.form.php:64
+#: front/config.form.php:58
 msgid "Error on save"
 msgstr ""
 
-#: front/config.form.php:68 front/entity.form.php:56
+#: front/config.form.php:62 front/entity.form.php:47
 msgid "Configuration saved"
 msgstr ""
 
-#: inc/config.class.php:53
+#: inc/config.class.php:46
 msgid "NEBackup"
 msgstr "NEBackup"
 
-#: inc/config.class.php:59
+#: inc/config.class.php:52
 msgid "NEBackup plugin"
 msgstr "NEBackup plugin"
 
-#: inc/config.class.php:76
+#: inc/config.class.php:69
 msgid "nebackup"
 msgstr "nebackup"
 
-#: inc/config.class.php:79
+#: inc/config.class.php:72
 msgid "Backup of network equipments configuration"
 msgstr "Backup of network equipments configuration"
 
-#: inc/config.class.php:102
+#: inc/config.class.php:95
 msgid "NEBackup Setup"
 msgstr "NEBackup Setup"
 
-#: inc/config.class.php:104
+#: inc/config.class.php:97
 msgid "Backup interval: "
 msgstr "Backup interval: "
 
-#: inc/config.class.php:107
+#: inc/config.class.php:100
 msgid "hours"
 msgstr "hours"
 
-#: inc/config.class.php:110
+#: inc/config.class.php:103
 msgid "Select type to switch backup: "
 msgstr "Select type to switch backup: "
 
-#: inc/config.class.php:121
+#: inc/config.class.php:114
 msgid "Select manufacturer for "
 msgstr "Select manufacturer for "
 
-#: inc/config.class.php:121
+#: inc/config.class.php:114
 msgid " network equipments: "
 msgstr " network equipments: "
 
-#: inc/config.class.php:155
+#: inc/config.class.php:148
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
 msgstr ""
 
-#: inc/config.class.php:155
+#: inc/config.class.php:148
 msgid "Entities"
 msgstr ""
 
-#: inc/entity.class.php:44
+#: inc/entity.class.php:34
 msgid "Entity"
 msgstr "Entity"
 
-#: inc/entity.class.php:99
+#: inc/entity.class.php:89
 msgid "TFTP server"
 msgstr "TFTP server"
 
-#: inc/entity.class.php:105
+#: inc/entity.class.php:95
 msgid "SNMP Community"
 msgstr "SNMP Community"
 
-#: inc/entity.class.php:115
+#: inc/entity.class.php:105
 msgid ""
 "Once you have configured the entity you can go to automatic actions to run "
 "for the first time: "
 msgstr ""
 
-#: inc/entity.class.php:115
+#: inc/entity.class.php:105
 msgid "NEBackup Task"
 msgstr ""
 
-#: inc/networkequipment.class.php:50
+#: inc/networkequipment.class.php:64
 msgid "Database Error"
 msgstr "Database Error"
 
-#: inc/networkequipment.class.php:57
+#: inc/networkequipment.class.php:71
 msgid "Backup Information (from NEBackup plugin)"
 msgstr "Backup Information (from NEBackup plugin)"
 
-#: inc/networkequipment.class.php:81
+#: inc/networkequipment.class.php:84
+msgid "TFTP server "
+msgstr ""
+
+#: inc/networkequipment.class.php:101
 msgid "Download backup"
 msgstr "Download backup"
 
-#: inc/networkequipment.class.php:87
+#: inc/networkequipment.class.php:107
 msgid "Last run: "
 msgstr ""
 
-#: inc/networkequipment.class.php:90
+#: inc/networkequipment.class.php:110
 msgid "Install TFTP client on server to view the backup file"
 msgstr "Install TFTP client on server to view the backup file"
 
-#: inc/networkequipment.class.php:95
-msgid "Backup file not found"
-msgstr "Backup file not found"
+#: inc/networkequipment.class.php:115
+msgid "Transfer timed out, check if your TFTP server is up."
+msgstr ""
+
+#: inc/networkequipment.class.php:119
+msgid "Backup file not found."
+msgstr ""
+
+#~ msgid "Backup file not found"
+#~ msgstr "Backup file not found"
 
 #~ msgid ""
 #~ "You must delete the configuration in the parent entity to delete this "

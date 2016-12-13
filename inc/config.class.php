@@ -37,9 +37,11 @@ class PluginNebackupConfig extends CommonDBTM {
      * Name of path to save the backup files
      */
     const BACKUP_PATH = "backup";
+    /**
+     * Default tftp port 
+     */
+    const DEFAULT_PORT = 69;
     
-    static protected $notable = true;
-
     static function getTypeName($nb=0) {
         return __("NEBackup", "nebackup");
     }
@@ -173,7 +175,7 @@ class PluginNebackupConfig extends CommonDBTM {
     public function getNetworkEquipmentTypeId() {
         global $DB;
         
-        $query = "SELECT value FROM `glpi_plugin_nebackup_config` WHERE type = 'networkequipmenttype_id'";
+        $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'networkequipmenttype_id'";
         
         if ($result = $DB->query($query)) {
             $row = $result->fetch_assoc(); // cogemos el primero
@@ -192,7 +194,7 @@ class PluginNebackupConfig extends CommonDBTM {
     public function setNetworkEquipmentTypeId($networkequipmenttype_id) {
         global $DB;
         
-        $query = "UPDATE `glpi_plugin_nebackup_config` ";
+        $query = "UPDATE `glpi_plugin_nebackup_configs` ";
         $query .= "SET value = '" . $networkequipmenttype_id . "' ";
         $query .= "WHERE type = 'networkequipmenttype_id'";
         
@@ -208,7 +210,7 @@ class PluginNebackupConfig extends CommonDBTM {
     public function getManufacturerId($manufacturer) {
         global $DB;
         
-        $query = "SELECT value FROM `glpi_plugin_nebackup_config` WHERE type = '" . $manufacturer . "_manufacturers_id'";
+        $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = '" . $manufacturer . "_manufacturers_id'";
         
         if ($result = $DB->query($query)) {
             $row = $result->fetch_assoc(); // cogemos el primero
@@ -228,7 +230,7 @@ class PluginNebackupConfig extends CommonDBTM {
     public function setManufacturerId($manufacturer, $manufacturer_id) {
         global $DB;
         
-        $query = "UPDATE `glpi_plugin_nebackup_config` ";
+        $query = "UPDATE `glpi_plugin_nebackup_configs` ";
         $query .= "SET value = '" . $manufacturer_id . "' ";
         $query .= "WHERE type = '" . $manufacturer . "_manufacturers_id'";
         

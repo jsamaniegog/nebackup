@@ -25,7 +25,31 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
     static function showInfo($datos) {
         global $DB;
         
-        // first check if we have a record
+        $config = new PluginNebackupConfig();
+        $config_data = array_values($config->find());
+        
+        $manufacturer = false;
+        $type = false;
+        
+        foreach ($config_data as $key => $value) {
+            // si coincide el tipo
+            if ($value['type'] == 'networkequipmenttype_id' 
+                and $datos->fields['networkequipmenttypes_id'] == $value['value']) 
+            {
+                $type = true;
+            }
+            
+            // si coincide el fabricante como uno de los soportados
+            if (strstr($value['type'], "_manufacturers_id") and $datos->fields['manufacturers_id'] == $value['value']) {
+                $manufacturer = true;
+            }
+        }
+        
+        if ($manufacturer == false or $type == false) {
+            return false;
+        }
+        
+        // first check if we have a record and if type and manufacturer match
         $query = "SELECT nee.tftp_server, e.name entity_name ";
         $query .= "FROM glpi_plugin_nebackup_entities nee, glpi_entities e ";
         $query .= "WHERE nee.entities_id = e.id AND nee.entities_id = " . $datos->fields['entities_id'];
@@ -55,35 +79,45 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         // remove the temporal file if exists
         unlink($tmp_file);
         
-        // get the file from tftp
-        $remote_path = PluginNebackupConfig::BACKUP_PATH . '/' . $result['entity_name'] . '/' . PluginNebackupBackup::escapeNameToTftp($datos->fields['name']);
-        $command = 'tftp '.$result['tftp_server'].' -c get "' . $remote_path . '"';
-        $command_result = `$command`;
-        
-        if (!$command_result) {
-            // move file to files directory
-            $command = "mv " . $datos->fields['name'] . " " . GLPI_ROOT . "/files/_cache/nebackup.tmp";
-            `$command`;
-            
-            if (file_exists($tmp_file)) {
-                // link to download the file
-                echo Html::link(
-                    __("Download backup", 'nebackup') . ": " . $datos->fields['name'], 
-                    PluginNebackupDownload::getFormURL() . "?name=" . PluginNebackupBackup::escapeNameToTftp($datos->fields['name'])
-                );
-                
-                $cron = new CronTask();
-                $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
-                echo '<tr><td>' . __('Last run: ', 'nebackup') . $cron->fields['lastrun'] . '</td></tr>';
-                
-            } else {
-                echo '<b style="color:red;">' . __('Install TFTP client on server to view the backup file', 'nebackup') . "</b>";
-            }
+        // check if tftp server is online
+        if (!PluginNebackupUtil::ping($result['tftp_server'])) {
+            echo '<b style="color:red;">' . __('TFTP server ' . $result['tftp_server'] . ' is not alive</b>', 'nebackup');
             
         } else {
-            if (preg_match("/Error code 2/", $command_result)) {
-                echo __('Backup file not found', 'nebackup');
+        
+            // get the file from tftp
+            $remote_path = PluginNebackupConfig::BACKUP_PATH . '/' . $result['entity_name'] . '/' . PluginNebackupBackup::escapeNameToTftp($datos->fields['name']);
+            $command = 'tftp '.$result['tftp_server'].' -c get "' . $remote_path . '"';
+            $command_result = `$command`;
+
+            if (!$command_result) {
+                // move file to files directory
+                $command = "mv " . $datos->fields['name'] . " " . GLPI_ROOT . "/files/_cache/nebackup.tmp";
+                `$command`;
+
+                if (file_exists($tmp_file)) {
+                    // link to download the file
+                    echo Html::link(
+                        __("Download backup", 'nebackup') . ": " . $datos->fields['name'], 
+                        PluginNebackupDownload::getFormURL() . "?name=" . PluginNebackupBackup::escapeNameToTftp($datos->fields['name'])
+                    );
+
+                    $cron = new CronTask();
+                    $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
+                    echo '<tr><td>' . __('Last run: ', 'nebackup') . $cron->fields['lastrun'] . '</td></tr>';
+
+                } else {
+                    echo '<b style="color:red;">' . __('Install TFTP client on server to view the backup file', 'nebackup') . "</b>";
+                }
+
+            } else {
+                if (preg_match("/Transfer timed out/", $command_result)) {
+                    echo '<b style="color:red;">' . __('Transfer timed out, check if your TFTP server is up.', 'nebackup') . '</b>';
+                }
                 
+                if (preg_match("/Error code 2/", $command_result)) {
+                    echo '<b style="color:red;">' . __('Backup file not found.', 'nebackup') . '</b>';
+                }
             }
         }
         
@@ -106,13 +140,13 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
         $sql .= "FROM glpi_networkequipments n, glpi_manufacturers m, glpi_networkports np, glpi_networknames nn, glpi_ipaddresses ip, glpi_plugin_nebackup_entities nee, glpi_entities e ";
 
-        $sql .= "WHERE n.manufacturers_id = m.id AND m.id = (select value from glpi_plugin_nebackup_config where type = '" . $manufacturer . "_manufacturers_id') ";
+        $sql .= "WHERE n.manufacturers_id = m.id AND m.id = (select value from glpi_plugin_nebackup_configs where type = '" . $manufacturer . "_manufacturers_id') ";
 
         $sql .= "AND np.itemtype = 'NetworkEquipment' AND n.id = np.items_id AND np.instantiation_type = 'NetworkPortAggregate' ";
         $sql .= "AND nn.itemtype = 'NetworkPort' AND np.id = nn.items_id ";
         $sql .= "AND ip.itemtype = 'NetworkName' AND nn.id = ip.items_id ";
 
-        $sql .= "AND n.networkequipmenttypes_id = (select value from glpi_plugin_nebackup_config where type = 'networkequipmenttype_id') ";
+        $sql .= "AND n.networkequipmenttypes_id = (select value from glpi_plugin_nebackup_configs where type = 'networkequipmenttype_id') ";
         $sql .= "AND n.entities_id = nee.entities_id AND nee.entities_id = e.id ";
 
         $sql .= "GROUP BY n.name";

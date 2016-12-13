@@ -37,6 +37,11 @@ function plugin_change_profile_nebackup() {
 function plugin_nebackup_install() {
     global $DB;
     
+    // actualización si es la version 1.0.0
+    if (TableExists("glpi_plugin_nebackup_config")) {
+        $DB->runFile(GLPI_ROOT ."/plugins/nebackup/sql/update-1.0.0.sql");
+    }
+    
     // Création de la table uniquement lors de la première installation
     /*if (!TableExists("glpi_plugin_nebackup_profiles")) {
 
@@ -72,9 +77,9 @@ function plugin_nebackup_install() {
     $res = $DB->query($query) or die($DB->error());*/
     
     // Création de la table uniquement lors de la première installation
-    if (!TableExists("glpi_plugin_nebackup_config")) {
+    if (!TableExists("glpi_plugin_nebackup_configs")) {
         // Création de la table config
-        $query = "CREATE TABLE `glpi_plugin_nebackup_config` (
+        $query = "CREATE TABLE `glpi_plugin_nebackup_configs` (
         `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `type` varchar(32) NOT NULL default '' UNIQUE,
         `value` varchar(32) NOT NULL default ''
@@ -91,7 +96,7 @@ function plugin_nebackup_install() {
             $row = $result->fetch_assoc();
             $row2 = $result2->fetch_assoc();
             
-            $query = "INSERT INTO glpi_plugin_nebackup_config(type, value) ";
+            $query = "INSERT INTO glpi_plugin_nebackup_configs(type, value) ";
             $query .= "VALUES ('cisco_manufacturers_id', '" . $row['id'] . "')";
             $query .= ", ('networkequipmenttype_id', '" . $row2['id'] . "')";
             $res = $DB->query($query) or die($DB->error());
@@ -116,8 +121,8 @@ function plugin_nebackup_install() {
 function plugin_nebackup_uninstall() {
     global $DB;
 
-    //$tables = array("glpi_plugin_nebackup_profiles", "glpi_plugin_nebackup_config", "glpi_plugin_nebackup_entities");
-    $tables = array("glpi_plugin_nebackup_config", "glpi_plugin_nebackup_entities");
+    //$tables = array("glpi_plugin_nebackup_profiles", "glpi_plugin_nebackup_configs", "glpi_plugin_nebackup_entities");
+    $tables = array("glpi_plugin_nebackup_configs", "glpi_plugin_nebackup_entities");
 
     foreach($tables as $table) 
         {$DB->query("DROP TABLE IF EXISTS `$table`;");}
