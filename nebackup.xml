@@ -2,7 +2,7 @@
       <name>Network Equipment Backup</name>
       <key>nebackup</key>
       <state>stable</state>
-      <logo>https://github.com/jsamaniegog/nebackup/blob/master/logo_nebackup.png</logo>
+      <logo>https://raw.githubusercontent.com/jsamaniegog/nebackup/master/logo_nebackup.gif</logo>
       <description>
          <short>
             <es>Copias de seguridad de dispositivos de red.</es>
@@ -10,7 +10,7 @@
          </short>
          <long>
             <es>Este plugin permite realizar copias de seguridad de la configuración de los dispositivos de red sobre un servidor TFTP.</es>
-            <en>This plugin allows you to back up the configuration of the network devices on TFTP server   .</en>
+            <en>This plugin allows you to back up the configuration of the network devices on TFTP server.</en>
          </long>
       </description>
       <homepage>https://github.com/jsamaniegog/nebackup</homepage>
