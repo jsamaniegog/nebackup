@@ -37,8 +37,7 @@ try {
 
     // sets the backup interval in the automatic task
     if (is_numeric($_POST['backup_interval'])) {
-        $time_in_seconds = $_POST['backup_interval'] * 60 * 60;
-        $config->setCronTask($time_in_seconds);
+        $config->setCronTask($_POST['backup_interval']);
         
     } else {
         Session::addMessageAfterRedirect(__("Backup interval must be a number.", 'nebackup'), false, ERROR);

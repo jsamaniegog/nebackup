@@ -112,7 +112,7 @@ function plugin_init_nebackup() {
  */
 function plugin_version_nebackup() {
     return array('name'           => 'nebackup',
-                 'version'        => '1.0.1',
+                 'version'        => '1.0.2',
                  'author'         => 'Javier Samaniego',
                  'license'        => 'AGPLv3+',
                  'homepage'       => 'https://github.com/jsamaniegog/nebackup',

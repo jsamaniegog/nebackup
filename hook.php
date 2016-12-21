@@ -109,6 +109,12 @@ function plugin_nebackup_install() {
                 PluginNebackupConfig::setCronTask();
             }
         }
+    } else {
+        $cron = new CronTask();
+        if ($cron->getFromDBbyName("PluginNebackupBackup", "nebackup")) {
+            $cron->fields['mode'] = CronTask::MODE_EXTERNAL;
+            $cron->update($cron->fields);
+        }
     }
         
     return true;    

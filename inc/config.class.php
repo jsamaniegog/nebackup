@@ -69,7 +69,8 @@ class PluginNebackupConfig extends CommonDBTM {
             __("nebackup", 'nebackup'), 
             $time_in_seconds, 
             array(
-                'comment'=>__('Backup of network equipments configuration', 'nebackup')
+                'comment'=>__('Backup of network equipments configuration', 'nebackup'),
+                'mode'=> CronTask::MODE_EXTERNAL
             )
         );
         
@@ -96,8 +97,8 @@ class PluginNebackupConfig extends CommonDBTM {
         echo "<tr class='tab_bg_2'>";
         echo "<td>" . __('Backup interval: ', 'nebackup') . "</td>";
         echo "<td colspan='3'>";
-        echo Html::input("backup_interval", array('value' => self::getBackupInterval()));
-        echo " " . __('hours', 'nebackup');
+        $cron = new CronTask();
+        $cron->dropdownFrequency('backup_interval', self::getBackupInterval());
         echo "</td></tr>";
         echo "<tr class='tab_bg_2'>";
         echo "<td>" . __('Select type to switch backup: ', 'nebackup') . "</td>";
@@ -242,12 +243,12 @@ class PluginNebackupConfig extends CommonDBTM {
      * Return id of manufacturer.
      * @global type $DB
      * @param type $manufacturer For example: cisco, hp...
-     * @return boolean|int Return id of manufacturer. If don't exist return false.
+     * @return boolean|int Return the frequency in seconds. If don't exist return false.
      */
     static public function getBackupInterval() {
         $cron = new CronTask();
         if ($cron->getFromDBbyName("PluginNebackupBackup", "nebackup")) {
-            return $cron->getField("frequency") / 60 / 60;
+            return $cron->getField("frequency");
         }
         
         return false;
