@@ -86,7 +86,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         } else {
         
             // get the file from tftp
-            $remote_path = PluginNebackupConfig::BACKUP_PATH . '/' . $result['entity_name'] . '/' . PluginNebackupBackup::escapeNameToTftp($datos->fields['name']);
+            $remote_path = PluginNebackupConfig::getBackupPath() . '/' . $result['entity_name'] . '/' . PluginNebackupBackup::escapeNameToTftp($datos->fields['name']);
             $command = 'tftp '.$result['tftp_server'].' -c get "' . $remote_path . '"';
             $command_result = `$command`;
 

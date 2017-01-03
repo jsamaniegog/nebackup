@@ -42,6 +42,11 @@ function plugin_nebackup_install() {
         $DB->runFile(GLPI_ROOT ."/plugins/nebackup/sql/update-1.0.0.sql");
     }
     
+    // actualización version => 2.0.0
+    if (TableExists("glpi_plugin_nebackup_configs")) {
+        $DB->runFile(GLPI_ROOT ."/plugins/nebackup/sql/update-2.0.0.sql");
+    }
+    
     // Création de la table uniquement lors de la première installation
     /*if (!TableExists("glpi_plugin_nebackup_profiles")) {
 
@@ -86,6 +91,8 @@ function plugin_nebackup_install() {
         )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->query($query) or die($DB->error());
         
+        // ruta de configuración predeterminada para version >= 2.0.0
+        $DB->runFile(GLPI_ROOT ."/plugins/nebackup/sql/update-2.0.0.sql");
         
         // Insertamos el ID de cisco en la configuración si es que existe algún registro.
         $query = "SELECT id FROM `glpi_manufacturers` WHERE name like 'cisco%' ORDER BY id LIMIT 1";

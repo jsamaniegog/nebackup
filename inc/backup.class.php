@@ -127,9 +127,9 @@ class PluginNebackupBackup {
     static private function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
         // La llamada al script debe ser así: 
         // `copia_swX.sh $hostname $ip $rannum $tftp_server $tftp_passwd`
-        //$host = PluginNebackupConfig::BACKUP_PATH . '/' . $manufacturer . '/' . $entitie_name . '/' . $host;
+        
         $host = self::escapeNameToTftp($host);
-        $host = PluginNebackupConfig::BACKUP_PATH . '/' . $entitie_name . '/' . $host;
+        $host = PluginNebackupConfig::getBackupPath() . '/' . $entitie_name . '/' . $host;
         $tftp_server = gethostbyname($tftp_server);
         
         $comando = "sh " . GLPI_ROOT . "/plugins/nebackup/commands/nebackup_" . $manufacturer . "_$num_script.sh $host $ip $rannum $tftp_server $tftp_passwd";

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2016-12-13 09:57+0100\n"
-"PO-Revision-Date: 2016-12-13 09:58+0100\n"
+"POT-Creation-Date: 2017-01-03 11:48+0100\n"
+"PO-Revision-Date: 2017-01-03 11:49+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -19,15 +19,15 @@ msgstr ""
 msgid "Saving configuration..."
 msgstr "Guardando configuración..."
 
-#: front/config.form.php:44
+#: front/config.form.php:43
 msgid "Backup interval must be a number."
 msgstr "El intervalo de tiempo de copia de seguridad debe ser un número."
 
-#: front/config.form.php:58
+#: front/config.form.php:59
 msgid "Error on save"
 msgstr "Error al guardar"
 
-#: front/config.form.php:62 front/entity.form.php:47
+#: front/config.form.php:63 front/entity.form.php:47
 msgid "Configuration saved"
 msgstr "Configuración guardada"
 
@@ -47,31 +47,31 @@ msgstr "nebackup"
 msgid "Backup of network equipments configuration"
 msgstr "Copia de seguridad de la configuración de equipos de red"
 
-#: inc/config.class.php:95
+#: inc/config.class.php:96
 msgid "NEBackup Setup"
 msgstr "Configuración de NEBackup"
 
-#: inc/config.class.php:97
+#: inc/config.class.php:98
 msgid "Backup interval: "
 msgstr "Intervalo de copia de seguridad:"
 
-#: inc/config.class.php:100
-msgid "hours"
-msgstr "horas"
-
 #: inc/config.class.php:103
+msgid "Root path in TFTP server (without initial \"/\"): "
+msgstr "Ruta raíz en el servidor TFTP (sin la barra inicial \"/\"): "
+
+#: inc/config.class.php:106
 msgid "Select type to switch backup: "
 msgstr "Selecciona el tipo para la copia de seguridad de switches:"
 
-#: inc/config.class.php:114
+#: inc/config.class.php:117
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:114
+#: inc/config.class.php:117
 msgid " network equipments: "
 msgstr " en la electrónica de red"
 
-#: inc/config.class.php:148
+#: inc/config.class.php:151
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -79,7 +79,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:148
+#: inc/config.class.php:151
 msgid "Entities"
 msgstr "Entidades"
 
@@ -142,6 +142,9 @@ msgstr ""
 #: inc/networkequipment.class.php:119
 msgid "Backup file not found."
 msgstr "Fichero de copia de seguridad no encontrado."
+
+#~ msgid "hours"
+#~ msgstr "horas"
 
 #~ msgid "Backup file not found"
 #~ msgstr "Fichero de copia de seguridad no encontrado"

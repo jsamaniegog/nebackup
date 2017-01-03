@@ -34,10 +34,6 @@ class PluginNebackupConfig extends CommonDBTM {
      */
     const SECONDS_TO_TIMEOUT = 120;
     /**
-     * Name of path to save the backup files
-     */
-    const BACKUP_PATH = "backup";
-    /**
      * Default tftp port 
      */
     const DEFAULT_PORT = 69;
@@ -100,6 +96,8 @@ class PluginNebackupConfig extends CommonDBTM {
         $cron = new CronTask();
         $cron->dropdownFrequency('backup_interval', self::getBackupInterval());
         echo "</td></tr>";
+        echo "<td>" . __('Root path in TFTP server (without initial "/"): ', 'nebackup') . "</td>";
+        echo "<td>" . HTML::input('backup_path', array('value'=>$this->getBackupPath())) . "</td>";
         echo "<tr class='tab_bg_2'>";
         echo "<td>" . __('Select type to switch backup: ', 'nebackup') . "</td>";
         echo "<td colspan='3'>";
@@ -203,6 +201,27 @@ class PluginNebackupConfig extends CommonDBTM {
     }
     
     /**
+     * Set backup path
+     * @param type $backup_path Path without initial slash "/"
+     */
+    public function setBackupPath($backup_path) {
+        global $DB;
+        
+        $backup_path = str_replace("&lt;", "", $backup_path);
+        $backup_path = str_replace("&gt;", "", $backup_path);
+        $backup_path = preg_replace("/:|\*|\?|\\\\'|\\\\\"|\|/", "", $backup_path); // caracteres prohibidos
+        $backup_path = preg_replace("/\\\\/", "/", $backup_path); // eliminamos backslash
+        $backup_path = preg_replace("/\/{2,}/", "/", $backup_path); // dos o más slash seguidos
+        $backup_path = preg_replace("/^\/|\/$/", "", $backup_path); // la cadena empieza o acaba por slash
+        
+        $query = "UPDATE `glpi_plugin_nebackup_configs` ";
+        $query .= "SET value = '" . $DB->escape($backup_path) . "' ";
+        $query .= "WHERE type = 'backup_path'";
+        
+        return $DB->query($query);
+    }
+    
+    /**
      * Return id of manufacturer.
      * @global type $DB
      * @param type $manufacturer For example: cisco, hp...
@@ -249,6 +268,24 @@ class PluginNebackupConfig extends CommonDBTM {
         $cron = new CronTask();
         if ($cron->getFromDBbyName("PluginNebackupBackup", "nebackup")) {
             return $cron->getField("frequency");
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Return backup path.
+     * @global type $DB
+     * @return boolean|int Return id of manufacturer. If don't exist return false.
+     */
+    static public function getBackupPath() {
+        global $DB;
+        
+        $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'backup_path'";
+        
+        if ($result = $DB->query($query)) {
+            $row = $result->fetch_assoc(); // cogemos el primero
+            return $row['value'];
         }
         
         return false;

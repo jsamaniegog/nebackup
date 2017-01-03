@@ -46,6 +46,8 @@ try {
     // set the type of network equipment that we can backup (only switches)
     $config->setNetworkEquipmentTypeId($_POST['networkequipmenttype_id']);
     
+    $config->setBackupPath($_POST['backup_path']);
+    
     // save the manufacturer id for each suppoerted manufacturer
     foreach (explode(",", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) as $v) {
         if (isset($_POST[$v . '_manufacturers_id']) and is_numeric($_POST[$v . '_manufacturers_id'])) {
