@@ -30,13 +30,13 @@ function plugin_init_nebackup() {
     //                      array('classname'              => 'PluginExampleExample',
     //                        ));
     
-    Plugin::registerClass('PluginNebackupNebackup', array('addtabon' => 'NetworkEquipment'));
+    Plugin::registerClass('PluginNebackupNetworkEquipment', array('addtabon' => array('NetworkEquipment')));
     //Plugin::registerClass('PluginNebackupProfile',  array('addtabon' => 'Profile'));
     Plugin::registerClass('PluginNebackupConfig',   array('addtabon' => 'Config'));
     Plugin::registerClass('PluginNebackupEntity', array('addtabon' => array('Entity')));
     
     // declare this plugin as an import plugin for NetworkEquipment itemtype
-    $PLUGIN_HOOKS['import_item']['nebackup'] = array('NetworkEquipment' => array('Plugin'));
+    //$PLUGIN_HOOKS['import_item']['nebackup'] = array('NetworkEquipment' => array('Plugin'));
 
     // este hook muestra información en la pestaña de datos del switch
     $PLUGIN_HOOKS['autoinventory_information']['nebackup'] =  array(

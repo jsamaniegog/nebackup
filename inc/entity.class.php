@@ -93,7 +93,14 @@ class PluginNebackupEntity extends CommonDBTM {
         
         // snmp field
         echo __('SNMP Community', 'nebackup') . "</td><td colspan='2'>";
-        echo Html::input("tftp_passwd", array('value' => $row['tftp_passwd']));
+        $plugin = new Plugin();
+        if (!$plugin->isActivated("fusioninventory")) {
+            echo Html::input("tftp_passwd", array('value' => $row['tftp_passwd']));
+        } else {
+            echo "<b style='color:red;'>"
+                . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
+                . "</b>";
+        }
         
         echo "</td></tr>";
         
@@ -127,10 +134,12 @@ class PluginNebackupEntity extends CommonDBTM {
         global $DB;
 
         $data['tftp_server'] = str_replace(' ', '', $data['tftp_server']);
-        $data['tftp_passwd'] = str_replace(' ', '', $data['tftp_passwd']);
+        if (isset($data['tftp_passwd'])) {
+            $data['tftp_passwd'] = str_replace(' ', '', $data['tftp_passwd']);
+        }
 
         // purge
-        if (isset($data['purge']) or $data['tftp_server'] == '' or $data['tftp_passwd'] == '') {
+        if (isset($data['purge']) or $data['tftp_server'] == '' or (isset($data['tftp_passwd']) and $data['tftp_passwd'] == '')) {
 
             /*if (self::hasEntityParent($data['id'])) {
                 Session::addMessageAfterRedirect(__("You must delete the configuration in the parent entity to delete this configuration.", 'nebackup'), false, ERROR);
@@ -157,11 +166,14 @@ class PluginNebackupEntity extends CommonDBTM {
 
                 $query = "UPDATE `glpi_plugin_nebackup_entities` ";
                 $query .= "SET tftp_server = '" . $data['tftp_server'] . "' ";
-                $query .= ", tftp_passwd = '" . $data['tftp_passwd'] . "' ";
+                if (isset($data['tftp_passwd']))
+                    $query .= ", tftp_passwd = '" . $data['tftp_passwd'] . "' ";
                 $query .= "WHERE id = " . $data['id'] . " OR entities_id in (" . $sub_entities_ids . ")";
 
                 // insert
             } else {
+                $data['tftp_passwd'] = (isset($data['tftp_passwd'])) ? $data['tftp_passwd'] : '' ;
+                
                 $query = "INSERT INTO glpi_plugin_nebackup_entities";
                 $query .= "(entities_id, tftp_server, tftp_passwd, is_recursive) VALUES ";
                 $query .= "(" . $data['entity_id_edited'] . ", ";
@@ -223,30 +235,4 @@ class PluginNebackupEntity extends CommonDBTM {
 
         return $sub_entities_ids;
     }
-
-    /**
-     * Return if an entity has a parent with a registry in the table glpi_plugin_nebackup_entities
-     * @param type $entity_id
-     * @return boolean True if has parent, false if not.
-     */
-    /*static private function hasEntityParent($entity_id) {
-        global $DB;
-
-        $query = "SELECT nee2.is_recursive parent_recursive ";
-        $query .= "FROM glpi_plugin_nebackup_entities nee, glpi_entities e ";
-        $query .= "LEFT JOIN glpi_plugin_nebackup_entities nee2 ON e.entities_id = nee2.entities_id ";
-        $query .= "WHERE nee.id = " . $entity_id . " and nee.entities_id = e.id ";
-
-        if ($result = $DB->query($query)) {
-            $result = $result->fetch_assoc();
-        }
-
-        // if parent has a registry and has is_recursive you cannot delete it, you must purge the parent
-        if ($result['parent_recursive'] == 1) {
-            return true;
-        }
-
-        return false;
-    }*/
-
 }

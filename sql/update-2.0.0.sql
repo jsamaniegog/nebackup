@@ -16,4 +16,8 @@
  */
 
 INSERT INTO `glpi`.`glpi_plugin_nebackup_configs`(type, value) VALUES ('backup_path', 'backup');
-
+CREATE TABLE `glpi`.`glpi_plugin_nebackup_networkequipments` (
+        `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `networkequipments_id` int(11) NOT NULL UNIQUE,
+        `plugin_fusioninventory_configsecurities_id` int(11) NOT NULL default 0
+    )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

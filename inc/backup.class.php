@@ -1,5 +1,6 @@
 <?php
-/* 
+
+/*
  * Copyright (C) 2016 Javier Samaniego García <jsamaniegog@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,16 +38,39 @@ class PluginNebackupBackup {
 
     static private function backup($manufacturer) {
         $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer);
-        
+
         // datos de conexión al servidor tftp (es el mismo para todos los registros)
         $tftp_server = $ne_to_backup[0]['tftp_server'];
-        $tftp_passwd = escapeshellcmd($ne_to_backup[0]['tftp_passwd']);
-        
-        if (!self::checkTftpServerAlive($tftp_server, $tftp_passwd)) {
-            return;
+
+        // si el plugin fusioninventory NO está activado la comunidad SNMP es
+        // siempre la misma
+        if (!isset($ne_to_backup[0]['community'])) {
+            $tftp_passwd = escapeshellcmd($ne_to_backup[0]['tftp_passwd']);
+
+            if (!self::checkTftpServerAlive($tftp_server, $tftp_passwd)) {
+                return;
+            }
         }
-        
+
+
         foreach ($ne_to_backup as $reg) {
+            // only snmp v2c
+            if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
+                continue;
+            }
+
+            // si el plugin fusioninventory está activado tomamos los datos de 
+            // sus tablas para la comunidad snmp
+            if (isset($reg['community'])) {
+                $reg['tftp_passwd'] = $reg['community'];
+
+                $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
+
+                if (!self::checkTftpServerAlive($tftp_server, $tftp_passwd)) {
+                    continue;
+                }
+            }
+
             // to control the timeout
             $start_time = time();
 
@@ -58,7 +82,7 @@ class PluginNebackupBackup {
             $rannum = (int) date("i") + 1;
             // nombre de la entidad (esto sirve para la ruta donde se guarda del TFTP)
             $entitie_name = $reg['entitie_name'];
-            
+
             // esta variable controla el número del script, hay 3 scripts: 
             // uno inicia la copia, el segundo la comprueba a ver si ha 
             // acabado y el tercero la cierra
@@ -87,8 +111,8 @@ class PluginNebackupBackup {
                 // siguiente ya que ha habido un error
                 // los estados para el script 2 son: 1:waiting, 2:running, 3:successful, 4:failed;
                 if (preg_match('/' . $rannum . ' = INTEGER/', $resultado_comando) == 0
-                        or ( $num_script == 2
-                        and preg_match('/' . $rannum . ' = INTEGER: 4/', $resultado_comando) != 0)) {
+                    or ( $num_script == 2
+                    and preg_match('/' . $rannum . ' = INTEGER: 4/', $resultado_comando) != 0)) {
                     Toolbox::logDebug();
                     break;
                 }
@@ -104,7 +128,6 @@ class PluginNebackupBackup {
                             $num_script = 3;
                             // ejecutamos el script número 3
                             self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
-
                         } else {
                             $num_script = 2;
                         }
@@ -113,7 +136,7 @@ class PluginNebackupBackup {
             } while ($num_script != 3);
         }
     }
-    
+
     /**
      * Ejecuta el script de copia y retorna el resultado.
      * @param type $num_script script number: 1 => init, 2 => ask for finish, 3 => close
@@ -124,35 +147,41 @@ class PluginNebackupBackup {
      * @param type $tftp_passwd Password of the tftp server
      * @return type
      */
-    static private function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
+    static private
+        function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
         // La llamada al script debe ser así: 
         // `copia_swX.sh $hostname $ip $rannum $tftp_server $tftp_passwd`
-        
+
         $host = self::escapeNameToTftp($host);
         $host = PluginNebackupConfig::getBackupPath() . '/' . $entitie_name . '/' . $host;
         $tftp_server = gethostbyname($tftp_server);
-        
+
         $comando = "sh " . GLPI_ROOT . "/plugins/nebackup/commands/nebackup_" . $manufacturer . "_$num_script.sh $host $ip $rannum $tftp_server $tftp_passwd";
         $resultado = `$comando`;
-        
+
         return $resultado;
     }
-    
+
     /**
      * Check if tftp server is alive.
      * @param type $tftp_server
      * @param type $tftp_passwd
      */
-    static private function checkTftpServerAlive($tftp_server) {
-        if (!$tftp_server) return false;
-        
+    static private
+        function checkTftpServerAlive($tftp_server) {
+        if (!$tftp_server)
+            return false;
+
         $command = `tftp $tftp_server -c get TeSt_FiLe_NEBackup`;
-        if (!preg_match('/Transfer timed out/', $command)) return true;
-        
+        if (!preg_match('/Transfer timed out/', $command))
+            return true;
+
         return false;
     }
-    
-    static public function escapeNameToTftp($name) {
+
+    static public
+        function escapeNameToTftp($name) {
         return str_replace(" ", "", escapeshellcmd($name));
     }
+
 }
