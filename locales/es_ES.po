@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-18 11:21+0100\n"
-"PO-Revision-Date: 2017-01-18 11:22+0100\n"
+"POT-Creation-Date: 2017-01-18 13:50+0100\n"
+"PO-Revision-Date: 2017-01-18 13:51+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -24,11 +24,11 @@ msgstr "Guardando configuración..."
 msgid "Backup interval must be a number."
 msgstr "El intervalo de tiempo de copia de seguridad debe ser un número."
 
-#: front/config.form.php:59 front/networkequipment.form.php:37
+#: front/config.form.php:61 front/networkequipment.form.php:37
 msgid "Error on save"
 msgstr "Error al guardar"
 
-#: front/config.form.php:63 front/entity.form.php:47
+#: front/config.form.php:65 front/entity.form.php:47
 #: front/networkequipment.form.php:41
 msgid "Configuration saved"
 msgstr "Configuración guardada"
@@ -77,23 +77,27 @@ msgstr ""
 "(Etiquetas: \"{entity}\": el nombre de la entidad, \"{manufacturer}\": "
 "etiqueta del fabricante como cisco, hpprocurve, etc.)"
 
-#: inc/config.class.php:106
+#: inc/config.class.php:108
+msgid "Use FusionInventory SNMP authentication: "
+msgstr "Usar autentificación SNMP de FusionInventory: "
+
+#: inc/config.class.php:115
 msgid "Select type to switch backup: "
 msgstr "Selecciona el tipo para la copia de seguridad de switches:"
 
-#: inc/config.class.php:115
+#: inc/config.class.php:124
 msgid "Manufacturers"
 msgstr "Fabricantes"
 
-#: inc/config.class.php:118
+#: inc/config.class.php:127
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:118
+#: inc/config.class.php:127
 msgid " network equipments: "
 msgstr " en la electrónica de red"
 
-#: inc/config.class.php:152
+#: inc/config.class.php:161
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -101,7 +105,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:152
+#: inc/config.class.php:161
 msgid "Entities"
 msgstr "Entidades"
 
@@ -194,7 +198,7 @@ msgstr "Configuración de la autentificación SNMP"
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:258
+#: inc/networkequipment.class.php:265
 msgid "Update"
 msgstr "Actualizar"
 
