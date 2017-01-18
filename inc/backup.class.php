@@ -45,8 +45,15 @@ class PluginNebackupBackup {
         // si el plugin fusioninventory NO está activado la comunidad SNMP es
         // siempre la misma
         if (!isset($ne_to_backup[0]['community'])) {
-            $tftp_passwd = escapeshellcmd($ne_to_backup[0]['tftp_passwd']);
-
+            
+            if ($manufacturer == 'hpprocurve') {
+                $tftp_passwd = escapeshellcmd($ne_to_backup[0]['telnet_passwd']);
+                
+            } else {
+                $tftp_passwd = escapeshellcmd($ne_to_backup[0]['tftp_passwd']);
+            }
+            
+            
             if (!self::checkTftpServerAlive($tftp_server, $tftp_passwd)) {
                 return;
             }
@@ -58,14 +65,14 @@ class PluginNebackupBackup {
             if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
                 continue;
             }
-
+            
             // si el plugin fusioninventory está activado tomamos los datos de 
             // sus tablas para la comunidad snmp
             if (isset($reg['community'])) {
                 $reg['tftp_passwd'] = $reg['community'];
 
                 $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
-
+                
                 if (!self::checkTftpServerAlive($tftp_server, $tftp_passwd)) {
                     continue;
                 }

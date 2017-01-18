@@ -72,6 +72,7 @@ function plugin_nebackup_install() {
         `entities_id` int(11) NOT NULL UNIQUE,
         `tftp_server` char(32) NOT NULL default '',
         `tftp_passwd` char(32) NOT NULL default '',
+        `telnet_passwd` char(32) NOT NULL default '',
         `is_recursive` tinyint(1) NOT NULL default 0
         )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->query($query) or die($DB->error());

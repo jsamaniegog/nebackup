@@ -203,7 +203,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
         $toreturn = array();
 
-        $sql = "SELECT n.id, n.name, ip.name as ip, nee.tftp_server, nee.tftp_passwd, e.name entitie_name ";
+        $sql = "SELECT n.id, n.name, ip.name as ip, nee.tftp_server, nee.tftp_passwd, nee.telnet_passwd, e.name entitie_name ";
         if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
             $sql .= ", pfc.community, pfc.snmpversion ";
         }

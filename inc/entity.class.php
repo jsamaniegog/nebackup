@@ -102,6 +102,18 @@ class PluginNebackupEntity extends CommonDBTM {
                 . "</b>";
         }
         
+        // telnet password field
+        echo "</td></tr><tr><td colspan='2'>";
+        echo __('Telnet password (only for HP Procurve)', 'nebackup') . "</td><td colspan='2'>";
+        $plugin = new Plugin();
+        if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
+            echo Html::input("telnet_passwd", array('value' => $row['telnet_passwd']));
+        } else {
+            echo "<b style='color:red;'>"
+                . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
+                . "</b>";
+        }
+        
         echo "</td></tr>";
         
         
@@ -137,9 +149,13 @@ class PluginNebackupEntity extends CommonDBTM {
         if (isset($data['tftp_passwd'])) {
             $data['tftp_passwd'] = str_replace(' ', '', $data['tftp_passwd']);
         }
+        
+        if (isset($data['telnet_passwd'])) {
+            $data['telnet_passwd'] = str_replace(' ', '', $data['telnet_passwd']);
+        }
 
         // purge
-        if (isset($data['purge']) or $data['tftp_server'] == '' or (isset($data['tftp_passwd']) and $data['tftp_passwd'] == '')) {
+        if (isset($data['purge']) or $data['tftp_server'] == '') {
 
             /*if (self::hasEntityParent($data['id'])) {
                 Session::addMessageAfterRedirect(__("You must delete the configuration in the parent entity to delete this configuration.", 'nebackup'), false, ERROR);
@@ -168,17 +184,21 @@ class PluginNebackupEntity extends CommonDBTM {
                 $query .= "SET tftp_server = '" . $data['tftp_server'] . "' ";
                 if (isset($data['tftp_passwd']))
                     $query .= ", tftp_passwd = '" . $data['tftp_passwd'] . "' ";
+                if (isset($data['telnet_passwd']))
+                    $query .= ", telnet_passwd = '" . $data['telnet_passwd'] . "' ";
                 $query .= "WHERE id = " . $data['id'] . " OR entities_id in (" . $sub_entities_ids . ")";
 
                 // insert
             } else {
                 $data['tftp_passwd'] = (isset($data['tftp_passwd'])) ? $data['tftp_passwd'] : '' ;
+                $data['telnet_passwd'] = (isset($data['telnet_passwd'])) ? $data['telnet_passwd'] : '' ;
                 
                 $query = "INSERT INTO glpi_plugin_nebackup_entities";
-                $query .= "(entities_id, tftp_server, tftp_passwd, is_recursive) VALUES ";
+                $query .= "(entities_id, tftp_server, tftp_passwd, telnet_passwd, is_recursive) VALUES ";
                 $query .= "(" . $data['entity_id_edited'] . ", ";
                 $query .= "'" . $data['tftp_server'] . "', ";
                 $query .= "'" . $data['tftp_passwd'] . "', ";
+                $query .= "'" . $data['telnet_passwd'] . "', ";
                 $query .= "" . $data['is_recursive'] . ")";
 
                 if ($data['is_recursive'] = 1) {
@@ -193,6 +213,7 @@ class PluginNebackupEntity extends CommonDBTM {
                             $query .= ",(" . $data2['id'] . ", ";
                             $query .= "'" . $data['tftp_server'] . "', ";
                             $query .= "'" . $data['tftp_passwd'] . "', ";
+                            $query .= "'" . $data['telnet_passwd'] . "', ";
                             $query .= "" . $data['is_recursive'] . ") ";
                         }
                     }

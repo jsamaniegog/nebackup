@@ -9,7 +9,7 @@ SNMPRW=$5
 
 (echo -e "open ${DEVICE}\r"
 sleep 1
-echo -e "aadmin"
+echo -e "\badmin"
 sleep 1
 echo -e "${SNMPRW}"
 sleep 1

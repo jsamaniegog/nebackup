@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-18 13:50+0100\n"
-"PO-Revision-Date: 2017-01-18 13:51+0100\n"
+"POT-Creation-Date: 2017-01-18 14:28+0100\n"
+"PO-Revision-Date: 2017-01-18 14:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -121,12 +121,16 @@ msgstr "Servidor TFTP"
 msgid "SNMP Community"
 msgstr "Comunidad SNMP"
 
-#: inc/entity.class.php:101
+#: inc/entity.class.php:101 inc/entity.class.php:113
 msgid "FusionInventory Plugin is installed and active, it is not necesary"
 msgstr ""
 "El complemento FusionInventory está instalado y activo, esto no es necesario"
 
-#: inc/entity.class.php:112
+#: inc/entity.class.php:107
+msgid "Telnet password (only for HP Procurve)"
+msgstr "Contraseña de Telnet (solo para HP Procurve)"
+
+#: inc/entity.class.php:124
 msgid ""
 "Once you have configured the entity you can go to automatic actions to run "
 "for the first time: "
@@ -134,7 +138,7 @@ msgstr ""
 "Una vez que haya configurado la entidad, puede ir a tareas automáticas para "
 "ejecutar por primera vez: "
 
-#: inc/entity.class.php:112
+#: inc/entity.class.php:124
 msgid "NEBackup Task"
 msgstr "Tarea NEBackup"
 
