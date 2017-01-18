@@ -94,7 +94,7 @@ class PluginNebackupEntity extends CommonDBTM {
         // snmp field
         echo __('SNMP Community', 'nebackup') . "</td><td colspan='2'>";
         $plugin = new Plugin();
-        if (!$plugin->isActivated("fusioninventory")) {
+        if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
             echo Html::input("tftp_passwd", array('value' => $row['tftp_passwd']));
         } else {
             echo "<b style='color:red;'>"

@@ -16,6 +16,7 @@
  */
 
 INSERT INTO `glpi`.`glpi_plugin_nebackup_configs`(type, value) VALUES ('backup_path', 'backup/{entity}');
+INSERT INTO `glpi`.`glpi_plugin_nebackup_configs`(type, value) VALUES ('use_fusioninventory', '0');
 CREATE TABLE `glpi`.`glpi_plugin_nebackup_networkequipments` (
         `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `networkequipments_id` int(11) NOT NULL UNIQUE,

@@ -102,6 +102,15 @@ class PluginNebackupConfig extends CommonDBTM {
         echo "<br>" . __('(Tags: "{entity}": the name of the entity, "{manufacturer}": manufacturer tag like cisco, hpprocurve, etc.)', 'nebackup') . "</td>";
         echo "<td>" . HTML::input('backup_path', array('value'=>$this->getBackupPath())) . "</td>";
         echo "</tr>";
+        
+        $plugin = new Plugin();
+        if ($plugin->isActivated("fusioninventory")) {
+            echo "<tr class='tab_bg_2'><td>" . __('Use FusionInventory SNMP authentication: ') . "</td>";
+            echo "<td>";
+            Dropdown::showYesNo("use_fusioninventory", self::getUseFusionInventory());
+            echo "</td></tr>";
+        }
+        
         echo "<tr class='tab_bg_2'>";
         echo "<td>" . __('Select type to switch backup: ', 'nebackup') . "</td>";
         echo "<td colspan='3'>";
@@ -243,6 +252,39 @@ class PluginNebackupConfig extends CommonDBTM {
         }
         
         return false;
+    }
+    
+    /**
+     * Return bool.
+     * @global type $DB
+     * @param type $manufacturer For example: cisco, hp...
+     * @return boolean 
+     */
+    static public function getUseFusionInventory() {
+        global $DB;
+        
+        $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'use_fusioninventory'";
+        
+        if ($result = $DB->query($query)) {
+            $row = $result->fetch_assoc(); // cogemos el primero
+            return ($row) ? $row['value'] : 0 ;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * If use or not fusioninventory plugin.
+     * @param bool $use_fusioninventory
+     */
+    public function setUseFusionInventory($use_fusioninventory) {
+        global $DB;
+        
+        $query = "UPDATE `glpi_plugin_nebackup_configs` ";
+        $query .= "SET value = '" . $use_fusioninventory . "' ";
+        $query .= "WHERE type = 'use_fusioninventory'";
+        
+        return $DB->query($query);
     }
     
     /**

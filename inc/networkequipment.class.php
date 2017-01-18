@@ -133,7 +133,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
         // form SNMP auth if FusionInventory is installed and actived
         $plugin = new Plugin();
-        if ($plugin->isActivated("fusioninventory")) {
+        if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
             $this->showFormSNMPAuth($datos);
         }
 
@@ -204,12 +204,12 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         $toreturn = array();
 
         $sql = "SELECT n.id, n.name, ip.name as ip, nee.tftp_server, nee.tftp_passwd, e.name entitie_name ";
-        if ($plugin->isActivated("fusioninventory")) {
+        if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
             $sql .= ", pfc.community, pfc.snmpversion ";
         }
 
         $sql .= "FROM glpi_networkequipments n, glpi_manufacturers m, glpi_networkports np, glpi_networknames nn, glpi_ipaddresses ip, glpi_plugin_nebackup_entities nee, glpi_entities e ";
-        if ($plugin->isActivated("fusioninventory")) {
+        if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
             $sql .= ", glpi_plugin_nebackup_networkequipments pnn, glpi_plugin_fusioninventory_configsecurities pfc ";
         }
 
@@ -222,7 +222,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         $sql .= "AND n.networkequipmenttypes_id = (select value from glpi_plugin_nebackup_configs where type = 'networkequipmenttype_id') ";
         $sql .= "AND n.entities_id = nee.entities_id AND nee.entities_id = e.id ";
 
-        if ($plugin->isActivated("fusioninventory")) {
+        if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
             $sql .= "AND n.id = pnn.networkequipments_id AND pnn.plugin_fusioninventory_configsecurities_id = pfc.id ";
         }
 
