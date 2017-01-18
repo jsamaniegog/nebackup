@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-18 10:39+0100\n"
-"PO-Revision-Date: 2017-01-18 10:41+0100\n"
+"POT-Creation-Date: 2017-01-18 11:21+0100\n"
+"PO-Revision-Date: 2017-01-18 11:22+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -143,10 +143,12 @@ msgid "Backup"
 msgstr "Copia de Seguridad"
 
 #: inc/networkequipment.class.php:110
-msgid "No backup for this manufacturer, currently only support these: "
+msgid ""
+"No backup configured or supported for this manufacturer, currently only "
+"support these: "
 msgstr ""
-"No hay copia de seguridad para este fabricante, actualmente solo se soportan "
-"estos: "
+"No hay copia de seguridad configurada o soportada para este fabricante, "
+"actualmente solo se soportan estos: "
 
 #: inc/networkequipment.class.php:126
 msgid "No backup configured for this entity."
@@ -195,6 +197,11 @@ msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 #: inc/networkequipment.class.php:258
 msgid "Update"
 msgstr "Actualizar"
+
+#~ msgid "No backup for this manufacturer, currently only support these: "
+#~ msgstr ""
+#~ "No hay copia de seguridad para este fabricante, actualmente solo se "
+#~ "soportan estos: "
 
 #~ msgid "(Default: \"backup/{manufacturer}/{entitie}\")"
 #~ msgstr "(Por defecto: \"backup/{manufacturer}/{entitie}\")"

@@ -107,7 +107,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         echo '<td>';
 
         if ($manufacturer == false or $type == false) {
-            echo '<b style="color:red;">' . __('No backup for this manufacturer, currently only support these: ', 'nebackup') . PluginNebackupConfig::SUPPORTED_MANUFACTURERS . '</b>';
+            echo '<b style="color:red;">' . __('No backup configured or supported for this manufacturer, currently only support these: ', 'nebackup') . PluginNebackupConfig::SUPPORTED_MANUFACTURERS . '</b>';
             echo '</td></tr></table>';
             return false;
         }
@@ -241,18 +241,25 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
      */
     private function showFormSNMPAuth(CommonGLPI $item) {
         global $CFG_GLPI;
-        
+
         echo '<h3>' . __("Configuration of the SNMP authentication", 'nebackup') . '</h3>';
-        
+
         echo "<form name='form' method='post' action='" . $CFG_GLPI['root_doc'] . "/plugins/nebackup/front/networkequipment.form.php" . "'>";
 
         echo "<table><tr>";
         echo "<td align='center'>" . __('SNMP authentication (READ/WRITE community): ', 'nebackup') . "</td>";
         echo "<td align='center'>";
         echo Html::hidden('networkequipments_id', array('value' => $item->fields['id']));
-        PluginFusioninventoryConfigSecurity::authDropdown(
-            $this->getSNMPAuth($item->fields['id'])
-        );
+
+        if (strstr(Plugin::getInfo('fusioninventory', 'version'), '0.90')) {
+            PluginFusioninventoryConfigSecurity::auth_dropdown(
+                $this->getSNMPAuth($item->fields['id'])
+            );
+        } else {
+            PluginFusioninventoryConfigSecurity::authDropdown(
+                $this->getSNMPAuth($item->fields['id'])
+            );
+        }
         echo "</td></tr>";
         echo "<tr><td align='center' colspan='2'>";
         echo "<input type='submit' name='update' value=\"" . __('Update') . "\" class='submit' >";
@@ -264,16 +271,16 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
     private function getSNMPAuth($networkequipments_id) {
         global $DB;
-        
+
         $sql = "SELECT plugin_fusioninventory_configsecurities_id FROM glpi_plugin_nebackup_networkequipments ";
         $sql .= "WHERE networkequipments_id = $networkequipments_id ";
-        
+
         if ($result = $DB->query($sql)) {
             $result = $DB->fetch_assoc($result);
             return $result['plugin_fusioninventory_configsecurities_id'];
         }
     }
-    
+
     /**
      * Set SNMP authentication. Only if FusionInventory plugin is actived.
      * @param type $plugin_fusioninventory_configsecurities_id
@@ -284,7 +291,6 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         if ($plugin_fusioninventory_configsecurities_id == 0) {
             $sql = "DELETE FROM glpi_plugin_nebackup_networkequipments ";
             $sql .= "WHERE networkequipments_id = $networkequipments_id";
-            
         } else {
             $sql = "SELECT count(*) cuenta FROM glpi_plugin_nebackup_networkequipments ";
             $sql .= "WHERE networkequipments_id = $networkequipments_id ";
