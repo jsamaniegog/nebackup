@@ -26,8 +26,8 @@ global $DB, $CFG_GLPI;
 include ("../../../inc/includes.php");
 
 if (!Session::haveRight("config", READ) or !isset($_GET['name'])) {
-    Session::addMessageAfterRedirect("No permission", false, ERROR);
+    Session::addMessageAfterRedirect(__("No permission"), false, ERROR);
     HTML::back();
 }
 
-Toolbox::sendFile(GLPI_ROOT . "/files/_cache/nebackup.tmp", $_GET['name']);
+Toolbox::sendFile(GLPI_ROOT . "/files/_cache/nebackup_" . $_GET['name'] . ".tmp", $_GET['name']);

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-09 13:12+0100\n"
-"PO-Revision-Date: 2017-01-09 13:12+0100\n"
+"POT-Creation-Date: 2017-01-18 10:39+0100\n"
+"PO-Revision-Date: 2017-01-18 10:41+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -33,6 +33,10 @@ msgstr "Error al guardar"
 msgid "Configuration saved"
 msgstr "Configuración guardada"
 
+#: front/download.form.php:29
+msgid "No permission"
+msgstr "No autorizado"
+
 #: inc/config.class.php:42
 msgid "NEBackup"
 msgstr "NEBackup"
@@ -57,23 +61,39 @@ msgstr "Configuración de NEBackup"
 msgid "Backup interval: "
 msgstr "Intervalo de copia de seguridad:"
 
-#: inc/config.class.php:99
-msgid "Root path in TFTP server (without initial \"/\"): "
-msgstr "Ruta raíz en el servidor TFTP (sin la barra inicial \"/\"): "
+#: inc/config.class.php:100
+msgid "Root path in TFTP server: "
+msgstr "Ruta raíz en el servidor TFTP: "
+
+#: inc/config.class.php:101
+msgid "(Default: \"backup/{entity}\")"
+msgstr "(Por defecto: \"backup/{entity}\")"
 
 #: inc/config.class.php:102
+msgid ""
+"(Tags: \"{entity}\": the name of the entity, \"{manufacturer}\": "
+"manufacturer tag like cisco, hpprocurve, etc.)"
+msgstr ""
+"(Etiquetas: \"{entity}\": el nombre de la entidad, \"{manufacturer}\": "
+"etiqueta del fabricante como cisco, hpprocurve, etc.)"
+
+#: inc/config.class.php:106
 msgid "Select type to switch backup: "
 msgstr "Selecciona el tipo para la copia de seguridad de switches:"
 
-#: inc/config.class.php:113
+#: inc/config.class.php:115
+msgid "Manufacturers"
+msgstr "Fabricantes"
+
+#: inc/config.class.php:118
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:113
+#: inc/config.class.php:118
 msgid " network equipments: "
 msgstr " en la electrónica de red"
 
-#: inc/config.class.php:147
+#: inc/config.class.php:152
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -81,7 +101,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:147
+#: inc/config.class.php:152
 msgid "Entities"
 msgstr "Entidades"
 
@@ -118,7 +138,7 @@ msgstr "Tarea NEBackup"
 msgid "Network Equipment"
 msgstr "Equipamiento de Red"
 
-#: inc/networkequipment.class.php:104 inc/networkequipment.class.php:159
+#: inc/networkequipment.class.php:104 inc/networkequipment.class.php:162
 msgid "Backup"
 msgstr "Copia de Seguridad"
 
@@ -128,53 +148,59 @@ msgstr ""
 "No hay copia de seguridad para este fabricante, actualmente solo se soportan "
 "estos: "
 
-#: inc/networkequipment.class.php:123
+#: inc/networkequipment.class.php:126
 msgid "No backup configured for this entity."
 msgstr "No hay copia de seguridad configurada para esta entidad."
 
-#: inc/networkequipment.class.php:127
+#: inc/networkequipment.class.php:130
 msgid "Database Error"
 msgstr "Error de la base de datos"
 
-#: inc/networkequipment.class.php:145
+#: inc/networkequipment.class.php:148
 msgid "TFTP server "
 msgstr "Servidor TFTP"
 
-#: inc/networkequipment.class.php:162
+#: inc/networkequipment.class.php:165
 msgid "File: "
 msgstr "Archivo: "
 
-#: inc/networkequipment.class.php:171
+#: inc/networkequipment.class.php:174
 msgid "Last run: "
 msgstr "Última ejecución: "
 
-#: inc/networkequipment.class.php:173
+#: inc/networkequipment.class.php:176
 msgid "Install TFTP client on server to view the backup file"
 msgstr ""
 "Instalar cliente TFTP en el servidor para ver el fichero de copia de "
 "seguridad"
 
-#: inc/networkequipment.class.php:177
+#: inc/networkequipment.class.php:180
 msgid "Transfer timed out, check if your TFTP server is up."
 msgstr ""
 "Tiempo de espera de la transferencia agotado, comprueba si tu servidor TFTP "
 "está activo."
 
-#: inc/networkequipment.class.php:181
+#: inc/networkequipment.class.php:184
 msgid "Backup file not found."
 msgstr "Fichero de copia de seguridad no encontrado."
 
-#: inc/networkequipment.class.php:242
+#: inc/networkequipment.class.php:245
 msgid "Configuration of the SNMP authentication"
 msgstr "Configuración de la autentificación SNMP"
 
-#: inc/networkequipment.class.php:247
+#: inc/networkequipment.class.php:250
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:255
+#: inc/networkequipment.class.php:258
 msgid "Update"
 msgstr "Actualizar"
+
+#~ msgid "(Default: \"backup/{manufacturer}/{entitie}\")"
+#~ msgstr "(Por defecto: \"backup/{manufacturer}/{entitie}\")"
+
+#~ msgid "Root path in TFTP server (without initial \"/\"): "
+#~ msgstr "Ruta raíz en el servidor TFTP (sin la barra inicial \"/\"): "
 
 #~ msgid "SNMP authentication (READ/WRITE community)"
 #~ msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA)"

@@ -113,7 +113,10 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
 
         // first check if we have a record and if type and manufacturer match
-        $query = "SELECT nee.tftp_server, e.name entity_name ";
+        $query = "SELECT nee.tftp_server, e.name entity_name, ";
+        $query .= "(SELECT REPLACE(type, '_manufacturers_id', '')";
+        $query .= " FROM glpi_plugin_nebackup_configs";
+        $query .= " WHERE type like '%_manufacturers_id' AND value = " . $datos->fields['manufacturers_id'] . ") as manufacturer ";
         $query .= "FROM glpi_plugin_nebackup_entities nee, glpi_entities e ";
         $query .= "WHERE nee.entities_id = e.id AND nee.entities_id = " . $datos->fields['entities_id'];
         if ($result = $DB->query($query)) {
@@ -135,7 +138,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
 
         // local path to temporal file
-        $tmp_file = GLPI_ROOT . "/files/_cache/nebackup.tmp";
+        $tmp_file = GLPI_ROOT . "/files/_cache/nebackup_" . $datos->fields['name'] . ".tmp";
 
         // remove the temporal file if exists
         unlink($tmp_file);
@@ -146,13 +149,13 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         } else {
 
             // get the file from tftp
-            $remote_path = PluginNebackupConfig::getBackupPath() . '/' . $result['entity_name'] . '/' . PluginNebackupBackup::escapeNameToTftp($datos->fields['name']);
+            $remote_path = PluginNebackupConfig::getBackupPath(true, $result['manufacturer'], $result['entity_name']) . '/' . PluginNebackupBackup::escapeNameToTftp($datos->fields['name']);
             $command = 'tftp ' . $result['tftp_server'] . ' -c get "' . $remote_path . '"';
             $command_result = `$command`;
 
             if (!$command_result) {
                 // move file to files directory
-                $command = "mv " . $datos->fields['name'] . " " . GLPI_ROOT . "/files/_cache/nebackup.tmp";
+                $command = "mv " . $datos->fields['name'] . " " . $tmp_file;
                 `$command`;
 
                 if (file_exists($tmp_file)) {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-INSERT INTO `glpi`.`glpi_plugin_nebackup_configs`(type, value) VALUES ('backup_path', 'backup');
+INSERT INTO `glpi`.`glpi_plugin_nebackup_configs`(type, value) VALUES ('backup_path', 'backup/{entitie}');
 CREATE TABLE `glpi`.`glpi_plugin_nebackup_networkequipments` (
         `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `networkequipments_id` int(11) NOT NULL UNIQUE,

@@ -24,7 +24,7 @@ class PluginNebackupConfig extends CommonDBTM {
     /**
      * SUPPORTED MANUFACTURERS by the plugin
      */
-    const SUPPORTED_MANUFACTURERS = "cisco";
+    const SUPPORTED_MANUFACTURERS = "cisco,hpprocurve";
     /**
      * Time that the scripts wait
      */
@@ -96,8 +96,12 @@ class PluginNebackupConfig extends CommonDBTM {
         $cron = new CronTask();
         $cron->dropdownFrequency('backup_interval', self::getBackupInterval());
         echo "</td></tr>";
-        echo "<td>" . __('Root path in TFTP server (without initial "/"): ', 'nebackup') . "</td>";
+        echo "<tr>";
+        echo "<td>" . __('Root path in TFTP server: ', 'nebackup');
+        echo "<br>" . __('(Default: "backup/{entity}")', 'nebackup');
+        echo "<br>" . __('(Tags: "{entity}": the name of the entity, "{manufacturer}": manufacturer tag like cisco, hpprocurve, etc.)', 'nebackup') . "</td>";
         echo "<td>" . HTML::input('backup_path', array('value'=>$this->getBackupPath())) . "</td>";
+        echo "</tr>";
         echo "<tr class='tab_bg_2'>";
         echo "<td>" . __('Select type to switch backup: ', 'nebackup') . "</td>";
         echo "<td colspan='3'>";
@@ -108,9 +112,10 @@ class PluginNebackupConfig extends CommonDBTM {
                 'value' => $this->getNetworkEquipmentTypeId()
             ));
         echo "</td></tr>";
+        echo "<tr><td colspan=4><br><h3>" . __('Manufacturers', 'nebackup') . "</h2><td><tr>";
         foreach (PluginNebackupConfig::getSupportedManufacturerArray() as $i => $v) {
             echo "<tr class='tab_bg_2'>";
-            echo "<td>" . __('Select manufacturer for ', "nebackup") . $v . __(' network equipments: ', 'nebackup') . "</td>";
+            echo "<td>" . __('Select manufacturer for ', "nebackup") . "'$v'" . __(' network equipments: ', 'nebackup') . "</td>";
             echo "<td colspan='3'>";
             /*array of possible options:
              * - name : string / name of the select (default is depending itemtype)     
@@ -250,9 +255,17 @@ class PluginNebackupConfig extends CommonDBTM {
     public function setManufacturerId($manufacturer, $manufacturer_id) {
         global $DB;
         
-        $query = "UPDATE `glpi_plugin_nebackup_configs` ";
-        $query .= "SET value = '" . $manufacturer_id . "' ";
-        $query .= "WHERE type = '" . $manufacturer . "_manufacturers_id'";
+        $query = "SELECT id FROM glpi_plugin_nebackup_configs WHERE type = '" . $manufacturer . "_manufacturers_id'";
+        if ($result = $DB->query($query)) {
+            if ($DB->fetch_assoc($result)) {
+                $query = "UPDATE `glpi_plugin_nebackup_configs` ";
+                $query .= "SET value = '" . $manufacturer_id . "' ";
+                $query .= "WHERE type = '" . $manufacturer . "_manufacturers_id'";
+            } else {
+                $query = "INSERT INTO glpi_plugin_nebackup_configs(type, value) ";
+                $query .= "VALUES('" . $manufacturer . "_manufacturers_id', $manufacturer_id)";
+            }
+        }
         
         return $DB->query($query);
     }
@@ -276,15 +289,25 @@ class PluginNebackupConfig extends CommonDBTM {
     /**
      * Return backup path.
      * @global type $DB
+     * @param boolean $format return configured path if false, else is formatted 
+     * with $manufacturer and $entity params
+     * @param String $manufacturer
+     * @param String $entity
      * @return boolean|int Return id of manufacturer. If don't exist return false.
      */
-    static public function getBackupPath() {
+    static public function getBackupPath($format = false, $manufacturer = null, $entity = null) {
         global $DB;
         
         $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'backup_path'";
         
         if ($result = $DB->query($query)) {
             $row = $result->fetch_assoc(); // cogemos el primero
+            
+            if ($format and $manufacturer and $entity) {
+                $row['value'] = str_replace("{manufacturer}", $manufacturer, $row['value']);
+                $row['value'] = str_replace("{entity}", $entity, $row['value']);
+            }
+                
             return $row['value'];
         }
         

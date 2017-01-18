@@ -105,38 +105,49 @@ class PluginNebackupBackup {
                     sleep(PluginNebackupConfig::SECONDS_TO_WAIT_FOR_FINISH);
                 }
 
-                $resultado_comando = self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
+                $command_result = self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
 
-                // si el resultado no es el esperado continuamos con el 
-                // siguiente ya que ha habido un error
-                // los estados para el script 2 son: 1:waiting, 2:running, 3:successful, 4:failed;
-                if (preg_match('/' . $rannum . ' = INTEGER/', $resultado_comando) == 0
-                    or ( $num_script == 2
-                    and preg_match('/' . $rannum . ' = INTEGER: 4/', $resultado_comando) != 0)) {
-                    Toolbox::logDebug();
-                    break;
-                }
+                switch ($manufacturer) {
+                    case 'cisco':
+                        // si el resultado no es el esperado continuamos con el 
+                        // siguiente ya que ha habido un error
+                        // los estados para el script 2 son: 1:waiting, 2:running, 3:successful, 4:failed;
+                        if (preg_match('/' . $rannum . ' = INTEGER/', $command_result) == 0
+                            or ( $num_script == 2
+                            and preg_match('/' . $rannum . ' = INTEGER: 4/', $command_result) != 0)) {
+                            Toolbox::logDebug();
+                            break;
+                        }
 
-                switch ($num_script) {
-                    case 1:
-                        $num_script = 2;
-                        break;
+                        switch ($num_script) {
+                            case 1:
+                                $num_script = 2;
+                                break;
 
-                    case 2:
-                        // si la copia ha terminado o se ha superado el timeout
-                        if (preg_match('/INTEGER: 3/', $resultado_comando) != 0 || (time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
-                            $num_script = 3;
-                            // ejecutamos el script número 3
-                            self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
-                        } else {
-                            $num_script = 2;
+                            case 2:
+                                // si la copia ha terminado o se ha superado el timeout
+                                if (preg_match('/INTEGER: 3/', $command_result) != 0 || (time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
+                                    $num_script = 3;
+                                    // ejecutamos el script número 3
+                                    self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
+                                } else {
+                                    $num_script = 2;
+                                }
+                                break;
                         }
                         break;
+                        
+                    case 'hpprocurve':
+                        $num_script = 3;
+                        break;
+                    
+                    default: $num_script = 3;
                 }
+                
             } while ($num_script != 3);
         }
     }
-
+    
     /**
      * Ejecuta el script de copia y retorna el resultado.
      * @param type $num_script script number: 1 => init, 2 => ask for finish, 3 => close
@@ -147,13 +158,9 @@ class PluginNebackupBackup {
      * @param type $tftp_passwd Password of the tftp server
      * @return type
      */
-    static private
-        function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
-        // La llamada al script debe ser así: 
-        // `copia_swX.sh $hostname $ip $rannum $tftp_server $tftp_passwd`
-
+    static private function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
         $host = self::escapeNameToTftp($host);
-        $host = PluginNebackupConfig::getBackupPath() . '/' . $entitie_name . '/' . $host;
+        $host = PluginNebackupConfig::getBackupPath(true, $manufacturer, $entitie_name) . '/' . $host;
         $tftp_server = gethostbyname($tftp_server);
 
         $comando = "sh " . GLPI_ROOT . "/plugins/nebackup/commands/nebackup_" . $manufacturer . "_$num_script.sh $host $ip $rannum $tftp_server $tftp_passwd";
