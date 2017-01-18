@@ -3,7 +3,7 @@ Plugin para GLPI
 
 Este complemento permite realizar copias de las configuraciones del equipamiento de red a un servidor TFTP y posteriormente descargarlas dese GLPI.
 
-Actualmente solo soporta switches cisco.
+Actualmente solo soporta switches cisco. HP Procurve es soportado desde v2.0.0 con conexión telnet.
 
 Consulta https://github.com/jsamaniegog/nebackup/wiki para mas información.
 
