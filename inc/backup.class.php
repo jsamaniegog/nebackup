@@ -40,34 +40,32 @@ class PluginNebackupBackup {
         $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer);
 
         foreach ($ne_to_backup as $reg) {
-            
-            if (PluginNebackupConfig::DEBUG_NEBACKUP) 
+
+            if (PluginNebackupConfig::DEBUG_NEBACKUP)
                 Toolbox::logInFile("nebackup", "Start copy: " . print_r($reg, true));
-            
+
             // datos de conexión al servidor tftp (es el mismo para todos los registros)
             $tftp_server = $reg['tftp_server'];
-            
+
             // only snmp v2c
             if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
                 continue;
             }
-            
+
             // si el plugin fusioninventory está activado tomamos los datos de 
             // sus tablas para la comunidad snmp
             if (isset($reg['community'])) {
                 $reg['tftp_passwd'] = $reg['community'];
 
                 $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
-                
+
                 if (!self::checkTftpServerAlive($tftp_server)) {
                     continue;
                 }
-                
             } else {
                 // todo: quitar esta particularidad cuando se encuentre un modo mejor que el telnet
                 if ($manufacturer == 'hpprocurve') {
                     $tftp_passwd = escapeshellcmd($reg['telnet_passwd']);
-
                 } else {
                     $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
                 }
@@ -77,11 +75,11 @@ class PluginNebackupBackup {
                     return;
                 }
             }
-            
+
             if ($tftp_passwd == '') {
                 continue;
             }
-            
+
             // to control the timeout
             $start_time = time();
 
@@ -126,9 +124,12 @@ class PluginNebackupBackup {
                         if (preg_match('/' . $rannum . ' = INTEGER/', $command_result) == 0
                             or ( $num_script == 2
                             and preg_match('/' . $rannum . ' = INTEGER: 4/', $command_result) != 0)) {
-                            //Toolbox::logDebug();
-                            if (PluginNebackupConfig::DEBUG_NEBACKUP) 
-                                Toolbox::logInFile("nebackup", "Error: the switch returned status failed");
+                            
+                            $num_script = 3;
+                            
+                            if (PluginNebackupConfig::DEBUG_NEBACKUP)
+                                Toolbox::logInFile("nebackup", "Error: the switch returned status failed\r");
+                            
                             break;
                         }
 
@@ -149,29 +150,28 @@ class PluginNebackupBackup {
                                 break;
                         }
                         break;
-                        
+
                     case 'hpprocurve':
                         $num_script = 3;
                         break;
-                    
+
                     default: $num_script = 3;
                 }
-                
-                
+
+
                 // timeout control
                 if ((time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
                     $num_script = 3;
                     // ejecutamos el script número 3
                     self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
                 }
-                
             } while ($num_script != 3);
-            
-            if (PluginNebackupConfig::DEBUG_NEBACKUP) 
+
+            if (PluginNebackupConfig::DEBUG_NEBACKUP)
                 Toolbox::logInFile("nebackup", "Finish copy: " . print_r($reg, true));
         }
     }
-    
+
     /**
      * Ejecuta el script de copia y retorna el resultado.
      * @param type $num_script script number: 1 => init, 2 => ask for finish, 3 => close
@@ -183,9 +183,9 @@ class PluginNebackupBackup {
      * @return type
      */
     static private function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
-        if (PluginNebackupConfig::DEBUG_NEBACKUP) 
+        if (PluginNebackupConfig::DEBUG_NEBACKUP)
             Toolbox::logInFile("nebackup", "Script: " . "nebackup_" . $manufacturer . "_$num_script.sh\r");
-        
+
         $host = self::escapeNameToTftp($host);
         $host = PluginNebackupConfig::getBackupPath(true, $manufacturer, $entitie_name) . '/' . $host;
         $tftp_server = gethostbyname($tftp_server);
