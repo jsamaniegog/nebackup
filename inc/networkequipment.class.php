@@ -204,7 +204,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         $toreturn = array();
 
         $use_fusioninventory = PluginNebackupConfig::getUseFusionInventory();
-        
+
         $sql = "SELECT n.id, n.name, ip.name as ip, nee.tftp_server, nee.tftp_passwd, nee.telnet_passwd, e.name entitie_name ";
         if ($plugin->isActivated("fusioninventory") and $use_fusioninventory == 1) {
             $sql .= ", pfc.community, pfc.snmpversion ";
@@ -311,6 +311,72 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
 
         return $DB->query($sql);
+    }
+    
+    /**
+     * Set massive SNMP authentication.
+     * @param array $ids All ids to update
+     * @param int $plugin_fusioninventory_configsecurities_id ID of fusioninventory auth
+     */
+    static private function setSNMPAuthMassive($ma, $item, $ids, $plugin_fusioninventory_configsecurities_id) {
+        $pnne = new PluginNebackupNetworkEquipment();
+        
+        foreach ($ids as $id) {
+            try {
+                if (!$pnne->setSNMPAuth($id, $plugin_fusioninventory_configsecurities_id)) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                }
+            } catch (Exception $e) {
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+            }
+            
+            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+        }
+    }
+
+    /**
+     * Display form related to the massive action selected
+     *
+     * @param object $ma MassiveAction instance
+     * @return boolean
+     */
+    static function showMassiveActionsSubForm(MassiveAction $ma) {
+        $plugin = new Plugin();
+
+        if ($ma->getAction() == 'assignAuth'
+            and $plugin->isActivated("fusioninventory")
+            and PluginNebackupConfig::getUseFusionInventory() == 1) {
+
+            PluginFusioninventoryConfigSecurity::authDropdown();
+            echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
+            
+        } else {
+            echo __("You must activate the option", "nebackup") . " '" . __('Use FusionInventory SNMP authentication: ', 'nebackup') . "'";
+        }
+        
+        return true;
+    }
+
+    /**
+     * @since version 0.85
+     *
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
+     * */
+    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
+        
+        $itemtype = $item->getType();
+
+        switch ($ma->getAction()) {
+            case "assignAuth" :
+                switch ($itemtype) {
+                    case 'NetworkEquipment':
+                        self::setSNMPAuthMassive($ma, $item, $ids, $_POST['plugin_fusioninventory_configsecurities_id']);
+                        break;
+                    default: break;
+                }
+
+            default: break;
+        }
     }
 
 }
