@@ -37,6 +37,10 @@ class PluginNebackupConfig extends CommonDBTM {
      * Default tftp port 
      */
     const DEFAULT_PORT = 69;
+    /**
+     * For debug
+     */
+    const DEBUG_NEBACKUP = false;
     
     static function getTypeName($nb=0) {
         return __("NEBackup", "nebackup");
@@ -105,7 +109,7 @@ class PluginNebackupConfig extends CommonDBTM {
         
         $plugin = new Plugin();
         if ($plugin->isActivated("fusioninventory")) {
-            echo "<tr class='tab_bg_2'><td>" . __('Use FusionInventory SNMP authentication: ') . "</td>";
+            echo "<tr class='tab_bg_2'><td>" . __('Use FusionInventory SNMP authentication: ', 'nebackup') . "</td>";
             echo "<td>";
             Dropdown::showYesNo("use_fusioninventory", self::getUseFusionInventory());
             echo "</td></tr>";

@@ -40,6 +40,10 @@ class PluginNebackupBackup {
         $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer);
 
         foreach ($ne_to_backup as $reg) {
+            
+            if (PluginNebackupConfig::DEBUG_NEBACKUP) 
+                Toolbox::logInFile("nebackup", "Start copy: " . print_r($reg, true));
+            
             // datos de conexión al servidor tftp (es el mismo para todos los registros)
             $tftp_server = $reg['tftp_server'];
             
@@ -122,7 +126,9 @@ class PluginNebackupBackup {
                         if (preg_match('/' . $rannum . ' = INTEGER/', $command_result) == 0
                             or ( $num_script == 2
                             and preg_match('/' . $rannum . ' = INTEGER: 4/', $command_result) != 0)) {
-                            Toolbox::logDebug();
+                            //Toolbox::logDebug();
+                            if (PluginNebackupConfig::DEBUG_NEBACKUP) 
+                                Toolbox::logInFile("nebackup", "Error: the switch returned status failed");
                             break;
                         }
 
@@ -133,7 +139,7 @@ class PluginNebackupBackup {
 
                             case 2:
                                 // si la copia ha terminado o se ha superado el timeout
-                                if (preg_match('/INTEGER: 3/', $command_result) != 0 || (time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
+                                if (preg_match('/INTEGER: 3/', $command_result) != 0) {
                                     $num_script = 3;
                                     // ejecutamos el script número 3
                                     self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
@@ -151,7 +157,18 @@ class PluginNebackupBackup {
                     default: $num_script = 3;
                 }
                 
+                
+                // timeout control
+                if ((time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
+                    $num_script = 3;
+                    // ejecutamos el script número 3
+                    self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
+                }
+                
             } while ($num_script != 3);
+            
+            if (PluginNebackupConfig::DEBUG_NEBACKUP) 
+                Toolbox::logInFile("nebackup", "Finish copy: " . print_r($reg, true));
         }
     }
     
@@ -166,6 +183,9 @@ class PluginNebackupBackup {
      * @return type
      */
     static private function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
+        if (PluginNebackupConfig::DEBUG_NEBACKUP) 
+            Toolbox::logInFile("nebackup", "Script: " . "nebackup_" . $manufacturer . "_$num_script.sh\r");
+        
         $host = self::escapeNameToTftp($host);
         $host = PluginNebackupConfig::getBackupPath(true, $manufacturer, $entitie_name) . '/' . $host;
         $tftp_server = gethostbyname($tftp_server);
