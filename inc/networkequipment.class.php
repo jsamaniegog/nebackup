@@ -347,7 +347,11 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             and $plugin->isActivated("fusioninventory")
             and PluginNebackupConfig::getUseFusionInventory() == 1) {
 
-            PluginFusioninventoryConfigSecurity::authDropdown();
+            if (strstr(Plugin::getInfo('fusioninventory', 'version'), '0.90')) {
+                PluginFusioninventoryConfigSecurity::auth_dropdown();
+            } else {
+                PluginFusioninventoryConfigSecurity::authDropdown();
+            }
             echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
             
         } else {
