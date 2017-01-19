@@ -127,8 +127,8 @@ class PluginNebackupBackup {
                             
                             $num_script = 3;
                             
-                            if (PluginNebackupConfig::DEBUG_NEBACKUP)
-                                Toolbox::logInFile("nebackup", "Error: the switch returned status failed\r");
+                            //if (PluginNebackupConfig::DEBUG_NEBACKUP)
+                                Toolbox::logInFile("nebackup", "Error: the switch returned status failed\r" . print_r($reg, true));
                             
                             break;
                         }
