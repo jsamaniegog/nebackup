@@ -39,28 +39,10 @@ class PluginNebackupBackup {
     static private function backup($manufacturer) {
         $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer);
 
-        // datos de conexión al servidor tftp (es el mismo para todos los registros)
-        $tftp_server = $ne_to_backup[0]['tftp_server'];
-
-        // si el plugin fusioninventory NO está activado la comunidad SNMP es
-        // siempre la misma
-        if (!isset($ne_to_backup[0]['community'])) {
-            
-            if ($manufacturer == 'hpprocurve') {
-                $tftp_passwd = escapeshellcmd($ne_to_backup[0]['telnet_passwd']);
-                
-            } else {
-                $tftp_passwd = escapeshellcmd($ne_to_backup[0]['tftp_passwd']);
-            }
-            
-            
-            if (!self::checkTftpServerAlive($tftp_server, $tftp_passwd)) {
-                return;
-            }
-        }
-
-
         foreach ($ne_to_backup as $reg) {
+            // datos de conexión al servidor tftp (es el mismo para todos los registros)
+            $tftp_server = $reg['tftp_server'];
+            
             // only snmp v2c
             if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
                 continue;
@@ -73,11 +55,29 @@ class PluginNebackupBackup {
 
                 $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
                 
-                if (!self::checkTftpServerAlive($tftp_server, $tftp_passwd)) {
+                if (!self::checkTftpServerAlive($tftp_server)) {
                     continue;
                 }
-            }
+                
+            } else {
+                // todo: quitar esta particularidad cuando se encuentre un modo mejor que el telnet
+                if ($manufacturer == 'hpprocurve') {
+                    $tftp_passwd = escapeshellcmd($reg['telnet_passwd']);
 
+                } else {
+                    $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
+                }
+
+
+                if (!self::checkTftpServerAlive($tftp_server)) {
+                    return;
+                }
+            }
+            
+            if ($tftp_passwd == '') {
+                continue;
+            }
+            
             // to control the timeout
             $start_time = time();
 
