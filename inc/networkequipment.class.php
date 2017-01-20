@@ -21,6 +21,11 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Manage the part of nebackup in network equipments.
+ * 
+ * @author Javier Samaniego García <jsamaniegog@gmail.com>
+ */
 class PluginNebackupNetworkEquipment extends CommonDBTM {
 
     static $rightname = 'networkequipment';
@@ -159,19 +164,41 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                 `$command`;
 
                 if (file_exists($tmp_file)) {
-                    echo '<tr><td><h3>' . __("Backup", 'nebackup') . '</h3>';
+                    echo '<table>';
+                    echo '<tr><td colspan=2><h3>' . __("Backup", 'nebackup') . '</h3></td></tr>';
 
                     // link to download the file
-                    echo __('File: ', 'nebackup');
+                    echo '<tr><td>' . __('File: ', 'nebackup') . '</td><td>';
                     echo '<i>';
                     echo Html::link(
                         $datos->fields['name'], PluginNebackupDownload::getFormURL() . "?name=" . PluginNebackupBackup::escapeNameToTftp($datos->fields['name'])
                     );
-                    echo '</i>';
-
+                    echo '</i></td></tr>';
+                    
+                    // datetime of last good backup
+                    echo '<tr><td>' . __('File Date: ', 'nebackup') . '</td><td>';
+                    $logs = new PluginNebackupLogs();
+                    if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
+                        echo '<i>' . $logs->fields['datetime'] . '</i>';
+                    }
+                    echo '</td></tr>';
+                    
+                    // last run of cron task
                     $cron = new CronTask();
                     $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
-                    echo '<tr><td>' . __('Last run: ', 'nebackup') . '<i>' . $cron->fields['lastrun'] . '</i></td></tr>';
+                    echo '<tr><td>' . __('Last run: ', 'nebackup') . '</td><td>';
+                    echo '<i>' . $cron->fields['lastrun'] . '</i></td></tr>';
+                    
+                    // if error
+                    echo '<tr><td>' . __('Error: ', 'nebackup') . '</td><td>';
+                    if ($logs->fields['error'] != '') {
+                        echo "<b style='color:red;'>" . $logs->fields['error'] . "</b>";
+                    } else {
+                        echo '<i>' . __("No error", "nebackup") . '</i>';
+                    }
+                    echo '</td></tr>';
+                    
+                    echo '</table>';
                 } else {
                     echo '<b style="color:red;">' . __('Install TFTP client on server to view the backup file', 'nebackup') . "</b>";
                 }

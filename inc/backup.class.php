@@ -97,6 +97,8 @@ class PluginNebackupBackup {
             // acabado y el tercero la cierra
             $num_script = 1;
 
+            $error = ""; // inicializamos $error
+
             do {
                 if ($num_script == 1) {
                     // hacemos un ping para ver si está viva la ip
@@ -124,12 +126,27 @@ class PluginNebackupBackup {
                         if (preg_match('/' . $rannum . ' = INTEGER/', $command_result) == 0
                             or ( $num_script == 2
                             and preg_match('/' . $rannum . ' = INTEGER: 4/', $command_result) != 0)) {
-                            
+
                             $num_script = 3;
-                            
-                            //if (PluginNebackupConfig::DEBUG_NEBACKUP)
-                                Toolbox::logInFile("nebackup", "Error: the switch returned status failed\r" . print_r($reg, true));
-                            
+
+                            $error = __("the switch returned status failed", "nebackup");
+
+                            // add error log
+                            $logs = new PluginNebackupLogs();
+                            if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $reg['id'])) {
+                                $logs->fields['error'] = $error;
+                                $logs->updateInDB(array('datetime', 'error'));
+                            } else {
+                                $logs->add(array(
+                                    'error' => $error,
+                                    'networkequipments_id' => $reg['id']
+                                ));
+                            }
+
+                            // debug
+                            if (PluginNebackupConfig::DEBUG_NEBACKUP)
+                                Toolbox::logInFile("nebackup", "Error: $error\r" . print_r($reg, true));
+
                             break;
                         }
 
@@ -158,15 +175,32 @@ class PluginNebackupBackup {
                     default: $num_script = 3;
                 }
 
-
                 // timeout control
-                if ((time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
+                if ($num_script != 3 and ( time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
                     $num_script = 3;
+                    $error = __("timeout expired", "nebackup");
                     // ejecutamos el script número 3
                     self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
                 }
             } while ($num_script != 3);
 
+            // add datetime to log
+            if ($error == "") {
+                $logs = new PluginNebackupLogs();
+                if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $reg['id'])) {
+                    $logs->fields['datetime'] = date("Y-m-d H:i:s");
+                    $logs->fields['error'] = "NULL";
+                    $logs->updateInDB(array('datetime', 'error'));
+                } else {
+                    $logs->add(array(
+                        'datetime' => date("Y-m-d H:i:s"),
+                        'networkequipments_id' => $reg['id'],
+                        'error' => "NULL"
+                    ));
+                }
+            }
+
+            // debug
             if (PluginNebackupConfig::DEBUG_NEBACKUP)
                 Toolbox::logInFile("nebackup", "Finish copy: " . print_r($reg, true));
         }
