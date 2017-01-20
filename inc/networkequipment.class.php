@@ -175,17 +175,27 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                     );
                     echo '</i></td></tr>';
                     
+                    // For: last run of cron task, need before for style color
+                    $cron = new CronTask();
+                    $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
+
                     // datetime of last good backup
                     echo '<tr><td>' . __('File Date: ', 'nebackup') . '</td><td>';
                     $logs = new PluginNebackupLogs();
                     if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
-                        echo '<i>' . $logs->fields['datetime'] . '</i>';
+                        
+                        $t1 = strtotime($cron->fields['lastrun']);
+                        $t2 = strtotime($logs->fields['datetime']);
+                        $warn = (strtotime($cron->fields['lastrun']) > strtotime($logs->fields['datetime']))
+                            ? __("(Warning: File not copied at last run)", "nebackup")
+                            : "" ;
+                        
+                        echo "<i>" . $logs->fields['datetime'] . '</i> ' . $warn;
+                        
                     }
                     echo '</td></tr>';
                     
                     // last run of cron task
-                    $cron = new CronTask();
-                    $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
                     echo '<tr><td>' . __('Last run: ', 'nebackup') . '</td><td>';
                     echo '<i>' . $cron->fields['lastrun'] . '</i></td></tr>';
                     

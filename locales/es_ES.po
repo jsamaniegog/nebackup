@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-20 13:59+0100\n"
-"PO-Revision-Date: 2017-01-20 13:59+0100\n"
+"POT-Creation-Date: 2017-01-20 14:30+0100\n"
+"PO-Revision-Date: 2017-01-20 14:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -109,7 +109,7 @@ msgstr ""
 msgid "Timeout: "
 msgstr "Tiempo de espera: "
 
-#: inc/config.class.php:116 inc/networkequipment.class.php:395
+#: inc/config.class.php:116 inc/networkequipment.class.php:405
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
@@ -206,59 +206,63 @@ msgstr "Servidor TFTP"
 msgid "File: "
 msgstr "Archivo: "
 
-#: inc/networkequipment.class.php:179
+#: inc/networkequipment.class.php:183
 msgid "File Date: "
 msgstr "Fecha del archivo: "
 
-#: inc/networkequipment.class.php:189
+#: inc/networkequipment.class.php:190
+msgid "(Warning: File not copied at last run)"
+msgstr "(Alerta: archivo no copiado en la última ejecución)"
+
+#: inc/networkequipment.class.php:199
 msgid "Last run: "
 msgstr "Última ejecución: "
 
-#: inc/networkequipment.class.php:193
+#: inc/networkequipment.class.php:203
 msgid "Error: "
 msgstr "Error: "
 
-#: inc/networkequipment.class.php:197
+#: inc/networkequipment.class.php:207
 msgid "No error"
 msgstr "Sin errores"
 
-#: inc/networkequipment.class.php:202
+#: inc/networkequipment.class.php:212
 msgid "TFTP Server: "
 msgstr "Servidor TFTP: "
 
-#: inc/networkequipment.class.php:207
+#: inc/networkequipment.class.php:217
 msgid "Server path: "
 msgstr "Ruta del servidor: "
 
-#: inc/networkequipment.class.php:213
+#: inc/networkequipment.class.php:223
 msgid "Install TFTP client on server to view the backup file"
 msgstr ""
 "Instalar cliente TFTP en el servidor para ver el fichero de copia de "
 "seguridad"
 
-#: inc/networkequipment.class.php:217
+#: inc/networkequipment.class.php:227
 msgid "Transfer timed out, check if your TFTP server is up."
 msgstr ""
 "Tiempo de espera de la transferencia agotado, comprueba si tu servidor TFTP "
 "está activo."
 
-#: inc/networkequipment.class.php:221
+#: inc/networkequipment.class.php:231
 msgid "Backup file not found."
 msgstr "Fichero de copia de seguridad no encontrado."
 
-#: inc/networkequipment.class.php:284
+#: inc/networkequipment.class.php:294
 msgid "Configuration of the SNMP authentication"
 msgstr "Configuración de la autentificación SNMP"
 
-#: inc/networkequipment.class.php:289
+#: inc/networkequipment.class.php:299
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:304
+#: inc/networkequipment.class.php:314
 msgid "Update"
 msgstr "Actualizar"
 
-#: inc/networkequipment.class.php:395
+#: inc/networkequipment.class.php:405
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
 
