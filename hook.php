@@ -137,7 +137,12 @@ function plugin_nebackup_uninstall() {
     global $DB;
 
     //$tables = array("glpi_plugin_nebackup_profiles", "glpi_plugin_nebackup_configs", "glpi_plugin_nebackup_entities");
-    $tables = array("glpi_plugin_nebackup_configs", "glpi_plugin_nebackup_entities", "glpi_plugin_nebackup_networkequipments");
+    $tables = array(
+        "glpi_plugin_nebackup_configs",
+        "glpi_plugin_nebackup_entities",
+        "glpi_plugin_nebackup_networkequipments",
+        "glpi_plugin_nebackup_logs"
+    );
 
     foreach ($tables as $table) {
         $DB->query("DROP TABLE IF EXISTS `$table`;");
@@ -171,7 +176,7 @@ function plugin_item_purge_nebackup($params) {
  */
 function plugin_nebackup_MassiveActions($type) {
     $ma = array();
-    
+
     switch ($type) {
         case "NetworkEquipment":
             if (Session::haveRight('config', UPDATE)) {
@@ -180,20 +185,8 @@ function plugin_nebackup_MassiveActions($type) {
 
             break;
     }
-    
+
     return $ma;
 }
-
-/*function plugin_nebackup_MassiveActionsDisplay($options = array()) {
-    $table = $options['options']['table'];
-    $field = $options['options']['field'];
-    $linkfield = $options['options']['linkfield'];
-    return true;
-}
-
-function plugin_nebackup_MassiveActionsProcess($data) {
-    $var = $data;
-    //traitement effectuer a la validation du formulaire
-}*/
 
 ?>
