@@ -198,6 +198,16 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                     }
                     echo '</td></tr>';
                     
+                    // server
+                    echo '<tr><td>' . __('TFTP Server: ', 'nebackup') . '</td><td>';
+                    echo $result['tftp_server'];
+                    echo '</td></tr>';
+                    
+                    // server path
+                    echo '<tr><td>' . __('Server path: ', 'nebackup') . '</td><td>';
+                    echo $remote_path;
+                    echo '</td></tr>';
+                    
                     echo '</table>';
                 } else {
                     echo '<b style="color:red;">' . __('Install TFTP client on server to view the backup file', 'nebackup') . "</b>";

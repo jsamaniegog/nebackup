@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-20 10:24+0100\n"
-"PO-Revision-Date: 2017-01-20 10:26+0100\n"
+"POT-Creation-Date: 2017-01-20 13:29+0100\n"
+"PO-Revision-Date: 2017-01-20 13:30+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -41,11 +41,23 @@ msgstr "No autorizado"
 msgid "NEBackup - SNMP auth (R/W)"
 msgstr "NEBackup - Autentificación SNMP (L/E)"
 
-#: inc/backup.class.php:133
+#: inc/backup.class.php:53
+msgid "Only SNMP v2c is supported"
+msgstr "Solamente SNMP v2c es soportado"
+
+#: inc/backup.class.php:144
 msgid "the switch returned status failed"
 msgstr "el switch retornó estado: failed"
 
-#: inc/backup.class.php:182
+#: inc/backup.class.php:175
+msgid "Invalid password"
+msgstr "Contraseña inválida"
+
+#: inc/backup.class.php:177
+msgid "Unknown error"
+msgstr "Error desconocido"
+
+#: inc/backup.class.php:188
 msgid "timeout expired"
 msgstr "tiempo de espera agotado"
 
@@ -93,7 +105,7 @@ msgstr ""
 msgid "Timeout: "
 msgstr "Tiempo de espera: "
 
-#: inc/config.class.php:116 inc/networkequipment.class.php:385
+#: inc/config.class.php:116 inc/networkequipment.class.php:395
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
@@ -206,35 +218,43 @@ msgstr "Error: "
 msgid "No error"
 msgstr "Sin errores"
 
-#: inc/networkequipment.class.php:203
+#: inc/networkequipment.class.php:202
+msgid "TFTP Server: "
+msgstr "Servidor TFTP: "
+
+#: inc/networkequipment.class.php:207
+msgid "Server path: "
+msgstr "Ruta del servidor: "
+
+#: inc/networkequipment.class.php:213
 msgid "Install TFTP client on server to view the backup file"
 msgstr ""
 "Instalar cliente TFTP en el servidor para ver el fichero de copia de "
 "seguridad"
 
-#: inc/networkequipment.class.php:207
+#: inc/networkequipment.class.php:217
 msgid "Transfer timed out, check if your TFTP server is up."
 msgstr ""
 "Tiempo de espera de la transferencia agotado, comprueba si tu servidor TFTP "
 "está activo."
 
-#: inc/networkequipment.class.php:211
+#: inc/networkequipment.class.php:221
 msgid "Backup file not found."
 msgstr "Fichero de copia de seguridad no encontrado."
 
-#: inc/networkequipment.class.php:274
+#: inc/networkequipment.class.php:284
 msgid "Configuration of the SNMP authentication"
 msgstr "Configuración de la autentificación SNMP"
 
-#: inc/networkequipment.class.php:279
+#: inc/networkequipment.class.php:289
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:294
+#: inc/networkequipment.class.php:304
 msgid "Update"
 msgstr "Actualizar"
 
-#: inc/networkequipment.class.php:385
+#: inc/networkequipment.class.php:395
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
 

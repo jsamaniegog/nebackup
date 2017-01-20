@@ -49,6 +49,17 @@ class PluginNebackupBackup {
 
             // only snmp v2c
             if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
+                $logs = new PluginNebackupLogs();
+                $error = __("Only SNMP v2c is supported", "nebackup");
+                if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $reg['id'])) {
+                    $logs->fields['error'] = $error;
+                    $logs->updateInDB(array('datetime', 'error'));
+                } else {
+                    $logs->add(array(
+                        'networkequipments_id' => $reg['id'],
+                        'error' => $error
+                    ));
+                }
                 continue;
             }
 
@@ -145,7 +156,7 @@ class PluginNebackupBackup {
                                 break;
 
                             case 2:
-                                // si la copia ha terminado o se ha superado el timeout
+                                // si la copia ha terminado
                                 if (preg_match('/INTEGER: 3/', $command_result) != 0) {
                                     $num_script = 3;
                                     // ejecutamos el script número 3
@@ -158,7 +169,14 @@ class PluginNebackupBackup {
                         break;
 
                     case 'hpprocurve':
-                        $num_script = 3;
+                        $num_script = 3; // alwais because we can't control the finish with telnet script
+                        if (!preg_match("/#/", $command_result)) {  // "#" indica que hemos entrado en modo privilegiado
+                            if (preg_match("/Invalid password/", $command_result)) {
+                                $error = __("Invalid password", "nebackup");
+                            } else {
+                                $error = __("Unknown error", "nebackup");
+                            }
+                        }
                         break;
 
                     default: $num_script = 3;
