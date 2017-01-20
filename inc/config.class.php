@@ -46,7 +46,7 @@ class PluginNebackupConfig extends CommonDBTM {
     /**
      * For debug
      */
-    const DEBUG_NEBACKUP = false;
+    const DEBUG_NEBACKUP = true;
 
     static function getTypeName($nb = 0) {
         return __("NEBackup", "nebackup");

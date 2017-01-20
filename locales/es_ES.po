@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-20 13:29+0100\n"
-"PO-Revision-Date: 2017-01-20 13:30+0100\n"
+"POT-Creation-Date: 2017-01-20 13:59+0100\n"
+"PO-Revision-Date: 2017-01-20 13:59+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -45,19 +45,23 @@ msgstr "NEBackup - Autentificación SNMP (L/E)"
 msgid "Only SNMP v2c is supported"
 msgstr "Solamente SNMP v2c es soportado"
 
-#: inc/backup.class.php:144
+#: inc/backup.class.php:122
+msgid "The switch does not respond to the ping"
+msgstr "El switch no responde al ping"
+
+#: inc/backup.class.php:145
 msgid "the switch returned status failed"
 msgstr "el switch retornó estado: failed"
 
-#: inc/backup.class.php:175
+#: inc/backup.class.php:176
 msgid "Invalid password"
 msgstr "Contraseña inválida"
 
-#: inc/backup.class.php:177
+#: inc/backup.class.php:178
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: inc/backup.class.php:188
+#: inc/backup.class.php:189
 msgid "timeout expired"
 msgstr "tiempo de espera agotado"
 

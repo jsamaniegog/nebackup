@@ -119,6 +119,7 @@ class PluginNebackupBackup {
 
                     // Si encuentra esta cadena es que no ha recibido paquetes
                     if (preg_match('/0 received/', $comando) != 0) {
+                        $error = __("The switch does not respond to the ping", "nebackup") . ". IP: " . $ip;
                         break;
                     }
                 }
@@ -243,6 +244,8 @@ class PluginNebackupBackup {
         $tftp_server = gethostbyname($tftp_server);
 
         $comando = "sh " . GLPI_ROOT . "/plugins/nebackup/commands/nebackup_" . $manufacturer . "_$num_script.sh $host $ip $rannum $tftp_server $tftp_passwd";
+        if (PluginNebackupConfig::DEBUG_NEBACKUP)
+            Toolbox::logInFile("nebackup", "Comando ejecutado: $comando\r" . print_r($reg, true));
         $resultado = `$comando`;
 
         return $resultado;
