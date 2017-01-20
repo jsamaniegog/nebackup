@@ -50,6 +50,8 @@ try {
     
     $config->setUseFusionInventory($_POST['use_fusioninventory']);
     
+    $config->setTimeout($_POST['timeout']);
+    
     // save the manufacturer id for each suppoerted manufacturer
     foreach (explode(",", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) as $v) {
         if (isset($_POST[$v . '_manufacturers_id']) and is_numeric($_POST[$v . '_manufacturers_id'])) {

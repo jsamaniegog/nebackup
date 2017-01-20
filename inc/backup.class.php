@@ -82,6 +82,7 @@ class PluginNebackupBackup {
 
             // to control the timeout
             $start_time = time();
+            $timeout = PluginNebackupConfig::getTimeout();
 
             // hostname
             $host = $reg['name'];
@@ -131,18 +132,6 @@ class PluginNebackupBackup {
 
                             $error = __("the switch returned status failed", "nebackup");
 
-                            // add error log
-                            $logs = new PluginNebackupLogs();
-                            if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $reg['id'])) {
-                                $logs->fields['error'] = $error;
-                                $logs->updateInDB(array('datetime', 'error'));
-                            } else {
-                                $logs->add(array(
-                                    'error' => $error,
-                                    'networkequipments_id' => $reg['id']
-                                ));
-                            }
-
                             // debug
                             if (PluginNebackupConfig::DEBUG_NEBACKUP)
                                 Toolbox::logInFile("nebackup", "Error: $error\r" . print_r($reg, true));
@@ -176,7 +165,7 @@ class PluginNebackupBackup {
                 }
 
                 // timeout control
-                if ($num_script != 3 and ( time() - $start_time) > PluginNebackupConfig::SECONDS_TO_TIMEOUT) {
+                if ($num_script != 3 and ( time() - $start_time) > $timeout) {
                     $num_script = 3;
                     $error = __("timeout expired", "nebackup");
                     // ejecutamos el script número 3
@@ -185,8 +174,8 @@ class PluginNebackupBackup {
             } while ($num_script != 3);
 
             // add datetime to log
+            $logs = new PluginNebackupLogs();
             if ($error == "") {
-                $logs = new PluginNebackupLogs();
                 if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $reg['id'])) {
                     $logs->fields['datetime'] = date("Y-m-d H:i:s");
                     $logs->fields['error'] = "NULL";
@@ -196,6 +185,17 @@ class PluginNebackupBackup {
                         'datetime' => date("Y-m-d H:i:s"),
                         'networkequipments_id' => $reg['id'],
                         'error' => "NULL"
+                    ));
+                }
+            } else {
+                // add error log
+                if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $reg['id'])) {
+                    $logs->fields['error'] = $error;
+                    $logs->updateInDB(array('datetime', 'error'));
+                } else {
+                    $logs->add(array(
+                        'error' => $error,
+                        'networkequipments_id' => $reg['id']
                     ));
                 }
             }
