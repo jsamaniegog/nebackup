@@ -175,7 +175,7 @@ function plugin_nebackup_MassiveActions($type) {
     switch ($type) {
         case "NetworkEquipment":
             if (Session::haveRight('config', UPDATE)) {
-                $ma["PluginNebackupNetworkequipment" . MassiveAction::CLASS_ACTION_SEPARATOR . "assignAuth"] = __('NEBackup SNMP auth (R/W)', 'nebackup');
+                $ma["PluginNebackupNetworkequipment" . MassiveAction::CLASS_ACTION_SEPARATOR . "assignAuth"] = __('NEBackup - SNMP auth (R/W)', 'nebackup');
             }
 
             break;

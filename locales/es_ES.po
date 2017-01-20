@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-18 14:28+0100\n"
-"PO-Revision-Date: 2017-01-18 14:29+0100\n"
+"POT-Creation-Date: 2017-01-20 07:39+0100\n"
+"PO-Revision-Date: 2017-01-20 07:40+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -37,39 +37,43 @@ msgstr "Configuración guardada"
 msgid "No permission"
 msgstr "No autorizado"
 
-#: inc/config.class.php:42
+#: hook.php:178
+msgid "NEBackup - SNMP auth (R/W)"
+msgstr "NEBackup - Autentificación SNMP (L/E)"
+
+#: inc/config.class.php:46
 msgid "NEBackup"
 msgstr "NEBackup"
 
-#: inc/config.class.php:48
+#: inc/config.class.php:52
 msgid "NEBackup plugin"
 msgstr "Plugin NEBackup"
 
-#: inc/config.class.php:65
+#: inc/config.class.php:69
 msgid "nebackup"
 msgstr "nebackup"
 
-#: inc/config.class.php:68
+#: inc/config.class.php:72
 msgid "Backup of network equipments configuration"
 msgstr "Copia de seguridad de la configuración de equipos de red"
 
-#: inc/config.class.php:92
+#: inc/config.class.php:96
 msgid "NEBackup Setup"
 msgstr "Configuración de NEBackup"
 
-#: inc/config.class.php:94
+#: inc/config.class.php:98
 msgid "Backup interval: "
 msgstr "Intervalo de copia de seguridad:"
 
-#: inc/config.class.php:100
+#: inc/config.class.php:104
 msgid "Root path in TFTP server: "
 msgstr "Ruta raíz en el servidor TFTP: "
 
-#: inc/config.class.php:101
+#: inc/config.class.php:105
 msgid "(Default: \"backup/{entity}\")"
 msgstr "(Por defecto: \"backup/{entity}\")"
 
-#: inc/config.class.php:102
+#: inc/config.class.php:106
 msgid ""
 "(Tags: \"{entity}\": the name of the entity, \"{manufacturer}\": "
 "manufacturer tag like cisco, hpprocurve, etc.)"
@@ -77,27 +81,27 @@ msgstr ""
 "(Etiquetas: \"{entity}\": el nombre de la entidad, \"{manufacturer}\": "
 "etiqueta del fabricante como cisco, hpprocurve, etc.)"
 
-#: inc/config.class.php:108
+#: inc/config.class.php:112 inc/networkequipment.class.php:358
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
-#: inc/config.class.php:115
+#: inc/config.class.php:119
 msgid "Select type to switch backup: "
 msgstr "Selecciona el tipo para la copia de seguridad de switches:"
 
-#: inc/config.class.php:124
+#: inc/config.class.php:128
 msgid "Manufacturers"
 msgstr "Fabricantes"
 
-#: inc/config.class.php:127
+#: inc/config.class.php:131
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:127
+#: inc/config.class.php:131
 msgid " network equipments: "
 msgstr " en la electrónica de red"
 
-#: inc/config.class.php:161
+#: inc/config.class.php:165
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -105,7 +109,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:161
+#: inc/config.class.php:165
 msgid "Entities"
 msgstr "Entidades"
 
@@ -194,17 +198,21 @@ msgstr ""
 msgid "Backup file not found."
 msgstr "Fichero de copia de seguridad no encontrado."
 
-#: inc/networkequipment.class.php:245
+#: inc/networkequipment.class.php:247
 msgid "Configuration of the SNMP authentication"
 msgstr "Configuración de la autentificación SNMP"
 
-#: inc/networkequipment.class.php:250
+#: inc/networkequipment.class.php:252
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:265
+#: inc/networkequipment.class.php:267
 msgid "Update"
 msgstr "Actualizar"
+
+#: inc/networkequipment.class.php:358
+msgid "You must activate the option"
+msgstr "Debes activar la opción"
 
 #~ msgid "No backup for this manufacturer, currently only support these: "
 #~ msgstr ""
