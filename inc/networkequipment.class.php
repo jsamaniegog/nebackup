@@ -230,6 +230,21 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                 if (preg_match("/Error code 2/", $command_result)) {
                     echo '<b style="color:red;">' . __('Backup file not found.', 'nebackup') . '</b>';
                 }
+                
+                $logs = new PluginNebackupLogs();
+                if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
+                    // if error
+                    echo '<br><br>' . __('Error: ', 'nebackup');
+                    if ($logs->fields['error'] != '') {
+                        echo "<b style='color:red;'>" . $logs->fields['error'] . "</b>";
+                    } else {
+                        echo '<i>' . __("No error", "nebackup") . '</i>';
+                    }
+                    
+                } else {
+                    echo '<br><br>' . __('Error: ', 'nebackup');
+                    echo '<i>' . __("No error", "nebackup") . '</i>';
+                }
             }
         }
 
