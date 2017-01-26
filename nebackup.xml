@@ -49,11 +49,11 @@
       <license>GPL v2+</license>
       <tags>
          <es>
-            <tag>nebackup</tag>
-            <tag>redes</tag>
+            <tag>backup</tag>
+            <tag>red</tag>
          </es>
          <en>
-            <tag>nebackup</tag>
+            <tag>backup</tag>
             <tag>network</tag>
          </en>
       </tags>
