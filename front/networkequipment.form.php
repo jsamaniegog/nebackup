@@ -28,16 +28,24 @@ if (!Session::haveRight("config", UPDATE)) {
     echo __("Saving configuration...", 'nebackup');
 }
 
-try {
-    $config = new PluginNebackupNetworkEquipment();
+// update
+if (isset($_POST['update'])) {
+    try {
+        $config = new PluginNebackupNetworkEquipment();
 
-    $config->setSNMPAuth($_POST['networkequipments_id'], $_POST['plugin_fusioninventory_configsecurities_id']);
-    
-} catch (Exception $e) {
-    Session::addMessageAfterRedirect(__("Error on save", "nebackup"), false, ERROR);
-    HTML::back();
+        $config->setSNMPAuth($_POST['networkequipments_id'], $_POST['plugin_fusioninventory_configsecurities_id']);
+
+    } catch (Exception $e) {
+        Session::addMessageAfterRedirect(__("Error on save", "nebackup"), false, ERROR);
+        HTML::back();
+    }
+
+    Session::addMessageAfterRedirect(__("Configuration saved", "nebackup"), false, INFO);
 }
 
-Session::addMessageAfterRedirect(__("Configuration saved", "nebackup"), false, INFO);
+// update
+if (isset($_POST['backup'])) {
+    PluginNebackupBackup::backupNetworkEquipment($_POST['manufacturer'], $_POST['networkequipments_id']);
+}
 
 HTML::back();

@@ -28,7 +28,7 @@ class PluginNebackupBackup {
     }
 
     /**
-     * 
+     * Executed by cron.
      */
     static function cronNebackup() {
         foreach (explode(",", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) as $manufacturer) {
@@ -36,8 +36,23 @@ class PluginNebackupBackup {
         }
     }
 
-    static private function backup($manufacturer) {
-        $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer);
+    /**
+     * Backup one network equipment.
+     * @param type $manufacturer
+     * @param type $networkequipments_id
+     */
+    static public function  backupNetworkEquipment($manufacturer, $networkequipments_id) {
+        self::backup($manufacturer, $networkequipments_id);
+    }
+    
+    /**
+     * Backups all switches.
+     * @param nebackup_tag $manufacturer
+     * @param int $networkequipments_id ID of network equipment.
+     * @return type
+     */
+    static private function backup($manufacturer, $networkequipments_id = null) {
+        $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer, $networkequipments_id);
 
         foreach ($ne_to_backup as $reg) {
 

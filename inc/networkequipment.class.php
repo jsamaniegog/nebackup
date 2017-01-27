@@ -87,7 +87,8 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         $config = new PluginNebackupConfig();
         $config_data = array_values($config->find());
 
-        $manufacturer = false;
+        $manufacturer_supported = false;
+        $manufacturer;
         $type = false;
 
         foreach ($config_data as $key => $value) {
@@ -99,7 +100,8 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
             // si coincide el fabricante como uno de los soportados
             if (strstr($value['type'], "_manufacturers_id") and $datos->fields['manufacturers_id'] == $value['value']) {
-                $manufacturer = true;
+                $manufacturer = str_replace("_manufacturers_id", "", $value['type']);
+                $manufacturer_supported = true;
             }
         }
 
@@ -111,7 +113,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         echo '<tr class="tab_bg_1">';
         echo '<td>';
 
-        if ($manufacturer == false or $type == false) {
+        if ($manufacturer_supported == false or $type == false) {
             echo '<b style="color:red;">' . __('No backup configured or supported for this manufacturer, currently only support these: ', 'nebackup') . PluginNebackupConfig::SUPPORTED_MANUFACTURERS . '</b>';
             echo '</td></tr></table>';
             return false;
@@ -158,15 +160,16 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             $command = 'tftp ' . $result['tftp_server'] . ' -c get "' . $remote_path . '"';
             $command_result = `$command`;
 
+            // inicio tabla copia de seguridad (botón para realizar copias de seguridad del switch)
+            echo '<table>';
+            echo '<tr><td colspan=2><h3>' . __("Backup", 'nebackup') . '</h3></td></tr>';
+
             if (!$command_result) {
                 // move file to files directory
                 $command = "mv " . $datos->fields['name'] . " " . $tmp_file;
                 `$command`;
 
                 if (file_exists($tmp_file)) {
-                    echo '<table>';
-                    echo '<tr><td colspan=2><h3>' . __("Backup", 'nebackup') . '</h3></td></tr>';
-
                     // link to download the file
                     echo '<tr><td>' . __('File: ', 'nebackup') . '</td><td>';
                     echo '<i>';
@@ -174,7 +177,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                         $datos->fields['name'], PluginNebackupDownload::getFormURL() . "?name=" . PluginNebackupBackup::escapeNameToTftp($datos->fields['name'])
                     );
                     echo '</i></td></tr>';
-                    
+
                     // For: last run of cron task, need before for style color
                     $cron = new CronTask();
                     $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
@@ -183,22 +186,19 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                     echo '<tr><td>' . __('File Date: ', 'nebackup') . '</td><td>';
                     $logs = new PluginNebackupLogs();
                     if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
-                        
+
                         $t1 = strtotime($cron->fields['lastrun']);
                         $t2 = strtotime($logs->fields['datetime']);
-                        $warn = (strtotime($cron->fields['lastrun']) > strtotime($logs->fields['datetime']))
-                            ? __("(Warning: File not copied at last run)", "nebackup")
-                            : "" ;
-                        
+                        $warn = (strtotime($cron->fields['lastrun']) > strtotime($logs->fields['datetime'])) ? __("(Warning: File not copied at last run)", "nebackup") : "";
+
                         echo "<i>" . $logs->fields['datetime'] . '</i> ' . $warn;
-                        
                     }
                     echo '</td></tr>';
-                    
+
                     // last run of cron task
                     echo '<tr><td>' . __('Last run: ', 'nebackup') . '</td><td>';
                     echo '<i>' . $cron->fields['lastrun'] . '</i></td></tr>';
-                    
+
                     // if error
                     echo '<tr><td>' . __('Error: ', 'nebackup') . '</td><td>';
                     if ($logs->fields['error'] != '') {
@@ -207,58 +207,63 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                         echo '<i>' . __("No error", "nebackup") . '</i>';
                     }
                     echo '</td></tr>';
-                    
+
                     // server
                     echo '<tr><td>' . __('TFTP Server: ', 'nebackup') . '</td><td>';
                     echo $result['tftp_server'];
                     echo '</td></tr>';
-                    
+
                     // server path
                     echo '<tr><td>' . __('Server path: ', 'nebackup') . '</td><td>';
                     echo $remote_path;
                     echo '</td></tr>';
-                    
-                    echo '</table>';
                 } else {
-                    echo '<b style="color:red;">' . __('Install TFTP client on server to view the backup file', 'nebackup') . "</b>";
+                    echo '<tr><td><b style="color:red;">' . __('Install TFTP client on server to view the backup file', 'nebackup') . "</b></td></tr>";
                 }
             } else {
                 if (preg_match("/Transfer timed out/", $command_result)) {
-                    echo '<b style="color:red;">' . __('Transfer timed out, check if your TFTP server is up.', 'nebackup') . '</b>';
+                    echo '<tr><td><b style="color:red;">' . __('Transfer timed out, check if your TFTP server is up.', 'nebackup') . '</b></td></tr>';
                 }
 
                 if (preg_match("/Error code 2/", $command_result)) {
-                    echo '<b style="color:red;">' . __('Backup file not found.', 'nebackup') . '</b>';
+                    echo '<tr><td><b style="color:red;">' . __('Backup file not found.', 'nebackup') . '</b></td></tr>';
                 }
-                
+
                 $logs = new PluginNebackupLogs();
+                echo '<tr><td>';
                 if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
                     // if error
-                    echo '<br><br>' . __('Error: ', 'nebackup');
+                    echo __('Error: ', 'nebackup');
                     if ($logs->fields['error'] != '') {
                         echo "<b style='color:red;'>" . $logs->fields['error'] . "</b>";
                     } else {
                         echo '<i>' . __("No error", "nebackup") . '</i>';
                     }
-                    
                 } else {
-                    echo '<br><br>' . __('Error: ', 'nebackup');
+                    echo __('Error: ', 'nebackup');
                     echo '<i>' . __("No error", "nebackup") . '</i>';
                 }
+                echo '</td></tr>';
             }
+
+            echo '</table>';
+            
+            echo "</td></tr><tr><td align=center>";
+            echo $this->showFormBackup($datos, $manufacturer);
         }
 
-        echo '</td>';
-        echo '</tr>';
-        echo '</table>';
+        // finish table
+        echo '</td></tr></table>';
     }
 
     /**
      * Return an array of network equipments configured to backup.
      * @global type $DB
-     * @param type $type An supported network equipment. See: PluginNebackupConfig::SUPPORTED_MANUFACTURERS.
+     * @param nebackup_tag $manufacturer An supported network equipment. 
+     * See: PluginNebackupConfig::SUPPORTED_MANUFACTURERS.
+     * @param int $networkequipment_id ID of the networkequipment_id.
      */
-    static function getNetworkEquipmentsToBackup($manufacturer) {
+    static function getNetworkEquipmentsToBackup($manufacturer, $networkequipment_id = null) {
         global $DB;
 
         $plugin = new Plugin();
@@ -278,6 +283,9 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
 
         $sql .= "WHERE n.manufacturers_id = m.id AND m.id = (select value from glpi_plugin_nebackup_configs where type = '" . $manufacturer . "_manufacturers_id') ";
+
+        // filtro por id
+        $sql = (isset($networkequipment_id)) ? $sql . "AND n.id = " . $networkequipment_id . " " : $sql;
 
         $sql .= "AND np.itemtype = 'NetworkEquipment' AND n.id = np.items_id AND np.instantiation_type = 'NetworkPortAggregate' ";
         $sql .= "AND nn.itemtype = 'NetworkPort' AND np.id = nn.items_id ";
@@ -333,6 +341,20 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         Html::closeForm();
     }
 
+    /**
+     * Show the form to backup the switch
+     * is actived.
+     */
+    private function showFormBackup(CommonGLPI $item, $manufacturer) {
+        global $CFG_GLPI;
+
+        echo "<form name='form' method='post' action='" . $CFG_GLPI['root_doc'] . "/plugins/nebackup/front/networkequipment.form.php" . "'>";
+        echo Html::hidden('networkequipments_id', array('value' => $item->fields['id']));
+        echo Html::hidden('manufacturer', array('value' => $manufacturer));
+        echo "<input type='submit' name='backup' value=\"" . __('Backup', 'nebackup') . "\" class='submit' >";
+        Html::closeForm();
+    }
+
     private function getSNMPAuth($networkequipments_id) {
         global $DB;
 
@@ -374,7 +396,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
         return $DB->query($sql);
     }
-    
+
     /**
      * Set massive SNMP authentication.
      * @param array $ids All ids to update
@@ -382,7 +404,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
      */
     static private function setSNMPAuthMassive($ma, $item, $ids, $plugin_fusioninventory_configsecurities_id) {
         $pnne = new PluginNebackupNetworkEquipment();
-        
+
         foreach ($ids as $id) {
             try {
                 if (!$pnne->setSNMPAuth($id, $plugin_fusioninventory_configsecurities_id)) {
@@ -391,7 +413,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             } catch (Exception $e) {
                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
             }
-            
+
             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
         }
     }
@@ -415,11 +437,10 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
                 PluginFusioninventoryConfigSecurity::authDropdown();
             }
             echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
-            
         } else {
             echo __("You must activate the option", "nebackup") . " '" . __('Use FusionInventory SNMP authentication: ', 'nebackup') . "'";
         }
-        
+
         return true;
     }
 
@@ -429,7 +450,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
      * @see CommonDBTM::processMassiveActionsForOneItemtype()
      * */
     static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
-        
+
         $itemtype = $item->getType();
 
         switch ($ma->getAction()) {
