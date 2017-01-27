@@ -409,6 +409,17 @@ class PluginNebackupConfig extends CommonDBTM {
         return $DB->query($query);
     }
 
+    /**
+     * Returns an array with the config.
+     * @global type $DB
+     */
+    public static function getConfigData() {
+        global $DB;
+        $config = new PluginNebackupConfig();
+        $config_data = array_values($config->find());
+        return $config_data;
+    }
+
 }
 
 ?>

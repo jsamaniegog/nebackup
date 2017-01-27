@@ -46,10 +46,37 @@ class PluginNebackupBackup {
     }
     
     /**
-     * Backups all switches.
+     * Backup several network equipments.
+     * @param type $ma
+     * @param type $item
+     * @param type $ids
+     */
+    static public function backupNetworkEquipmentMassive($ma, $item, $ids) {
+        // esto evita realizar múltiples consultas iguales a la base de datos
+        $config_data = PluginNebackupConfig::getConfigData();
+
+        foreach ($ids as $id) {
+            $ne = new NetworkEquipment();
+            $ne->getFromDB($id);
+            $manufacturer = PluginNebackupNetworkEquipment::getManufacturerTag(
+                    $ne->fields['networkequipmenttypes_id'], $ne->fields['manufacturers_id']
+            );
+
+            if ($manufacturer !== false) {
+                self::backupNetworkEquipment(
+                    $manufacturer, $id
+                );
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+            } else {
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+            }
+        }
+    }
+    
+    /**
+     * Backups network equipments.
      * @param nebackup_tag $manufacturer
      * @param int $networkequipments_id ID of network equipment.
-     * @return type
      */
     static private function backup($manufacturer, $networkequipments_id = null) {
         $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer, $networkequipments_id);

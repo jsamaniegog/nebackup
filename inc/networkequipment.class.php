@@ -69,9 +69,48 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
     }
 
     /**
-     * Show this content into principal tab
+     * Devuelve el tag del fabricante. Consultar constante 
+     * PluginNebackupConfig::SUPPORTED_MANUFACTURERS.
+     * @global type $DB
+     * @param int $networkequipmenttypes_id
+     * @param int $manufacturers_id
+     * @param array $config_data Si se le pasa este argumento se evita buscar en
+     * la base de datos dicha información.
+     * @return boolean|nebackup_tag Devuelve false si no existe el TAG de
+     * ese fabricante y tipo.
      */
-    //static function showInfo($datos) {
+    public static function getManufacturerTag($networkequipmenttypes_id, $manufacturers_id, $config_data = null
+    ) {
+        if ($config_data == null) {
+            $config_data = PluginNebackupConfig::getConfigData();
+        }
+
+        $manufacturer = "";
+        $type = false;
+
+        foreach ($config_data as $key => $value) {
+            // si coincide el tipo
+            if ($value['type'] == 'networkequipmenttype_id'
+                and $networkequipmenttypes_id == $value['value']
+            ) {
+                $type = true;
+            }
+
+            // si coincide el fabricante como uno de los soportados
+            if (strstr($value['type'], "_manufacturers_id")
+                and $manufacturers_id == $value['value']
+            ) {
+                $manufacturer = str_replace("_manufacturers_id", "", $value['type']);
+            }
+        }
+
+        if ($type == true and $manufacturer != "") {
+            return $manufacturer;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Display form for service configuration
      *
@@ -84,26 +123,10 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
     function showForm(CommonGLPI $datos, $options = array()) {
         global $DB;
 
-        $config = new PluginNebackupConfig();
-        $config_data = array_values($config->find());
-
-        $manufacturer_supported = false;
-        $manufacturer;
-        $type = false;
-
-        foreach ($config_data as $key => $value) {
-            // si coincide el tipo
-            if ($value['type'] == 'networkequipmenttype_id'
-                and $datos->fields['networkequipmenttypes_id'] == $value['value']) {
-                $type = true;
-            }
-
-            // si coincide el fabricante como uno de los soportados
-            if (strstr($value['type'], "_manufacturers_id") and $datos->fields['manufacturers_id'] == $value['value']) {
-                $manufacturer = str_replace("_manufacturers_id", "", $value['type']);
-                $manufacturer_supported = true;
-            }
-        }
+        // get the manufacturer tag, if no exists the networkequipment is not supported or configured
+        $manufacturer = self::getManufacturerTag(
+                $datos->fields['networkequipmenttypes_id'], $datos->fields['manufacturers_id']
+        );
 
         // init table
         echo '<table class="tab_cadre_fixe" width="100%">';
@@ -113,7 +136,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         echo '<tr class="tab_bg_1">';
         echo '<td>';
 
-        if ($manufacturer_supported == false or $type == false) {
+        if ($manufacturer === false) {
             echo '<b style="color:red;">' . __('No backup configured or supported for this manufacturer, currently only support these: ', 'nebackup') . PluginNebackupConfig::SUPPORTED_MANUFACTURERS . '</b>';
             echo '</td></tr></table>';
             return false;
@@ -247,7 +270,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             }
 
             echo '</table>';
-            
+
             echo "</td></tr><tr><td align=center>";
             echo $this->showFormBackup($datos, $manufacturer);
         }
@@ -427,18 +450,22 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
     static function showMassiveActionsSubForm(MassiveAction $ma) {
         $plugin = new Plugin();
 
-        if ($ma->getAction() == 'assignAuth'
-            and $plugin->isActivated("fusioninventory")
-            and PluginNebackupConfig::getUseFusionInventory() == 1) {
+        if ($ma->getAction() == 'assignAuth') {
+            if (!$plugin->isActivated("fusioninventory")
+                and PluginNebackupConfig::getUseFusionInventory() != 1) {
 
+                echo __("You must activate the option", "nebackup") . " '" . __('Use FusionInventory SNMP authentication: ', 'nebackup') . "'";
+            }
             if (strstr(Plugin::getInfo('fusioninventory', 'version'), '0.90')) {
                 PluginFusioninventoryConfigSecurity::auth_dropdown();
             } else {
                 PluginFusioninventoryConfigSecurity::authDropdown();
             }
             echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
-        } else {
-            echo __("You must activate the option", "nebackup") . " '" . __('Use FusionInventory SNMP authentication: ', 'nebackup') . "'";
+        }
+
+        if ($ma->getAction() == 'backup') {
+            echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
         }
 
         return true;
@@ -452,13 +479,17 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
     static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
 
         $itemtype = $item->getType();
-
-        switch ($ma->getAction()) {
-            case "assignAuth" :
-                switch ($itemtype) {
-                    case 'NetworkEquipment':
+        switch ($itemtype) {
+            case 'NetworkEquipment':
+                switch ($ma->getAction()) {
+                    case "assignAuth":
                         self::setSNMPAuthMassive($ma, $item, $ids, $_POST['plugin_fusioninventory_configsecurities_id']);
                         break;
+
+                    case "backup":
+                        PluginNebackupBackup::backupNetworkEquipmentMassive($ma, $item, $ids);
+                        break;
+
                     default: break;
                 }
 
