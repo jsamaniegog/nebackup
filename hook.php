@@ -48,6 +48,42 @@ function plugin_nebackup_install() {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.0.0.sql");
     }
 
+    // actualización version => 2.1.0
+    if (TableExists("glpi_plugin_nebackup_logs")) {
+        $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.1.0.sql");
+
+        $n_template = new NotificationTemplate();
+        if (!$n_template->find("name = 'NEBackup errors'")) {
+            $n_template->add(array(
+                'name' => 'NEBackup errors',
+                'itemtype' => 'PluginNebackupBackup'
+            ));
+            $n_template = array_values($n_template->find("name = 'NEBackup Errors'"));
+            $n_templatetranslations = new NotificationTemplateTranslation();
+            $n_templatetranslations->add(array(
+                'notificationtemplates_id' => $n_template[0]['id'],
+                'subject' => PluginNebackupNotificationTargetBackup::getTemplateSubject("errors"),
+                'content_text' => PluginNebackupNotificationTargetBackup::getTemplateContent("errors"),
+                'content_html' => PluginNebackupNotificationTargetBackup::getTemplateContent("errors", true)
+            ));
+        }
+
+        $notification = new Notification();
+        if (!$notification->find("name = 'NEBackup errors'")) {
+            $notification->add(array(
+                'name' => 'NEBackup errors',
+                'entities_id' => '0',
+                'itemtype' => 'PluginNebackupBackup',
+                'event' => 'errors',
+                'mode' => 'mail',
+                'notificationtemplates_id' => $n_template[0]['id'],
+                'comment' => '',
+                'is_recursive' => 1,
+                'is_active' => 1
+            ));
+        }
+    }
+
     // Création de la table uniquement lors de la première installation
     /* if (!TableExists("glpi_plugin_nebackup_profiles")) {
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-27 08:53+0100\n"
-"PO-Revision-Date: 2017-01-27 08:53+0100\n"
+"POT-Creation-Date: 2017-01-30 14:50+0100\n"
+"PO-Revision-Date: 2017-01-30 14:51+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -37,37 +37,42 @@ msgstr "Configuración guardada"
 msgid "No permission"
 msgstr "No autorizado"
 
-#: hook.php:183
+#: hook.php:219
 msgid "NEBackup - SNMP auth (R/W)"
 msgstr "NEBackup - Autentificación SNMP (L/E)"
 
-#: hook.php:184
+#: hook.php:220
 msgid "NEBackup - Backup"
 msgstr "NEBackup - Copia de Seguridad"
 
-#: inc/backup.class.php:68
+#: inc/backup.class.php:27 inc/networkequipment.class.php:134
+#: inc/networkequipment.class.php:188 inc/networkequipment.class.php:377
+msgid "Backup"
+msgstr "Copia de Seguridad"
+
+#: inc/backup.class.php:143
 msgid "Only SNMP v2c is supported"
 msgstr "Solamente SNMP v2c es soportado"
 
-#: inc/backup.class.php:137
-msgid "The switch does not respond to the ping"
-msgstr "El switch no responde al ping"
+#: inc/backup.class.php:212
+msgid "The network equipment does not respond to the ping"
+msgstr "El equipo de red no responde al ping"
 
-#: inc/backup.class.php:160
-msgid "the switch returned status failed"
-msgstr "el switch retornó estado: failed"
+#: inc/backup.class.php:235
+msgid "The network equipment returned status failed"
+msgstr "El equipo de red ha devuelta estado failed"
 
-#: inc/backup.class.php:191
+#: inc/backup.class.php:266
 msgid "Invalid password"
 msgstr "Contraseña inválida"
 
-#: inc/backup.class.php:193
+#: inc/backup.class.php:268
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: inc/backup.class.php:204
-msgid "timeout expired"
-msgstr "tiempo de espera agotado"
+#: inc/backup.class.php:279
+msgid "Timeout expired"
+msgstr "Tiempo de espera agotado"
 
 #: inc/config.class.php:52
 msgid "NEBackup"
@@ -182,11 +187,6 @@ msgstr "Tarea NEBackup"
 msgid "Network Equipment"
 msgstr "Equipamiento de Red"
 
-#: inc/networkequipment.class.php:134 inc/networkequipment.class.php:188
-#: inc/networkequipment.class.php:377
-msgid "Backup"
-msgstr "Copia de Seguridad"
-
 #: inc/networkequipment.class.php:140
 msgid ""
 "No backup configured or supported for this manufacturer, currently only "
@@ -224,7 +224,7 @@ msgid "Last run: "
 msgstr "Última ejecución: "
 
 #: inc/networkequipment.class.php:226 inc/networkequipment.class.php:259
-#: inc/networkequipment.class.php:266
+#: inc/networkequipment.class.php:266 inc/notificationtargetbackup.class.php:51
 msgid "Error: "
 msgstr "Error: "
 
@@ -272,6 +272,35 @@ msgstr "Actualizar"
 #: inc/networkequipment.class.php:457
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
+
+#: inc/notificationtargetbackup.class.php:28
+msgid "Errors report"
+msgstr "Reporte de erroes"
+
+#: inc/notificationtargetbackup.class.php:42
+msgid "Errors"
+msgstr "Errores"
+
+#: inc/notificationtargetbackup.class.php:50
+msgid "Network Equipment Name: "
+msgstr "Nombre del equipo de red: "
+
+#: inc/notificationtargetbackup.class.php:52
+msgid "Date of last copy: "
+msgstr "Fecha de la última copia: "
+
+#: inc/notificationtargetbackup.class.php:56
+msgid "- Empty -"
+msgstr "- Vacio -"
+
+#~ msgid "The switch does not respond to the ping"
+#~ msgstr "El switch no responde al ping"
+
+#~ msgid "the switch returned status failed"
+#~ msgstr "el switch retornó estado: failed"
+
+#~ msgid "timeout expired"
+#~ msgstr "tiempo de espera agotado"
 
 #~ msgid "No backup for this manufacturer, currently only support these: "
 #~ msgstr ""

@@ -21,10 +21,10 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-class PluginNebackupBackup {
+class PluginNebackupBackup extends CommonDBTM {
 
-    public function getTypeName() {
-        return "nebackup";
+    static function getTypeName($nb = 0) {
+        return __('Backup', 'nebackup');
     }
 
     /**
@@ -34,6 +34,54 @@ class PluginNebackupBackup {
         foreach (explode(",", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) as $manufacturer) {
             self::backup($manufacturer);
         }
+
+        self::sendErrorsByMail();
+    }
+
+    static function sendErrorsByMail() {
+        global $DB;
+
+        $result = $DB->query(
+            "SELECT n.name as networkequipment_name, n.entities_id, l.* " 
+            . "FROM glpi_plugin_nebackup_logs l, glpi_networkequipments n, glpi_plugin_nebackup_entities e " 
+            . "WHERE l.networkequipments_id = n.id AND l.error is not null AND n.entities_id = e.entities_id" 
+            . " AND n.networkequipmenttypes_id = (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type = 'networkequipmenttype_id' LIMIT 1)" 
+            . " AND n.manufacturers_id in (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type like '%manufacturers_id')" 
+            . "ORDER BY n.entities_id ASC"
+        );
+
+        $buffer = array();
+
+        while ($error = $result->fetch_assoc()) {
+
+            // se envía notificación por entidad
+            if (!empty($buffer) and $error['entities_id'] != $previous_entity) {
+
+                self::raiseEventError($buffer, $previous_entity);
+
+                // reset buffer
+                $buffer = array();
+            }
+
+            $previous_entity = $error['entities_id'];
+
+            $buffer[] = $error;
+        }
+        
+        self::raiseEventError($buffer, $previous_entity);
+    }
+
+    /**
+     * 
+     * @param type $errors Array of errors from logs table.
+     * @param type $entity Entity ID.
+     */
+    private static function raiseEventError($errors, $entity) {
+        NotificationEvent::raiseEvent(
+            'errors'
+            , new PluginNebackupBackup()
+            , array('errors' => $errors, 'entities_id' => $entity)
+        );
     }
 
     /**
@@ -41,10 +89,10 @@ class PluginNebackupBackup {
      * @param type $manufacturer
      * @param type $networkequipments_id
      */
-    static public function  backupNetworkEquipment($manufacturer, $networkequipments_id) {
+    static public function backupNetworkEquipment($manufacturer, $networkequipments_id) {
         self::backup($manufacturer, $networkequipments_id);
     }
-    
+
     /**
      * Backup several network equipments.
      * @param type $ma
@@ -72,7 +120,7 @@ class PluginNebackupBackup {
             }
         }
     }
-    
+
     /**
      * Backups network equipments.
      * @param nebackup_tag $manufacturer
@@ -161,7 +209,7 @@ class PluginNebackupBackup {
 
                     // Si encuentra esta cadena es que no ha recibido paquetes
                     if (preg_match('/0 received/', $comando) != 0) {
-                        $error = __("The switch does not respond to the ping", "nebackup") . ". IP: " . $ip;
+                        $error = __("The network equipment does not respond to the ping", "nebackup") . ". IP: " . $ip;
                         break;
                     }
                 }
@@ -184,7 +232,7 @@ class PluginNebackupBackup {
 
                             $num_script = 3;
 
-                            $error = __("the switch returned status failed", "nebackup");
+                            $error = __("The network equipment returned status failed", "nebackup");
 
                             // debug
                             if (PluginNebackupConfig::DEBUG_NEBACKUP)
@@ -228,7 +276,7 @@ class PluginNebackupBackup {
                 // timeout control
                 if ($num_script != 3 and ( time() - $start_time) > $timeout) {
                     $num_script = 3;
-                    $error = __("timeout expired", "nebackup");
+                    $error = __("Timeout expired", "nebackup");
                     // ejecutamos el script número 3
                     self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
                 }
@@ -297,9 +345,9 @@ class PluginNebackupBackup {
      * Check if tftp server is alive.
      * @param type $tftp_server
      * @param type $tftp_passwd
+     * @return bool
      */
-    static private
-        function checkTftpServerAlive($tftp_server) {
+    static private function checkTftpServerAlive($tftp_server) {
         if (!$tftp_server)
             return false;
 

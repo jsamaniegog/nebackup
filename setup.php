@@ -43,6 +43,8 @@ function plugin_init_nebackup() {
         'NetworkEquipment' => array('PluginNebackupNetworkEquipment', 'showInfo')
     );
 
+    Plugin::registerClass('PluginNebackupBackup', array ('notificationtemplates_types'  => true));
+    
     // Display a menu entry ?
     /* $_SESSION["glpi_plugin_nebackup_profile"]['nebackup'] = 'w';
       if (isset($_SESSION["glpi_plugin_nebackup_profile"])) {
