@@ -58,13 +58,16 @@ function plugin_nebackup_install() {
                 'name' => 'NEBackup errors',
                 'itemtype' => 'PluginNebackupBackup'
             ));
-            $n_template = array_values($n_template->find("name = 'NEBackup Errors'"));
-            $n_templatetranslations = new NotificationTemplateTranslation();
+        }
+
+        $n_template = array_values($n_template->find("name = 'NEBackup Errors'"));
+        $n_templatetranslations = new NotificationTemplateTranslation();
+        if (!$n_templatetranslations->find("notificationtemplates_id = " . $n_template[0]['id'])) {
             $n_templatetranslations->add(array(
                 'notificationtemplates_id' => $n_template[0]['id'],
-                'subject' => PluginNebackupNotificationTargetBackup::getTemplateSubject("errors"),
-                'content_text' => PluginNebackupNotificationTargetBackup::getTemplateContent("errors"),
-                'content_html' => PluginNebackupNotificationTargetBackup::getTemplateContent("errors", true)
+                'subject' => getTemplateSubject("errors"),
+                'content_text' => getTemplateContent("errors"),
+                'content_html' => getTemplateContent("errors", true)
             ));
         }
 
@@ -224,6 +227,52 @@ function plugin_nebackup_MassiveActions($type) {
     }
 
     return $ma;
+}
+
+/**
+ * Return the subject of a notification template.
+ * @param type $template
+ * @return string Template.
+ */
+function getTemplateSubject($template) {
+    switch ($template) {
+        case "errors":
+            return "##nebackup.errors.subject##";
+            break;
+
+        default:
+            return "";
+            break;
+    }
+}
+
+/**
+ * Return the content of a notification template.
+ * @param type $template
+ * @param bool $html if it's true return content_html, else content_text (default)
+ * @return string Template.
+ */
+function getTemplateContent($template, $html = false) {
+    switch ($template) {
+        case "errors":
+            if ($html) {
+                return "&lt;p&gt;##FOREACHnebackup.errors##&lt;br"
+                    . " /&gt; ##lang.nebackup.networkequipment_name## ##nebackup.networkequipment_name## ##nebackup.url##&lt;br"
+                    . " /&gt; ##lang.nebackup.error## ##nebackup.error##&lt;br"
+                    . " /&gt; ##lang.nebackup.lastcopy## ##nebackup.lastcopy##&lt;/p&gt;"
+                    . "&lt;p&gt;##ENDFOREACHnebackup.errors##&lt;/p&gt;";
+            }
+            return "##FOREACHnebackup.errors##"
+                . "\n ##lang.nebackup.networkequipment_name## ##nebackup.networkequipment_name## ##nebackup.url##"
+                . "\n ##lang.nebackup.error## ##nebackup.error##"
+                . "\n ##lang.nebackup.lastcopy## ##nebackup.lastcopy##"
+                . "##ENDFOREACHnebackup.errors##";
+            break;
+
+        default:
+            return "";
+            break;
+    }
 }
 
 ?>

@@ -18,4 +18,4 @@
  * Author:  Javier Samaniego García <jsamaniegog@gmail.com>
  * Created: 27-ene-2017
  */
-ALTER TABLE `glpi.glpi_plugin_nebackup_logs` CHANGE `error` `error` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `glpi`.`glpi_plugin_nebackup_logs` CHANGE `error` `error` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
