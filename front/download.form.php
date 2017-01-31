@@ -25,8 +25,8 @@ global $DB, $CFG_GLPI;
 // Récupération du fichier includes de GLPI, permet l'accès au cœur
 include ("../../../inc/includes.php");
 
-if (!Session::haveRight("config", READ) or !isset($_GET['name'])) {
-    Session::addMessageAfterRedirect(__("No permission"), false, ERROR);
+if (!Session::haveRight("networking", READ) or !isset($_GET['name'])) {
+    Session::addMessageAfterRedirect(__("No permission", "nebackup"), false, ERROR);
     HTML::back();
 }
 

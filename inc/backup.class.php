@@ -41,14 +41,26 @@ class PluginNebackupBackup extends CommonDBTM {
     static function sendErrorsByMail() {
         global $DB;
 
-        $result = $DB->query(
-            "SELECT n.name as networkequipment_name, n.entities_id, l.* " 
-            . "FROM glpi_plugin_nebackup_logs l, glpi_networkequipments n, glpi_plugin_nebackup_entities e " 
-            . "WHERE l.networkequipments_id = n.id AND l.error is not null AND n.entities_id = e.entities_id" 
-            . " AND n.networkequipmenttypes_id = (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type = 'networkequipmenttype_id' LIMIT 1)" 
-            . " AND n.manufacturers_id in (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type like '%manufacturers_id')" 
-            . "ORDER BY n.entities_id ASC"
-        );
+        $plugin = new Plugin();
+        $use_fusioninventory = false;
+        if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
+            $use_fusioninventory = true;
+        }
+        
+        $sql = "SELECT n.name as networkequipment_name, n.entities_id, l.* ";
+        $sql .= "FROM glpi_plugin_nebackup_logs l, glpi_networkequipments n, glpi_plugin_nebackup_entities e ";
+        if ($use_fusioninventory) {
+            $sql .= ", glpi_plugin_nebackup_networkequipments pnn ";
+        }
+        $sql .= "WHERE l.networkequipments_id = n.id AND l.error is not null AND n.entities_id = e.entities_id";
+        $sql .= " AND n.networkequipmenttypes_id = (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type = 'networkequipmenttype_id' LIMIT 1)";
+        $sql .= " AND n.manufacturers_id in (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type like '%manufacturers_id')";
+        if ($use_fusioninventory) {
+            $sql .= " AND pnn.networkequipments_id = n.id ";
+        }
+        $sql .= "ORDER BY n.entities_id ASC";
+        
+        $result = $DB->query($sql);
 
         $buffer = array();
 

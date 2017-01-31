@@ -26,7 +26,7 @@ global $DB, $CFG_GLPI;
 include ("../../../inc/includes.php");
 
 if (!Session::haveRight("entity", UPDATE)) {
-    Session::addMessageAfterRedirect("No permission", false, ERROR);
+    Session::addMessageAfterRedirect(__("No permission", "nebackup"), false, ERROR);
     HTML::back();
 } else {
     echo __("Saving configuration...", 'nebackup');

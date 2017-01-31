@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-30 14:50+0100\n"
-"PO-Revision-Date: 2017-01-30 14:51+0100\n"
+"POT-Creation-Date: 2017-01-31 08:58+0100\n"
+"PO-Revision-Date: 2017-01-31 08:59+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -14,6 +14,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
+
+#: front/config.form.php:29 front/download.form.php:29 front/entity.form.php:29
+#: front/networkequipment.form.php:25
+msgid "No permission"
+msgstr "No autorizado"
 
 #: front/config.form.php:32 front/entity.form.php:32
 #: front/networkequipment.form.php:28
@@ -33,15 +38,11 @@ msgstr "Error al guardar"
 msgid "Configuration saved"
 msgstr "Configuración guardada"
 
-#: front/download.form.php:29
-msgid "No permission"
-msgstr "No autorizado"
-
-#: hook.php:219
+#: hook.php:222
 msgid "NEBackup - SNMP auth (R/W)"
 msgstr "NEBackup - Autentificación SNMP (L/E)"
 
-#: hook.php:220
+#: hook.php:223
 msgid "NEBackup - Backup"
 msgstr "NEBackup - Copia de Seguridad"
 
@@ -50,27 +51,27 @@ msgstr "NEBackup - Copia de Seguridad"
 msgid "Backup"
 msgstr "Copia de Seguridad"
 
-#: inc/backup.class.php:143
+#: inc/backup.class.php:151
 msgid "Only SNMP v2c is supported"
 msgstr "Solamente SNMP v2c es soportado"
 
-#: inc/backup.class.php:212
+#: inc/backup.class.php:220
 msgid "The network equipment does not respond to the ping"
 msgstr "El equipo de red no responde al ping"
 
-#: inc/backup.class.php:235
+#: inc/backup.class.php:243
 msgid "The network equipment returned status failed"
 msgstr "El equipo de red ha devuelta estado failed"
 
-#: inc/backup.class.php:266
+#: inc/backup.class.php:274
 msgid "Invalid password"
 msgstr "Contraseña inválida"
 
-#: inc/backup.class.php:268
+#: inc/backup.class.php:276
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: inc/backup.class.php:279
+#: inc/backup.class.php:287
 msgid "Timeout expired"
 msgstr "Tiempo de espera agotado"
 

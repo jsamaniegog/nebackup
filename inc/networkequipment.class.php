@@ -44,7 +44,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
         $array_ret = array();
         if ($item->getID() > -1) {
-            if (Session::haveRight("config", READ)) {
+            if (Session::haveRight("networking", READ)) {
                 $array_ret[0] = self::createTabEntry('NEBackup');
             }
         }
