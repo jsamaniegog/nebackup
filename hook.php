@@ -43,68 +43,6 @@ function plugin_nebackup_install() {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-1.0.0.sql");
     }
 
-    // actualización version => 2.0.0
-    if (TableExists("glpi_plugin_nebackup_configs")) {
-        $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.0.0.sql");
-    }
-
-    // actualización version => 2.1.0
-    if (TableExists("glpi_plugin_nebackup_logs")) {
-        $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.1.0.sql");
-
-        $n_template = new NotificationTemplate();
-        if (!$n_template->find("name = 'NEBackup errors'")) {
-            $n_template->add(array(
-                'name' => 'NEBackup errors',
-                'itemtype' => 'PluginNebackupBackup'
-            ));
-        }
-
-        $n_template = array_values($n_template->find("name = 'NEBackup Errors'"));
-        $n_templatetranslations = new NotificationTemplateTranslation();
-        if (!$n_templatetranslations->find("notificationtemplates_id = " . $n_template[0]['id'])) {
-            $n_templatetranslations->add(array(
-                'notificationtemplates_id' => $n_template[0]['id'],
-                'subject' => getTemplateSubject("errors"),
-                'content_text' => getTemplateContent("errors"),
-                'content_html' => getTemplateContent("errors", true)
-            ));
-        }
-
-        $notification = new Notification();
-        if (!$notification->find("name = 'NEBackup errors'")) {
-            $notification->add(array(
-                'name' => 'NEBackup errors',
-                'entities_id' => '0',
-                'itemtype' => 'PluginNebackupBackup',
-                'event' => 'errors',
-                'mode' => 'mail',
-                'notificationtemplates_id' => $n_template[0]['id'],
-                'comment' => '',
-                'is_recursive' => 1,
-                'is_active' => 1
-            ));
-        }
-    }
-
-    // Création de la table uniquement lors de la première installation
-    /* if (!TableExists("glpi_plugin_nebackup_profiles")) {
-
-      // requête de création de la table
-      $query = "CREATE TABLE `glpi_plugin_nebackup_profiles` (
-      `id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_profiles (id)',
-      `right` char(1) collate utf8_unicode_ci default NULL,
-      PRIMARY KEY  (`id`)
-      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-
-      $DB->query($query) or die($DB->error());
-
-      //création du premier accès nécessaire lors de l'installation du plugin
-      $id = $_SESSION['glpiactiveprofile']['id'];
-      $query = "INSERT INTO glpi_plugin_nebackup_profiles VALUES ('$id','w')";
-      $DB->query($query) or die($DB->error());
-      } */
-
     if (!TableExists("glpi_plugin_nebackup_entities")) {
         // Création de la table config
         $query = "CREATE TABLE `glpi_plugin_nebackup_entities` (
@@ -117,10 +55,6 @@ function plugin_nebackup_install() {
         )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->query($query) or die($DB->error());
     }
-
-    /* $query = "INSERT INTO glpi_plugin_nebackup_entities(entities_id, tftp_server, tftp_passwd, is_recursive) ";
-      $query .= "VALUES (0, '".getHostByName(getHostName())."', '', 1)";
-      $res = $DB->query($query) or die($DB->error()); */
 
     // Création de la table uniquement lors de la première installation
     if (!TableExists("glpi_plugin_nebackup_configs")) {
@@ -165,6 +99,50 @@ function plugin_nebackup_install() {
         }
     }
 
+    // actualización version => 2.0.0
+    if (TableExists("glpi_plugin_nebackup_configs")) {
+        $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.0.0.sql");
+    }
+
+    // actualización version => 2.1.0
+    if (TableExists("glpi_plugin_nebackup_logs")) {
+        $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.1.0.sql");
+
+        $n_template = new NotificationTemplate();
+        if (!$n_template->find("name = 'NEBackup errors'")) {
+            $n_template->add(array(
+                'name' => 'NEBackup errors',
+                'itemtype' => 'PluginNebackupBackup'
+            ));
+        }
+
+        $n_template = array_values($n_template->find("name = 'NEBackup Errors'"));
+        $n_templatetranslations = new NotificationTemplateTranslation();
+        if (!$n_templatetranslations->find("notificationtemplates_id = " . $n_template[0]['id'])) {
+            $n_templatetranslations->add(array(
+                'notificationtemplates_id' => $n_template[0]['id'],
+                'subject' => getTemplateSubject("errors"),
+                'content_text' => getTemplateContent("errors"),
+                'content_html' => getTemplateContent("errors", true)
+            ));
+        }
+
+        $notification = new Notification();
+        if (!$notification->find("name = 'NEBackup errors'")) {
+            $notification->add(array(
+                'name' => 'NEBackup errors',
+                'entities_id' => '0',
+                'itemtype' => 'PluginNebackupBackup',
+                'event' => 'errors',
+                'mode' => 'mail',
+                'notificationtemplates_id' => $n_template[0]['id'],
+                'comment' => '',
+                'is_recursive' => 1,
+                'is_active' => 1
+            ));
+        }
+    }
+
     return true;
 }
 
@@ -175,7 +153,6 @@ function plugin_nebackup_install() {
 function plugin_nebackup_uninstall() {
     global $DB;
 
-    //$tables = array("glpi_plugin_nebackup_profiles", "glpi_plugin_nebackup_configs", "glpi_plugin_nebackup_entities");
     $tables = array(
         "glpi_plugin_nebackup_configs",
         "glpi_plugin_nebackup_entities",
@@ -186,6 +163,28 @@ function plugin_nebackup_uninstall() {
     foreach ($tables as $table) {
         $DB->query("DROP TABLE IF EXISTS `$table`;");
     }
+    
+    
+    // delete notifications
+    $n_template = new NotificationTemplate();
+    if ($template = $n_template->find("name = 'NEBackup errors'")) {
+        $template = array_values($template);
+        
+        $n_templatetranslations = new NotificationTemplateTranslation();
+        if ($translation = $n_templatetranslations->find("notificationtemplates_id = " . $template[0]['id'])) {
+            $translation = array_values($translation);
+            $n_templatetranslations->delete(array('id' => $translation[0]['id']));
+        }
+        
+        $n_template->delete(array('id' => $template[0]['id']));
+    }
+
+    $notification = new Notification();
+    if ($notif = $notification->find("name = 'NEBackup errors'")) {
+        $notif = array_values($notif);
+        $notification->delete(array('id' => $notif[0]['id']));
+    }
+    
     return true;
 }
 

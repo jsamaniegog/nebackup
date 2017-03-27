@@ -137,7 +137,8 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         echo '<td>';
 
         if ($manufacturer === false) {
-            echo '<b style="color:red;">' . __('No backup configured or supported for this manufacturer, currently only support these: ', 'nebackup') . PluginNebackupConfig::SUPPORTED_MANUFACTURERS . '</b>';
+            echo '<b style="color:red;">' . __('No backup configured or supported for the manufacturer assigned to this asset, it currently only supports these: ', 'nebackup') . str_replace(",", ", ", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) . '.</b>';
+            echo '<br><br><b style="color:red;">' . __('Check that the selected type and manufacturer of this asset corresponds to the setted in the', 'nebackup') . " " . Html::link(__('NEBackup configuration', 'nebackup'), PluginNebackupConfig::getSearchURL()) . ', ' . __('type and manufacturer must be setted', 'nebackup') . '.</b>';
             echo '</td></tr></table>';
             return false;
         }

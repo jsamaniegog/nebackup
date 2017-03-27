@@ -71,7 +71,7 @@ class PluginNebackupConfig extends CommonDBTM {
         $time_in_seconds = ($time_in_seconds == null) ? "86400" : $time_in_seconds;
 
         $res = CronTask::Register(
-                "PluginNebackupBackup", __("nebackup", 'nebackup'), $time_in_seconds, array(
+                "PluginNebackupBackup", "nebackup", $time_in_seconds, array(
                 'comment' => __('Backup of network equipments configuration', 'nebackup'),
                 'mode' => CronTask::MODE_EXTERNAL
                 )

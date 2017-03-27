@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-01-31 08:58+0100\n"
-"PO-Revision-Date: 2017-01-31 08:59+0100\n"
+"POT-Creation-Date: 2017-03-27 09:13+0200\n"
+"PO-Revision-Date: 2017-03-27 09:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -38,40 +38,40 @@ msgstr "Error al guardar"
 msgid "Configuration saved"
 msgstr "Configuración guardada"
 
-#: hook.php:222
+#: hook.php:221
 msgid "NEBackup - SNMP auth (R/W)"
 msgstr "NEBackup - Autentificación SNMP (L/E)"
 
-#: hook.php:223
+#: hook.php:222
 msgid "NEBackup - Backup"
 msgstr "NEBackup - Copia de Seguridad"
 
 #: inc/backup.class.php:27 inc/networkequipment.class.php:134
-#: inc/networkequipment.class.php:188 inc/networkequipment.class.php:377
+#: inc/networkequipment.class.php:189 inc/networkequipment.class.php:378
 msgid "Backup"
 msgstr "Copia de Seguridad"
 
-#: inc/backup.class.php:151
+#: inc/backup.class.php:155
 msgid "Only SNMP v2c is supported"
 msgstr "Solamente SNMP v2c es soportado"
 
-#: inc/backup.class.php:220
+#: inc/backup.class.php:224
 msgid "The network equipment does not respond to the ping"
 msgstr "El equipo de red no responde al ping"
 
-#: inc/backup.class.php:243
+#: inc/backup.class.php:247
 msgid "The network equipment returned status failed"
 msgstr "El equipo de red ha devuelta estado failed"
 
-#: inc/backup.class.php:274
+#: inc/backup.class.php:278
 msgid "Invalid password"
 msgstr "Contraseña inválida"
 
-#: inc/backup.class.php:276
+#: inc/backup.class.php:280
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: inc/backup.class.php:287
+#: inc/backup.class.php:291
 msgid "Timeout expired"
 msgstr "Tiempo de espera agotado"
 
@@ -82,10 +82,6 @@ msgstr "NEBackup"
 #: inc/config.class.php:58
 msgid "NEBackup plugin"
 msgstr "Plugin NEBackup"
-
-#: inc/config.class.php:74
-msgid "nebackup"
-msgstr "nebackup"
 
 #: inc/config.class.php:75
 msgid "Backup of network equipments configuration"
@@ -119,7 +115,7 @@ msgstr ""
 msgid "Timeout: "
 msgstr "Tiempo de espera: "
 
-#: inc/config.class.php:116 inc/networkequipment.class.php:457
+#: inc/config.class.php:116 inc/networkequipment.class.php:458
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
@@ -152,8 +148,8 @@ msgid "Entities"
 msgstr "Entidades"
 
 #: inc/entity.class.php:34
-msgid "Entity"
-msgstr "Entidad"
+msgid "TFTP Server"
+msgstr "Servidor TFTP"
 
 #: inc/entity.class.php:89
 msgid "TFTP server"
@@ -190,87 +186,103 @@ msgstr "Equipamiento de Red"
 
 #: inc/networkequipment.class.php:140
 msgid ""
-"No backup configured or supported for this manufacturer, currently only "
-"support these: "
+"No backup configured or supported for the manufacturer assigned to this "
+"asset, it currently only supports these: "
 msgstr ""
-"No hay copia de seguridad configurada o soportada para este fabricante, "
-"actualmente solo se soportan estos: "
+"Ninguna copia de seguridad configurada o soportada para el fabricante "
+"asignado a este activo, actualmente sólo admite estos: "
 
-#: inc/networkequipment.class.php:156
+#: inc/networkequipment.class.php:141
+msgid ""
+"Check that the selected type and manufacturer of this asset corresponds to "
+"the setted in the"
+msgstr ""
+"Compruebe que el tipo y el fabricante seleccionados de este activo se "
+"correspondan con los establecidos en la"
+
+#: inc/networkequipment.class.php:141
+msgid "NEBackup configuration"
+msgstr "configuración de NEBackup"
+
+#: inc/networkequipment.class.php:141
+msgid "type and manufacturer must be setted"
+msgstr "el tipo y el fabricante deben ser establecidos"
+
+#: inc/networkequipment.class.php:157
 msgid "No backup configured for this entity."
 msgstr "No hay copia de seguridad configurada para esta entidad."
 
-#: inc/networkequipment.class.php:160
+#: inc/networkequipment.class.php:161
 msgid "Database Error"
 msgstr "Error de la base de datos"
 
-#: inc/networkequipment.class.php:178
+#: inc/networkequipment.class.php:179
 msgid "TFTP server "
 msgstr "Servidor TFTP"
 
-#: inc/networkequipment.class.php:197
+#: inc/networkequipment.class.php:198
 msgid "File: "
 msgstr "Archivo: "
 
-#: inc/networkequipment.class.php:209
+#: inc/networkequipment.class.php:210
 msgid "File Date: "
 msgstr "Fecha del archivo: "
 
-#: inc/networkequipment.class.php:215
+#: inc/networkequipment.class.php:216
 msgid "(Warning: File not copied at last run)"
 msgstr "(Alerta: archivo no copiado en la última ejecución)"
 
-#: inc/networkequipment.class.php:222
+#: inc/networkequipment.class.php:223
 msgid "Last run: "
 msgstr "Última ejecución: "
 
-#: inc/networkequipment.class.php:226 inc/networkequipment.class.php:259
-#: inc/networkequipment.class.php:266 inc/notificationtargetbackup.class.php:51
+#: inc/networkequipment.class.php:227 inc/networkequipment.class.php:260
+#: inc/networkequipment.class.php:267 inc/notificationtargetbackup.class.php:51
 msgid "Error: "
 msgstr "Error: "
 
-#: inc/networkequipment.class.php:230 inc/networkequipment.class.php:263
-#: inc/networkequipment.class.php:267
+#: inc/networkequipment.class.php:231 inc/networkequipment.class.php:264
+#: inc/networkequipment.class.php:268
 msgid "No error"
 msgstr "Sin errores"
 
-#: inc/networkequipment.class.php:235
+#: inc/networkequipment.class.php:236
 msgid "TFTP Server: "
 msgstr "Servidor TFTP: "
 
-#: inc/networkequipment.class.php:240
+#: inc/networkequipment.class.php:241
 msgid "Server path: "
 msgstr "Ruta del servidor: "
 
-#: inc/networkequipment.class.php:244
+#: inc/networkequipment.class.php:245
 msgid "Install TFTP client on server to view the backup file"
 msgstr ""
 "Instalar cliente TFTP en el servidor para ver el fichero de copia de "
 "seguridad"
 
-#: inc/networkequipment.class.php:248
+#: inc/networkequipment.class.php:249
 msgid "Transfer timed out, check if your TFTP server is up."
 msgstr ""
 "Tiempo de espera de la transferencia agotado, comprueba si tu servidor TFTP "
 "está activo."
 
-#: inc/networkequipment.class.php:252
+#: inc/networkequipment.class.php:253
 msgid "Backup file not found."
 msgstr "Fichero de copia de seguridad no encontrado."
 
-#: inc/networkequipment.class.php:340
+#: inc/networkequipment.class.php:341
 msgid "Configuration of the SNMP authentication"
 msgstr "Configuración de la autentificación SNMP"
 
-#: inc/networkequipment.class.php:345
+#: inc/networkequipment.class.php:346
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:360
+#: inc/networkequipment.class.php:361
 msgid "Update"
 msgstr "Actualizar"
 
-#: inc/networkequipment.class.php:457
+#: inc/networkequipment.class.php:458
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
 
@@ -293,6 +305,19 @@ msgstr "Fecha de la última copia: "
 #: inc/notificationtargetbackup.class.php:56
 msgid "- Empty -"
 msgstr "- Vacio -"
+
+#~ msgid "nebackup"
+#~ msgstr "nebackup"
+
+#~ msgid "Entity"
+#~ msgstr "Entidad"
+
+#~ msgid ""
+#~ "No backup configured or supported for this manufacturer, currently only "
+#~ "support these: "
+#~ msgstr ""
+#~ "No hay copia de seguridad configurada o soportada para este fabricante, "
+#~ "actualmente solo se soportan estos: "
 
 #~ msgid "The switch does not respond to the ping"
 #~ msgstr "El switch no responde al ping"

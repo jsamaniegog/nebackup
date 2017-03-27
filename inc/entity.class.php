@@ -31,7 +31,7 @@ class PluginNebackupEntity extends CommonDBTM {
      *
      * */
     static function getTypeName($nb = 0) {
-        return __('Entity', 'nebackup');
+        return __('TFTP Server', 'nebackup');
     }
 
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
