@@ -108,7 +108,7 @@ class PluginNebackupConfig extends CommonDBTM {
         echo "<br>" . __('(Tags: "{entity}": the name of the entity, "{manufacturer}": manufacturer tag like cisco, hpprocurve, etc.)', 'nebackup') . "</td>";
         echo "<td>" . HTML::input('backup_path', array('value' => $this->getBackupPath())) . "</td></tr>";
 
-        echo "<tr><td>" . __('Timeout: ', 'nebackup');
+        echo "<tr><td>" . __('Timeout to backup a network equipment (in seconds): ', 'nebackup');
         echo "<td>" . HTML::input('timeout', array('value' => $this->getTimeout())) . "</td></tr>";
 
         $plugin = new Plugin();
