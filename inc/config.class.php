@@ -128,6 +128,23 @@ class PluginNebackupConfig extends CommonDBTM {
             'value' => $this->getNetworkEquipmentTypeId()
         ));
         echo "</td></tr>";
+        
+        echo "<tr class='tab_bg_2'>";
+        echo "<td>" . __('Select the different states to backup (empty value "', 'nebackup') . Dropdown::EMPTY_VALUE . __('" is alwais backed up): ', 'nebackup') . "</td>";
+        echo "<td colspan='3'>";
+        $state = new State();
+        $states = $state->find();
+        foreach ($states as $key => $state) {
+            $states[$key] = $state['name'];
+        }
+        Dropdown::showFromArray(
+            'states_id', $states, array(
+            'values' => $this->getStatesId(),
+            'multiple' => true
+            )
+        );
+        echo "</td></tr>";
+        
         echo "<tr><td colspan=4><br><h3>" . __('Manufacturers', 'nebackup') . "</h2><td><tr>";
         foreach (PluginNebackupConfig::getSupportedManufacturerArray() as $i => $v) {
             echo "<tr class='tab_bg_2'>";
@@ -242,6 +259,22 @@ class PluginNebackupConfig extends CommonDBTM {
     }
 
     /**
+     * Sets the states to backup
+     * @global type $DB
+     * @param array $states_id Array of IDs of states.
+     * @return type
+     */
+    public function setStatesId($states_id) {
+        global $DB;
+
+        $query = "UPDATE `glpi_plugin_nebackup_configs` ";
+        $query .= "SET value = '" . implode(",", $states_id) . "' ";
+        $query .= "WHERE type = 'states_id'";
+
+        return $DB->query($query);
+    }
+    
+    /**
      * Return id of manufacturer.
      * @global type $DB
      * @param type $manufacturer For example: cisco, hp...
@@ -255,6 +288,24 @@ class PluginNebackupConfig extends CommonDBTM {
         if ($result = $DB->query($query)) {
             $row = $result->fetch_assoc(); // cogemos el primero
             return $row['value'];
+        }
+
+        return false;
+    }
+    
+    /**
+     * Return id of the selected states (status field of GLPI).
+     * @global type $DB
+     * @return boolean|array Return an array of id's with the states. If don't exist return false.
+     */
+    public function getStatesId() {
+        global $DB;
+
+        $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'states_id'";
+
+        if ($result = $DB->query($query)) {
+            $row = $result->fetch_assoc(); // cogemos el primero
+            return explode(",", $row['value']);
         }
 
         return false;

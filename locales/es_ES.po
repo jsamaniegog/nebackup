@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2017-03-27 09:13+0200\n"
-"PO-Revision-Date: 2017-03-27 09:13+0200\n"
+"POT-Creation-Date: 2017-07-06 14:15+0200\n"
+"PO-Revision-Date: 2017-07-06 14:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.2\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __\n"
@@ -25,29 +25,29 @@ msgstr "No autorizado"
 msgid "Saving configuration..."
 msgstr "Guardando configuración..."
 
-#: front/config.form.php:43
+#: front/config.form.php:45
 msgid "Backup interval must be a number."
 msgstr "El intervalo de tiempo de copia de seguridad debe ser un número."
 
-#: front/config.form.php:63 front/networkequipment.form.php:39
+#: front/config.form.php:67 front/networkequipment.form.php:39
 msgid "Error on save"
 msgstr "Error al guardar"
 
-#: front/config.form.php:67 front/entity.form.php:47
+#: front/config.form.php:71 front/entity.form.php:47
 #: front/networkequipment.form.php:43
 msgid "Configuration saved"
 msgstr "Configuración guardada"
 
-#: hook.php:221
+#: hook.php:226
 msgid "NEBackup - SNMP auth (R/W)"
 msgstr "NEBackup - Autentificación SNMP (L/E)"
 
-#: hook.php:222
+#: hook.php:227
 msgid "NEBackup - Backup"
 msgstr "NEBackup - Copia de Seguridad"
 
 #: inc/backup.class.php:27 inc/networkequipment.class.php:134
-#: inc/networkequipment.class.php:189 inc/networkequipment.class.php:378
+#: inc/networkequipment.class.php:189 inc/networkequipment.class.php:388
 msgid "Backup"
 msgstr "Copia de Seguridad"
 
@@ -93,7 +93,7 @@ msgstr "Configuración de NEBackup"
 
 #: inc/config.class.php:101
 msgid "Backup interval: "
-msgstr "Intervalo de copia de seguridad:"
+msgstr "Intervalo de copia de seguridad: "
 
 #: inc/config.class.php:106
 msgid "Root path in TFTP server: "
@@ -115,27 +115,37 @@ msgstr ""
 msgid "Timeout: "
 msgstr "Tiempo de espera: "
 
-#: inc/config.class.php:116 inc/networkequipment.class.php:458
+#: inc/config.class.php:116 inc/networkequipment.class.php:468
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
 #: inc/config.class.php:123
 msgid "Select type to switch backup: "
-msgstr "Selecciona el tipo para la copia de seguridad de switches:"
+msgstr "Selecciona el tipo para la copia de seguridad de switches: "
 
-#: inc/config.class.php:131
+#: inc/config.class.php:133
+msgid "Select the different states to backup (empty value \""
+msgstr ""
+"Seleccione los diferentes estados para realizar la copia de seguridad (valor "
+"vacío \""
+
+#: inc/config.class.php:133
+msgid "\" is alwais backed up): "
+msgstr "\" siempre se hace): "
+
+#: inc/config.class.php:148
 msgid "Manufacturers"
 msgstr "Fabricantes"
 
-#: inc/config.class.php:134
+#: inc/config.class.php:151
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:134
+#: inc/config.class.php:151
 msgid " network equipments: "
-msgstr " en la electrónica de red"
+msgstr " en la electrónica de red "
 
-#: inc/config.class.php:167
+#: inc/config.class.php:184
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -143,7 +153,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:167
+#: inc/config.class.php:184
 msgid "Entities"
 msgstr "Entidades"
 
@@ -270,19 +280,19 @@ msgstr ""
 msgid "Backup file not found."
 msgstr "Fichero de copia de seguridad no encontrado."
 
-#: inc/networkequipment.class.php:341
+#: inc/networkequipment.class.php:351
 msgid "Configuration of the SNMP authentication"
 msgstr "Configuración de la autentificación SNMP"
 
-#: inc/networkequipment.class.php:346
+#: inc/networkequipment.class.php:356
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:361
+#: inc/networkequipment.class.php:371
 msgid "Update"
 msgstr "Actualizar"
 
-#: inc/networkequipment.class.php:458
+#: inc/networkequipment.class.php:468
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
 

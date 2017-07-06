@@ -311,6 +311,16 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         // filtro por id
         $sql = (isset($networkequipment_id)) ? $sql . "AND n.id = " . $networkequipment_id . " " : $sql;
 
+        // filtro por estado
+        $config = new PluginNebackupConfig();
+        $states_id = $config->getStatesId();
+        if ($states_id === false or empty($states_id) or $states_id[0] == "") {
+            $states_id = array("null", 0);
+        } else {
+            $states_id = array_merge(array("null", 0), $states_id);
+        }
+        $sql .= "AND n.states_id in (" . implode(",", $states_id) . ") ";
+        
         $sql .= "AND np.itemtype = 'NetworkEquipment' AND n.id = np.items_id AND np.instantiation_type = 'NetworkPortAggregate' ";
         $sql .= "AND nn.itemtype = 'NetworkPort' AND np.id = nn.items_id ";
         $sql .= "AND ip.itemtype = 'NetworkName' AND nn.id = ip.items_id ";

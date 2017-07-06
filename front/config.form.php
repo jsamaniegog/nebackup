@@ -32,30 +32,34 @@ if (!Session::haveRight("config", UPDATE)) {
     echo __("Saving configuration...", 'nebackup');
 }
 
+$post_values = filter_input_array(INPUT_POST);
+
 try {
     $config = new PluginNebackupConfig();
 
     // sets the backup interval in the automatic task
-    if (is_numeric($_POST['backup_interval'])) {
-        $config->setCronTask($_POST['backup_interval']);
+    if (is_numeric($post_values['backup_interval'])) {
+        $config->setCronTask($post_values['backup_interval']);
         
     } else {
         Session::addMessageAfterRedirect(__("Backup interval must be a number.", 'nebackup'), false, ERROR);
     }
     
     // set the type of network equipment that we can backup (only switches)
-    $config->setNetworkEquipmentTypeId($_POST['networkequipmenttype_id']);
+    $config->setNetworkEquipmentTypeId($post_values['networkequipmenttype_id']);
     
-    $config->setBackupPath($_POST['backup_path']);
+    $config->setBackupPath($post_values['backup_path']);
     
-    $config->setUseFusionInventory($_POST['use_fusioninventory']);
+    $config->setUseFusionInventory($post_values['use_fusioninventory']);
     
-    $config->setTimeout($_POST['timeout']);
+    $config->setTimeout($post_values['timeout']);
+    
+    $config->setStatesId($post_values['states_id']);
     
     // save the manufacturer id for each suppoerted manufacturer
     foreach (explode(",", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) as $v) {
-        if (isset($_POST[$v . '_manufacturers_id']) and is_numeric($_POST[$v . '_manufacturers_id'])) {
-            $config->setManufacturerId($v, $_POST[$v . '_manufacturers_id']);
+        if (isset($post_values[$v . '_manufacturers_id']) and is_numeric($post_values[$v . '_manufacturers_id'])) {
+            $config->setManufacturerId($v, $post_values[$v . '_manufacturers_id']);
         }
     }
     
