@@ -30,12 +30,17 @@ class PluginNebackupBackup extends CommonDBTM {
     /**
      * Executed by cron.
      */
-    static function cronNebackup() {
+    static function cronNebackup($task) {
         foreach (explode(",", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) as $manufacturer) {
+            $task->addVolume(1);
+            $task->log(__("Start backup of manufacturer: ", "nebackup") . $manufacturer);
             self::backup($manufacturer);
+            $task->log(__("End backup of manufacturer: ", "nebackup") . $manufacturer);
         }
 
         self::sendErrorsByMail();
+        
+        return 1;
     }
 
     static function sendErrorsByMail() {
