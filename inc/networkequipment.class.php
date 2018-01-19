@@ -144,7 +144,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
 
         // first check if we have a record and if type and manufacturer match
-        $query = "SELECT nee.tftp_server, e.name entity_name, ";
+        $query = "SELECT nee.username, nee.password, nee.protocol, nee.server, e.name entity_name, ";
         $query .= "(SELECT REPLACE(type, '_manufacturers_id', '')";
         $query .= " FROM glpi_plugin_nebackup_configs";
         $query .= " WHERE type like '%_manufacturers_id' AND value = " . $datos->fields['manufacturers_id'] . ") as manufacturer ";
@@ -174,101 +174,110 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         // remove the temporal file if exists
         unlink($tmp_file);
 
-        // check if tftp server is online
-        if (!PluginNebackupUtil::ping($result['tftp_server'])) {
-            echo '<b style="color:red;">' . __('TFTP server ' . $result['tftp_server'] . ' is not alive</b>', 'nebackup');
+        // check if server is online
+        if (!PluginNebackupUtil::ping($result['server'])) {
+            echo '<b style="color:red;">' . __('Server ', 'nebackup') . $result['server'] . __(' is not alive</b>', 'nebackup');
+        
         } else {
 
             // get the file from tftp
-            $remote_path = PluginNebackupConfig::getBackupPath(true, $result['manufacturer'], $result['entity_name']) . '/' . PluginNebackupBackup::escapeNameToTftp($datos->fields['name']);
-            $command = 'tftp ' . $result['tftp_server'] . ' -c get "' . $remote_path . '"';
-            $command_result = `$command`;
-
+            $remote_path = PluginNebackupConfig::getBackupPath(true, $result['manufacturer'], $result['entity_name']) . '/' . PluginNebackupBackup::escapeName($datos->fields['name']);
+            $command_result = self::getFileFromServer(
+                $result['server'], 
+                $remote_path, 
+                $result['protocol'],
+                $result['username'],
+                $result['password']
+            );
+            
             // inicio tabla copia de seguridad (botón para realizar copias de seguridad del switch)
             echo '<table>';
             echo '<tr><td colspan=2><h3>' . __("Backup", 'nebackup') . '</h3></td></tr>';
+            echo '<tr><td>' . __('File: ', 'nebackup') . '</td>';
 
             if (!$command_result) {
                 // move file to files directory
                 $command = "mv " . $datos->fields['name'] . " " . $tmp_file;
                 `$command`;
 
+                // link to download the file
                 if (file_exists($tmp_file)) {
-                    // link to download the file
-                    echo '<tr><td>' . __('File: ', 'nebackup') . '</td><td>';
-                    echo '<i>';
+                    echo '<td><i>';
                     echo Html::link(
-                        $datos->fields['name'], PluginNebackupDownload::getFormURL() . "?name=" . PluginNebackupBackup::escapeNameToTftp($datos->fields['name'])
+                        $datos->fields['name'], PluginNebackupDownload::getFormURL() . "?name=" . PluginNebackupBackup::escapeName($datos->fields['name'])
                     );
                     echo '</i></td></tr>';
 
-                    // For: last run of cron task, need before for style color
-                    $cron = new CronTask();
-                    $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
-
-                    // datetime of last good backup
-                    echo '<tr><td>' . __('File Date: ', 'nebackup') . '</td><td>';
-                    $logs = new PluginNebackupLogs();
-                    if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
-
-                        $t1 = strtotime($cron->fields['lastrun']);
-                        $t2 = strtotime($logs->fields['datetime']);
-                        $warn = (strtotime($cron->fields['lastrun']) > strtotime($logs->fields['datetime'])) ? __("(Warning: File not copied at last run)", "nebackup") : "";
-
-                        echo "<i>" . $logs->fields['datetime'] . '</i> ' . $warn;
-                    }
-                    echo '</td></tr>';
-
-                    // last run of cron task
-                    echo '<tr><td>' . __('Last run: ', 'nebackup') . '</td><td>';
-                    echo '<i>' . $cron->fields['lastrun'] . '</i></td></tr>';
-
-                    // if error
-                    echo '<tr><td>' . __('Error: ', 'nebackup') . '</td><td>';
-                    if ($logs->fields['error'] != '') {
-                        echo "<b style='color:red;'>" . $logs->fields['error'] . "</b>";
-                    } else {
-                        echo '<i>' . __("No error", "nebackup") . '</i>';
-                    }
-                    echo '</td></tr>';
-
-                    // server
-                    echo '<tr><td>' . __('TFTP Server: ', 'nebackup') . '</td><td>';
-                    echo $result['tftp_server'];
-                    echo '</td></tr>';
-
-                    // server path
-                    echo '<tr><td>' . __('Server path: ', 'nebackup') . '</td><td>';
-                    echo $remote_path;
-                    echo '</td></tr>';
                 } else {
-                    echo '<tr><td><b style="color:red;">' . __('Install TFTP client on server to view the backup file', 'nebackup') . "</b></td></tr>";
+                    echo '<td><b style="color:orange;">' . __('Install ', 'nebackup') 
+                        . PluginNebackupConfig::getProtocols()[$result['protocol']] 
+                        . __(' client on GLPI server to view the backup file', 'nebackup') 
+                        . "</b></td></tr>";
                 }
+                
             } else {
+                // todo: fix to test all protocols to control possible errors
                 if (preg_match("/Transfer timed out/", $command_result)) {
-                    echo '<tr><td><b style="color:red;">' . __('Transfer timed out, check if your TFTP server is up.', 'nebackup') . '</b></td></tr>';
-                }
-
-                if (preg_match("/Error code 2/", $command_result)) {
-                    echo '<tr><td><b style="color:red;">' . __('Backup file not found.', 'nebackup') . '</b></td></tr>';
-                }
-
-                $logs = new PluginNebackupLogs();
-                echo '<tr><td>';
-                if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
-                    // if error
-                    echo __('Error: ', 'nebackup');
-                    if ($logs->fields['error'] != '') {
-                        echo "<b style='color:red;'>" . $logs->fields['error'] . "</b>";
-                    } else {
-                        echo '<i>' . __("No error", "nebackup") . '</i>';
-                    }
+                    echo '<td><b style="color:red;">' 
+                        . __('Transfer timed out, check if your TFTP server is up.', 'nebackup') 
+                        . '</b></td></tr>';
+                    
+                } elseif (preg_match("/No such file or directory/", $command_result) 
+                    or preg_match("/Error code 2/", $command_result)) {
+                    echo '<td><b style="color:red;">' 
+                        . __('Backup file not found on the server.', 'nebackup') 
+                        . '</b></td></tr>';
+                    
                 } else {
-                    echo __('Error: ', 'nebackup');
-                    echo '<i>' . __("No error", "nebackup") . '</i>';
+                    echo '<td><b style="color:red;">' . $command_result . '</b></td></tr>';
                 }
-                echo '</td></tr>';
+                
+                
             }
+            
+            // For: last run of cron task, need before for style color
+            $cron = new CronTask();
+            $cron->getFromDBbyName("PluginNebackupBackup", "nebackup");
+
+            // datetime of last good backup
+            echo '<tr><td>' . __('File Date: ', 'nebackup') . '</td><td>';
+            $logs = new PluginNebackupLogs();
+            if ($logs->getFromDBByQuery("WHERE networkequipments_id = " . $datos->fields['id'])) {
+
+                $t1 = strtotime($cron->fields['lastrun']);
+                $t2 = strtotime($logs->fields['datetime']);
+                $warn = (strtotime($cron->fields['lastrun']) > strtotime($logs->fields['datetime'])) ? __("(Warning: File not copied at last run)", "nebackup") : "";
+
+                echo "<i>" . $logs->fields['datetime'] . '</i> ' . $warn;
+            }
+            echo '</td></tr>';
+
+            // last run of cron task
+            echo '<tr><td>' . __('Last run: ', 'nebackup') . '</td><td>';
+            if ($cron->fields['lastrun'] != "") {
+                echo '<i>' . $cron->fields['lastrun'] . '</i></td></tr>';
+            } else {
+                echo '<i>' . __('No cron date', 'nebackup') . '</i></td></tr>';
+            }
+
+            // if error
+            echo '<tr><td>' . __('Error: ', 'nebackup') . '</td><td>';
+            if ($logs->fields['error'] != '') {
+                echo "<b style='color:red;'>" . $logs->fields['error'] . "</b>";
+            } else {
+                echo '<i>' . __("No error", "nebackup") . '</i>';
+            }
+            echo '</td></tr>';
+
+            // server
+            echo '<tr><td>' . __('Server: ', 'nebackup') . '</td><td>';
+            echo $result['server'];
+            echo '</td></tr>';
+
+            // server path
+            echo '<tr><td>' . __('Server path: ', 'nebackup') . '</td><td>';
+            echo $remote_path;
+            echo '</td></tr>';
 
             echo '</table>';
 
@@ -296,9 +305,12 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
         $use_fusioninventory = PluginNebackupConfig::getUseFusionInventory();
 
-        $sql = "SELECT n.id, n.name, ip.name as ip, nee.tftp_server, nee.tftp_passwd, nee.telnet_passwd, e.name entitie_name ";
+        $sql = "SELECT n.id, n.name, ip.name as ip, nee.protocol, nee.server, "
+            . "nee.username, nee.password, nee.community, "
+            . "nee.telnet_password, nee.telnet_username, "
+            . "e.name entitie_name ";
         if ($plugin->isActivated("fusioninventory") and $use_fusioninventory == 1) {
-            $sql .= ", pfc.community, pfc.snmpversion ";
+            $sql .= ", pfc.community as fi_community, pfc.snmpversion ";
         }
 
         $sql .= "FROM glpi_networkequipments n, glpi_manufacturers m, glpi_networkports np, glpi_networknames nn, glpi_ipaddresses ip, glpi_plugin_nebackup_entities nee, glpi_entities e ";
@@ -506,6 +518,58 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
 
             default: break;
         }
+    }
+
+    /**
+     * Exec local command to get the file from server.
+     * @param string $remote_path
+     * @param int $protocol 
+     * #1. tftp
+     * #2. ftp
+     * #3. rcp
+     * #4. scp
+     * #5. sftp
+     */
+    public static function getFileFromServer($server, $remote_path, $protocol, $username = "admin", $password = "admin") {
+        switch ($protocol) {
+            // tftp
+            case 1: 
+                $command = 'tftp ' . $server . ' -c get "' . $remote_path . '"';
+                break;
+            
+            case 2: 
+                $file = substr($remote_path, strrpos($remote_path, "/") + 1);
+                
+                $command = 'ftp -n ' . $server . ' << EOF';
+                $command .= "\nuser " . $username . ' ' . $password . '';
+                $command .= "\ncd " . str_replace("/$file", "", $remote_path) . '';
+                $command .= "\nget " . $file . '';
+                $command .= "\nEOF";
+                break;
+            
+            case 3: 
+                $command = 'rcp ' . $username . '@' . $server . ':' . $remote_path . ' ./ 2>&1';
+                break;
+                
+            case 4: 
+                $command = 'scp ' . $username . '@' . $server . ':' . $remote_path . ' ./ 2>&1';
+                break;
+                
+            case 5: 
+                $command = 'sftp -q ' . $username . '@' . $server . ':' . $remote_path . ' ./ 2>&1';
+                break;
+                
+            default: throw new Exception(__("Unknown protocol", "nebackup"));
+        }
+        
+        $command_result = `$command`;
+        
+        // hack for ftp result. todo: fixit
+        if (strstr($command_result, "WARNING")) {
+            $command_result = null;
+        }
+        
+        return $command_result;
     }
 
 }

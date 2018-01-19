@@ -39,7 +39,7 @@ class PluginNebackupBackup extends CommonDBTM {
         }
 
         self::sendErrorsByMail();
-        
+
         return 1;
     }
 
@@ -51,7 +51,7 @@ class PluginNebackupBackup extends CommonDBTM {
         if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
             $use_fusioninventory = true;
         }
-        
+
         $sql = "SELECT n.name as networkequipment_name, n.entities_id, l.* ";
         $sql .= "FROM glpi_plugin_nebackup_logs l, glpi_networkequipments n, glpi_plugin_nebackup_entities e ";
         if ($use_fusioninventory) {
@@ -64,7 +64,7 @@ class PluginNebackupBackup extends CommonDBTM {
             $sql .= " AND pnn.networkequipments_id = n.id ";
         }
         $sql .= "ORDER BY n.entities_id ASC";
-        
+
         $result = $DB->query($sql);
 
         $buffer = array();
@@ -84,7 +84,7 @@ class PluginNebackupBackup extends CommonDBTM {
 
             $buffer[] = $error;
         }
-        
+
         self::raiseEventError($buffer, $previous_entity);
     }
 
@@ -151,8 +151,8 @@ class PluginNebackupBackup extends CommonDBTM {
             if (PluginNebackupConfig::DEBUG_NEBACKUP)
                 Toolbox::logInFile("nebackup", "Start copy: " . print_r($reg, true));
 
-            // datos de conexión al servidor tftp (es el mismo para todos los registros)
-            $tftp_server = $reg['tftp_server'];
+            // datos de conexión al servidor (es el mismo para todos los registros)
+            $server = $reg['server'];
 
             // only snmp v2c
             if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
@@ -172,29 +172,29 @@ class PluginNebackupBackup extends CommonDBTM {
 
             // si el plugin fusioninventory está activado tomamos los datos de 
             // sus tablas para la comunidad snmp
-            if (isset($reg['community'])) {
-                $reg['tftp_passwd'] = $reg['community'];
+            if (isset($reg['fi_community'])) {
+                $reg['community'] = $reg['fi_community'];
 
-                $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
+                $community = escapeshellcmd($reg['community']);
 
-                if (!self::checkTftpServerAlive($tftp_server)) {
+                if (!self::checkServerAlive($server, $reg['protocol'])) {
                     continue;
                 }
             } else {
                 // todo: quitar esta particularidad cuando se encuentre un modo mejor que el telnet
                 if ($manufacturer == 'hpprocurve') {
-                    $tftp_passwd = escapeshellcmd($reg['telnet_passwd']);
+                    $community = escapeshellcmd($reg['telnet_password']);
                 } else {
-                    $tftp_passwd = escapeshellcmd($reg['tftp_passwd']);
+                    $community = escapeshellcmd($reg['community']);
                 }
 
 
-                if (!self::checkTftpServerAlive($tftp_server)) {
+                if (!self::checkServerAlive($server, $reg['protocol'])) {
                     return;
                 }
             }
 
-            if ($tftp_passwd == '') {
+            if ($community == '') {
                 continue;
             }
 
@@ -208,8 +208,14 @@ class PluginNebackupBackup extends CommonDBTM {
             $ip = $reg['ip'];
             // número aleatorio, será el minuto actual, varía de 1 a 60
             $rannum = (int) date("i") + 1;
-            // nombre de la entidad (esto sirve para la ruta donde se guarda del TFTP)
+            // nombre de la entidad (esto sirve para la ruta donde se guarda del servidor)
             $entitie_name = $reg['entitie_name'];
+            // protocolo
+            $protocol = $reg['protocol'];
+            // username of the server
+            $username = $reg['username'];
+            // password for username
+            $password = $reg['password'];
 
             // esta variable controla el número del script, hay 3 scripts: 
             // uno inicia la copia, el segundo la comprueba a ver si ha 
@@ -236,7 +242,19 @@ class PluginNebackupBackup extends CommonDBTM {
                     sleep(PluginNebackupConfig::SECONDS_TO_WAIT_FOR_FINISH);
                 }
 
-                $command_result = self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
+                $command_result = self::executeCopyScript(
+                    $num_script, 
+                    $host, 
+                    $ip, 
+                    $rannum, 
+                    $server, 
+                    $community, 
+                    $manufacturer, 
+                    $entitie_name, 
+                    $protocol, 
+                    $username, 
+                    $password
+                );
 
                 switch ($manufacturer) {
                     case 'cisco':
@@ -249,7 +267,9 @@ class PluginNebackupBackup extends CommonDBTM {
 
                             $num_script = 3;
 
-                            $error = __("The network equipment returned status failed", "nebackup");
+                            $error = __("The network equipment returned status "
+                                . "failed. Make sure the switch allows the "
+                                . "protocol configured.", "nebackup");
 
                             // debug
                             if (PluginNebackupConfig::DEBUG_NEBACKUP)
@@ -268,7 +288,19 @@ class PluginNebackupBackup extends CommonDBTM {
                                 if (preg_match('/INTEGER: 3/', $command_result) != 0) {
                                     $num_script = 3;
                                     // ejecutamos el script número 3
-                                    self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
+                                    self::executeCopyScript(
+                                        $num_script, 
+                                        $host, 
+                                        $ip, 
+                                        $rannum, 
+                                        $server, 
+                                        $community, 
+                                        $manufacturer, 
+                                        $entitie_name, 
+                                        $protocol, 
+                                        $username, 
+                                        $password
+                                    );
                                 } else {
                                     $num_script = 2;
                                 }
@@ -295,7 +327,19 @@ class PluginNebackupBackup extends CommonDBTM {
                     $num_script = 3;
                     $error = __("Timeout expired", "nebackup");
                     // ejecutamos el script número 3
-                    self::executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name);
+                    self::executeCopyScript(
+                        $num_script, 
+                        $host, 
+                        $ip, 
+                        $rannum, 
+                        $server, 
+                        $community, 
+                        $manufacturer, 
+                        $entitie_name, 
+                        $protocol, 
+                        $username, 
+                        $password
+                    );
                 }
             } while ($num_script != 3);
 
@@ -334,23 +378,34 @@ class PluginNebackupBackup extends CommonDBTM {
 
     /**
      * Ejecuta el script de copia y retorna el resultado.
-     * @param type $num_script script number: 1 => init, 2 => ask for finish, 3 => close
-     * @param type $host Hostname
-     * @param type $ip IP address
-     * @param type $rannum A random number
-     * @param type $tftp_server IP o DNS name of the tftp server
-     * @param type $tftp_passwd Password of the tftp server
+     * @param int $num_script script number: 1 => init, 2 => ask for finish, 3 => close
+     * @param string $host Hostname
+     * @param string $ip IP address
+     * @param int $rannum A random number
+     * @param string $server IP o DNS name of the server
+     * @param string $community SNMP community.
+     * @param string $manufacturer Manufacturer string.
+     * @param string $entitie_name Name of the entity.
+     * @param int $protocol Can be:
+     * #1. tftp
+     * #2. ftp
+     * #3. rcp
+     * #4. scp
+     * #5. sftp
      * @return type
      */
-    static private function executeCopyScript($num_script, $host, $ip, $rannum, $tftp_server, $tftp_passwd, $manufacturer, $entitie_name) {
+    static private function executeCopyScript($num_script, $host, $ip, $rannum, 
+        $server, $community, $manufacturer, $entitie_name, $protocol = 1, 
+        $username = "admin", $password = "admin"
+    ) {
         if (PluginNebackupConfig::DEBUG_NEBACKUP)
             Toolbox::logInFile("nebackup", "Script: " . "nebackup_" . $manufacturer . "_$num_script.sh\r");
 
-        $host = self::escapeNameToTftp($host);
+        $host = self::escapeName($host);
         $host = PluginNebackupConfig::getBackupPath(true, $manufacturer, $entitie_name) . '/' . $host;
-        $tftp_server = gethostbyname($tftp_server);
+        $server = gethostbyname($server);
 
-        $comando = "sh " . GLPI_ROOT . "/plugins/nebackup/commands/nebackup_" . $manufacturer . "_$num_script.sh $host $ip $rannum $tftp_server $tftp_passwd";
+        $comando = "sh " . GLPI_ROOT . "/plugins/nebackup/commands/nebackup_" . $manufacturer . "_$num_script.sh $host $ip $rannum $server $community $protocol $username $password";
         if (PluginNebackupConfig::DEBUG_NEBACKUP)
             Toolbox::logInFile("nebackup", "Comando ejecutado: $comando\r" . print_r($reg, true));
         $resultado = `$comando`;
@@ -358,10 +413,21 @@ class PluginNebackupBackup extends CommonDBTM {
         return $resultado;
     }
 
+    static private function checkServerAlive($server, $protocol) {
+        switch ($protocol) {
+            case '1':
+                $result = self::checkTftpServerAlive($server);
+                break;
+
+            default: return true;
+        }
+
+        return $result;
+    }
+
     /**
      * Check if tftp server is alive.
-     * @param type $tftp_server
-     * @param type $tftp_passwd
+     * @param type $tftp_server IP or hostname.
      * @return bool
      */
     static private function checkTftpServerAlive($tftp_server) {
@@ -375,8 +441,13 @@ class PluginNebackupBackup extends CommonDBTM {
         return false;
     }
 
-    static public
-        function escapeNameToTftp($name) {
+    /**
+     * Escapes the name for especial characteres using escapeshellcmd command
+     * and deleting spaces.
+     * @param string $name String to escape.
+     * @return string Escaped string.
+     */
+    static public function escapeName($name) {
         return str_replace(" ", "", escapeshellcmd($name));
     }
 

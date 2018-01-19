@@ -31,7 +31,7 @@ class PluginNebackupEntity extends CommonDBTM {
      *
      * */
     static function getTypeName($nb = 0) {
-        return __('TFTP Server', 'nebackup');
+        return __('Server', 'nebackup');
     }
 
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
@@ -85,9 +85,31 @@ class PluginNebackupEntity extends CommonDBTM {
         // hidden entity id
         echo Html::hidden("entity_id_edited", array('value' => $_GET['id']));
         
-        // tftp field
-        echo __('TFTP server', 'nebackup') . "</td><td colspan='2'>";
-        echo Html::input("tftp_server", array('value' => $row['tftp_server']));
+        // protocol
+        echo __('Protocol (make sure the switches allow the protocol)', 'nebackup') . "</td><td colspan='2'>";
+        Dropdown::showFromArray(
+            'protocol', 
+            PluginNebackupConfig::getProtocols(),
+            ['value' => $row['protocol']]
+        );
+        
+        echo "</td></tr><tr><td colspan='2'>";
+        
+        // server field
+        echo __('Server', 'nebackup') . "</td><td colspan='2'>";
+        echo Html::input("server", array('value' => $row['server']));
+        
+        echo "</td></tr><tr><td colspan='2'>";
+        
+        // username field
+        echo __('Username (optional depending on the protocol and server configuration)', 'nebackup') . "</td><td colspan='2'>";
+        echo Html::input("username", array('value' => $row['username']));
+        
+        echo "</td></tr><tr><td colspan='2'>";
+        
+        // password field
+        echo __('Password (optional depending on the protocol and server configuration)', 'nebackup') . "</td><td colspan='2'>";
+        echo str_replace('type="text"', 'type="password"', Html::input("password", array('value' => $row['password'])));
         
         echo "</td></tr><tr><td colspan='2'>";
         
@@ -95,19 +117,30 @@ class PluginNebackupEntity extends CommonDBTM {
         echo __('SNMP Community', 'nebackup') . "</td><td colspan='2'>";
         $plugin = new Plugin();
         if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
-            echo Html::input("tftp_passwd", array('value' => $row['tftp_passwd']));
+            echo Html::input("community", array('value' => $row['community']));
         } else {
             echo "<b style='color:red;'>"
                 . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
                 . "</b>";
         }
         
-        // telnet password field
+        // telnet username and password field
+        echo "</td></tr><tr><td colspan='2'>";
+        echo __('Telnet username (only for HP Procurve)', 'nebackup') . "</td><td colspan='2'>";
+        $plugin = new Plugin();
+        if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
+            echo Html::input("telnet_username", array('value' => $row['telnet_username']));
+        } else {
+            echo "<b style='color:red;'>"
+                . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
+                . "</b>";
+        }
+        
         echo "</td></tr><tr><td colspan='2'>";
         echo __('Telnet password (only for HP Procurve)', 'nebackup') . "</td><td colspan='2'>";
         $plugin = new Plugin();
         if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
-            echo Html::input("telnet_passwd", array('value' => $row['telnet_passwd']));
+            echo Html::input("telnet_password", array('value' => $row['telnet_password']));
         } else {
             echo "<b style='color:red;'>"
                 . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
@@ -145,17 +178,17 @@ class PluginNebackupEntity extends CommonDBTM {
     public function setEntityData($data) {
         global $DB;
 
-        $data['tftp_server'] = str_replace(' ', '', $data['tftp_server']);
-        if (isset($data['tftp_passwd'])) {
-            $data['tftp_passwd'] = str_replace(' ', '', $data['tftp_passwd']);
+        $data['server'] = str_replace(' ', '', $data['server']);
+        if (isset($data['community'])) {
+            $data['community'] = str_replace(' ', '', $data['community']);
         }
         
-        if (isset($data['telnet_passwd'])) {
-            $data['telnet_passwd'] = str_replace(' ', '', $data['telnet_passwd']);
+        if (isset($data['telnet_password'])) {
+            $data['telnet_password'] = str_replace(' ', '', $data['telnet_password']);
         }
 
         // purge
-        if (isset($data['purge']) or $data['tftp_server'] == '') {
+        if (isset($data['purge']) or $data['server'] == '') {
 
             /*if (self::hasEntityParent($data['id'])) {
                 Session::addMessageAfterRedirect(__("You must delete the configuration in the parent entity to delete this configuration.", 'nebackup'), false, ERROR);
@@ -181,24 +214,36 @@ class PluginNebackupEntity extends CommonDBTM {
                 $sub_entities_ids .= self::getSonsOfEntity($data['id']);
 
                 $query = "UPDATE `glpi_plugin_nebackup_entities` ";
-                $query .= "SET tftp_server = '" . $data['tftp_server'] . "' ";
-                if (isset($data['tftp_passwd']))
-                    $query .= ", tftp_passwd = '" . $data['tftp_passwd'] . "' ";
-                if (isset($data['telnet_passwd']))
-                    $query .= ", telnet_passwd = '" . $data['telnet_passwd'] . "' ";
+                $query .= "SET server = '" . $data['server'] . "', ";
+                $query .= "protocol = '" . $data['protocol'] . "', ";
+                $query .= "username = '" . $data['username'] . "', ";
+                $query .= "password = '" . $data['password'] . "' ";
+                if (isset($data['community'])) {
+                    $query .= ", community = '" . $data['community'] . "' ";
+                }
+                if (isset($data['telnet_password'])) {
+                    $query .= ", telnet_password = '" . $data['telnet_password'] . "' ";
+                }
+                if (isset($data['telnet_username'])) {
+                    $query .= ", telnet_username = '" . $data['telnet_username'] . "' ";
+                }
                 $query .= "WHERE id = " . $data['id'] . " OR entities_id in (" . $sub_entities_ids . ")";
 
                 // insert
             } else {
-                $data['tftp_passwd'] = (isset($data['tftp_passwd'])) ? $data['tftp_passwd'] : '' ;
-                $data['telnet_passwd'] = (isset($data['telnet_passwd'])) ? $data['telnet_passwd'] : '' ;
+                $data['community'] = (isset($data['community'])) ? $data['community'] : '' ;
+                $data['telnet_password'] = (isset($data['telnet_password'])) ? $data['telnet_password'] : '' ;
                 
                 $query = "INSERT INTO glpi_plugin_nebackup_entities";
-                $query .= "(entities_id, tftp_server, tftp_passwd, telnet_passwd, is_recursive) VALUES ";
+                $query .= "(entities_id, server, community, telnet_password, is_recursive) VALUES ";
                 $query .= "(" . $data['entity_id_edited'] . ", ";
-                $query .= "'" . $data['tftp_server'] . "', ";
-                $query .= "'" . $data['tftp_passwd'] . "', ";
-                $query .= "'" . $data['telnet_passwd'] . "', ";
+                $query .= "'" . $data['server'] . "', ";
+                $query .= "'" . $data['community'] . "', ";
+                $query .= "'" . $data['protocol'] . "', ";
+                $query .= "'" . $data['username'] . "', ";
+                $query .= "'" . $data['password'] . "', ";
+                $query .= "'" . $data['telnet_password'] . "', ";
+                $query .= "'" . $data['telnet_username'] . "', ";
                 $query .= "" . $data['is_recursive'] . ")";
 
                 if ($data['is_recursive'] = 1) {
@@ -211,9 +256,9 @@ class PluginNebackupEntity extends CommonDBTM {
                         // add an insert value for each son entity
                         foreach ($DB->request($sql) as $data2) {
                             $query .= ",(" . $data2['id'] . ", ";
-                            $query .= "'" . $data['tftp_server'] . "', ";
-                            $query .= "'" . $data['tftp_passwd'] . "', ";
-                            $query .= "'" . $data['telnet_passwd'] . "', ";
+                            $query .= "'" . $data['server'] . "', ";
+                            $query .= "'" . $data['community'] . "', ";
+                            $query .= "'" . $data['telnet_password'] . "', ";
                             $query .= "" . $data['is_recursive'] . ") ";
                         }
                     }

@@ -147,6 +147,11 @@ function plugin_nebackup_install() {
     if (TableExists("glpi_plugin_nebackup_configs")) {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.1.3.sql");
     }
+    
+    // actualización version => 2.2.0
+    if (TableExists("glpi_plugin_nebackup_entities")) {
+        $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.2.0.sql");
+    }
 
     return true;
 }

@@ -48,10 +48,29 @@ class PluginNebackupConfig extends CommonDBTM {
      */
     const DEBUG_NEBACKUP = false;
 
+    /**
+     * Return array of protocols. 
+     * #1. tftp
+     * #2. ftp
+     * #3. rcp
+     * #4. scp
+     * #5. sftp
+     * @return array 
+     */
+    static function getProtocols() {
+        return array(1 => 'tftp', 2 => 'ftp', 3 => 'rcp', 4 => 'scp', 5 => 'sftp');
+    }
+    
+    /**
+     * @inheritdoc
+     */
     static function getTypeName($nb = 0) {
         return __("NEBackup", "nebackup");
     }
 
+    /**
+     * @inheritdoc
+     */
     function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
         if (!$withtemplate) {
             if ($item->getType() == 'Config') {
@@ -61,11 +80,10 @@ class PluginNebackupConfig extends CommonDBTM {
         return '';
     }
 
-    static function configUpdate($input) {
-        $input['configuration'] = 1 - $input['configuration'];
-        return $input;
-    }
-
+    /**
+     * Sets the crontask named nebackup.
+     * @param type $time_in_seconds Time in seconds.
+     */
     function setCronTask($time_in_seconds = null) {
 
         $time_in_seconds = ($time_in_seconds == null) ? "86400" : $time_in_seconds;
@@ -87,6 +105,11 @@ class PluginNebackupConfig extends CommonDBTM {
         }
     }
 
+    /**
+     * Show formulary on config page.
+     * @global type $CFG_GLPI
+     * @return boolean
+     */
     function showFormNebackup() {
         global $CFG_GLPI;
         if (!Session::haveRight("config", UPDATE)) {
@@ -150,25 +173,6 @@ class PluginNebackupConfig extends CommonDBTM {
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . __('Select manufacturer for ', "nebackup") . "'$v'" . __(' network equipments: ', 'nebackup') . "</td>";
             echo "<td colspan='3'>";
-            /* array of possible options:
-             * - name : string / name of the select (default is depending itemtype)     
-             * - value : integer / preselected value (default -1)     
-             * - comments : boolean / is the comments displayed near the dropdown (default true)     
-             * - toadd : array / array of specific values to add at the begining     
-             * - entity : integer or array / restrict to a defined entity or array of entities (default -1 : no restriction)     
-             * - entity_sons : boolean / if entity restrict specified auto select its sons only available if entity is a single value not an array (default false)     
-             * - toupdate : array / Update a specific item on select change on dropdown (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information) and may have moreparams)     
-             * - used : array / Already used items ID: not to display in dropdown (default empty)     
-             * - on_change : string / value to transmit to "onChange"     
-             * - rand : integer / already computed rand value     
-             * - condition : string / aditional SQL condition to limit display     
-             * - displaywith : array / array of field to display with request     
-             * - emptylabel : Empty choice's label (default self::EMPTY_VALUE)     
-             * - display_emptychoice : Display emptychoice ? (default true)     
-             * - display : boolean / display or get string (default true)     
-             * - width : specific width needed (default auto adaptive)     
-             * - permit_select_parent : boolean / for tree dropdown permit to see parent items not available by default (default false)     
-             * - specific_tags : array of HTML5 tags to add the the field */
             Dropdown::show(
                 "manufacturer", array(
                 'name' => $v . '_manufacturers_id',
@@ -195,6 +199,9 @@ class PluginNebackupConfig extends CommonDBTM {
         return explode(",", self::SUPPORTED_MANUFACTURERS);
     }
 
+    /**
+     * @inheritdoc
+     */
     static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
         if ($item->getType() == 'Config') {
             $config = new self();
