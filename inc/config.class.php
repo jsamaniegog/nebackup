@@ -138,17 +138,23 @@ class PluginNebackupConfig extends CommonDBTM {
         }
 
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Select type to switch backup: ', 'nebackup') . "</td>";
+        echo "<td>" . __('Select network equipment type to backup (empty value "', 'nebackup') . Dropdown::EMPTY_VALUE . __('" never is backed up): ', 'nebackup') . "</td>";
         echo "<td colspan='3'>";
-        Dropdown::show(
-            "networkequipmenttype", array(
-            'name' => 'networkequipmenttype_id',
-            'value' => $this->getNetworkEquipmentTypeId()
-        ));
+        $type = new NetworkEquipmentType();
+        $types = $type->find();
+        foreach ($types as $key => $type) {
+            $types[$key] = $type['name'];
+        }
+        Dropdown::showFromArray(
+            'networkequipmenttype_id', $types, array(
+            'values' => $this->getTypesId(),
+            'multiple' => true
+            )
+        );
         echo "</td></tr>";
         
         echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Select the different states to backup (empty value "', 'nebackup') . Dropdown::EMPTY_VALUE . __('" is alwais backed up): ', 'nebackup') . "</td>";
+        echo "<td>" . __('Select the different states to backup (empty value "', 'nebackup') . Dropdown::EMPTY_VALUE . __('" alwais is backed up): ', 'nebackup') . "</td>";
         echo "<td colspan='3'>";
         $state = new State();
         $states = $state->find();
@@ -233,7 +239,7 @@ class PluginNebackupConfig extends CommonDBTM {
         global $DB;
 
         $query = "UPDATE `glpi_plugin_nebackup_configs` ";
-        $query .= "SET value = '" . $networkequipmenttype_id . "' ";
+        $query .= "SET value = '" . implode(",", $networkequipmenttype_id) . "' ";
         $query .= "WHERE type = 'networkequipmenttype_id'";
 
         return $DB->query($query);
@@ -290,6 +296,24 @@ class PluginNebackupConfig extends CommonDBTM {
         if ($result = $DB->query($query)) {
             $row = $result->fetch_assoc(); // cogemos el primero
             return $row['value'];
+        }
+
+        return false;
+    }
+    
+    /**
+     * Return id of the selected states (status field of GLPI).
+     * @global type $DB
+     * @return boolean|array Return an array of id's with the states. If don't exist return false.
+     */
+    public function getTypesId() {
+        global $DB;
+
+        $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'networkequipmenttype_id'";
+
+        if ($result = $DB->query($query)) {
+            $row = $result->fetch_assoc(); // cogemos el primero
+            return explode(",", $row['value']);
         }
 
         return false;

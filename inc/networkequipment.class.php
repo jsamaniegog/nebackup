@@ -91,7 +91,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         foreach ($config_data as $key => $value) {
             // si coincide el tipo
             if ($value['type'] == 'networkequipmenttype_id'
-                and $networkequipmenttypes_id == $value['value']
+                and in_array($networkequipmenttypes_id, explode(",", $value['value']))
             ) {
                 $type = true;
             }
@@ -285,7 +285,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             echo '</td></tr>';
 
             // last run of cron task
-            echo '<tr><td>' . __('Last run: ', 'nebackup') . '</td><td>';
+            echo '<tr><td>' . __('Last cron execution: ', 'nebackup') . '</td><td>';
             if ($cron->fields['lastrun'] != "") {
                 echo '<i>' . $cron->fields['lastrun'] . '</i></td></tr>';
             } else {
@@ -341,13 +341,25 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             . "nee.username, nee.password, nee.community, "
             . "nee.telnet_password, nee.telnet_username, "
             . "e.name entitie_name ";
-        if ($plugin->isActivated("fusioninventory") and $use_fusioninventory == 1) {
+        if ($manufacturer !== 'hpprocurve' 
+            and $plugin->isActivated("fusioninventory") 
+            and $use_fusioninventory == 1
+        ) {
             $sql .= ", pfc.community as fi_community, pfc.snmpversion ";
         }
 
-        $sql .= "FROM glpi_networkequipments n, glpi_manufacturers m, glpi_networkports np, glpi_networknames nn, glpi_ipaddresses ip, glpi_plugin_nebackup_entities nee, glpi_entities e ";
-        if ($plugin->isActivated("fusioninventory") and $use_fusioninventory == 1) {
+        $sql .= "FROM glpi_manufacturers m, glpi_networkports np, ";
+        $sql .= "glpi_networknames nn, glpi_ipaddresses ip, ";
+        $sql .= "glpi_plugin_nebackup_entities nee, glpi_entities e, ";
+        $sql .= "glpi_networkequipments n ";
+        if ($manufacturer !== 'hpprocurve' 
+            and $plugin->isActivated("fusioninventory") 
+            and $use_fusioninventory == 1
+        ) {
             $sql .= ", glpi_plugin_nebackup_networkequipments pnn, glpi_plugin_fusioninventory_configsecurities pfc ";
+            
+        } elseif ($manufacturer === 'hpprocurve') {
+            $sql .= "LEFT JOIN glpi_plugin_nebackup_networkequipments pnn ON n.id = pnn.networkequipments_id ";
         }
 
         $sql .= "WHERE n.manufacturers_id = m.id AND m.id = (select value from glpi_plugin_nebackup_configs where type = '" . $manufacturer . "_manufacturers_id') ";
@@ -355,7 +367,8 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         // filtro por id
         $sql = (isset($networkequipment_id)) ? $sql . "AND n.id = " . $networkequipment_id . " " : $sql;
 
-        // filtro por estado
+        // filtro por estado y tipo
+        // null value alwais is done
         $config = new PluginNebackupConfig();
         $states_id = $config->getStatesId();
         if ($states_id === false or empty($states_id) or $states_id[0] == "") {
@@ -363,16 +376,26 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         } else {
             $states_id = array_merge(array("null", 0), $states_id);
         }
-        $sql .= "AND n.states_id in (" . implode(",", $states_id) . ") ";
         
-        $sql .= "AND np.itemtype = 'NetworkEquipment' AND n.id = np.items_id AND np.instantiation_type = 'NetworkPortAggregate' ";
+        // no null value for types
+        $types_id = $config->getTypesId();
+        if ($types_id === false or empty($types_id) or $types_id[0] == "") {
+            $types_id = array();
+        }
+        
+        $sql .= "AND np.itemtype = 'NetworkEquipment' AND n.id = np.items_id "
+            . "AND np.instantiation_type = 'NetworkPortAggregate' ";
         $sql .= "AND nn.itemtype = 'NetworkPort' AND np.id = nn.items_id ";
         $sql .= "AND ip.itemtype = 'NetworkName' AND nn.id = ip.items_id ";
 
-        $sql .= "AND n.networkequipmenttypes_id = (select value from glpi_plugin_nebackup_configs where type = 'networkequipmenttype_id') ";
+        $sql .= "AND n.states_id in (" . implode(",", $states_id) . ") ";
+        $sql .= "AND n.networkequipmenttypes_id in (" . implode(",", $types_id) . ") ";
         $sql .= "AND n.entities_id = nee.entities_id AND nee.entities_id = e.id ";
 
-        if ($plugin->isActivated("fusioninventory") and $use_fusioninventory == 1) {
+        if ($manufacturer !== 'hpprocurve' 
+            and $plugin->isActivated("fusioninventory") 
+            and $use_fusioninventory == 1
+        ) {
             $sql .= "AND n.id = pnn.networkequipments_id AND pnn.plugin_fusioninventory_configsecurities_id = pfc.id ";
         }
 

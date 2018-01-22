@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2018-01-22 13:14+0100\n"
-"PO-Revision-Date: 2018-01-22 13:15+0100\n"
+"POT-Creation-Date: 2018-01-22 14:02+0100\n"
+"PO-Revision-Date: 2018-01-22 14:03+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -47,7 +47,7 @@ msgid "NEBackup - Backup"
 msgstr "NEBackup - Copia de Seguridad"
 
 #: inc/backup.class.php:27 inc/networkequipment.class.php:134
-#: inc/networkequipment.class.php:227 inc/networkequipment.class.php:480
+#: inc/networkequipment.class.php:227 inc/networkequipment.class.php:503
 msgid "Backup"
 msgstr "Copia de Seguridad"
 
@@ -129,7 +129,7 @@ msgstr ""
 "Tiempo de espera para hacer la copia de seguridad de un equipo (en "
 "segundos): "
 
-#: inc/config.class.php:134 inc/networkequipment.class.php:617
+#: inc/config.class.php:134 inc/networkequipment.class.php:640
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
@@ -137,29 +137,29 @@ msgstr "Usar autentificación SNMP de FusionInventory: "
 msgid "Select type to switch backup: "
 msgstr "Selecciona el tipo para la copia de seguridad de switches: "
 
-#: inc/config.class.php:151
+#: inc/config.class.php:157
 msgid "Select the different states to backup (empty value \""
 msgstr ""
 "Seleccione los diferentes estados para realizar la copia de seguridad (valor "
 "vacío \""
 
-#: inc/config.class.php:151
+#: inc/config.class.php:157
 msgid "\" is alwais backed up): "
 msgstr "\" siempre se hace): "
 
-#: inc/config.class.php:166
+#: inc/config.class.php:172
 msgid "Manufacturers"
 msgstr "Fabricantes"
 
-#: inc/config.class.php:169
+#: inc/config.class.php:175
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:169
+#: inc/config.class.php:175
 msgid " network equipments: "
 msgstr " en la electrónica de red "
 
-#: inc/config.class.php:183
+#: inc/config.class.php:189
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -167,7 +167,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:183
+#: inc/config.class.php:189
 msgid "Entities"
 msgstr "Entidades"
 
@@ -293,8 +293,8 @@ msgid "(Warning: File not copied at last run)"
 msgstr "(Alerta: archivo no copiado en la última ejecución)"
 
 #: inc/networkequipment.class.php:288
-msgid "Last run: "
-msgstr "Última ejecución: "
+msgid "Last cron execution: "
+msgstr "Última ejecución de la tarea automática: "
 
 #: inc/networkequipment.class.php:292
 msgid "No cron date"
@@ -316,11 +316,11 @@ msgstr "Servidor: "
 msgid "Server path: "
 msgstr "Ruta del servidor: "
 
-#: inc/networkequipment.class.php:403
+#: inc/networkequipment.class.php:426
 msgid "Configuration of authentication"
 msgstr "Configuración de la autentificación"
 
-#: inc/networkequipment.class.php:405
+#: inc/networkequipment.class.php:428
 msgid ""
 "Complete only if this equipment has individual configuration for telnet "
 "conections."
@@ -328,36 +328,36 @@ msgstr ""
 "Completar solo si este equipo tiene una configuración individual para "
 "conexiones telnet."
 
-#: inc/networkequipment.class.php:411
+#: inc/networkequipment.class.php:434
 msgid "Telnet username (only for HP Procurve):"
 msgstr "Usuario de Telnet (solo para HP Procurve):"
 
-#: inc/networkequipment.class.php:416
+#: inc/networkequipment.class.php:439
 msgid "Telnet password (only for HP Procurve):"
 msgstr "Contraseña de Telnet (solo para HP Procurve):"
 
-#: inc/networkequipment.class.php:423 inc/networkequipment.class.php:463
+#: inc/networkequipment.class.php:446 inc/networkequipment.class.php:486
 msgid "Update"
 msgstr "Actualizar"
 
-#: inc/networkequipment.class.php:437
+#: inc/networkequipment.class.php:460
 msgid "Configuration of SNMP authentication"
 msgstr "Configuración de la autentificación SNMP"
 
-#: inc/networkequipment.class.php:447
+#: inc/networkequipment.class.php:470
 msgid "The backup will not be done unless you set up a credential."
 msgstr ""
 "No se realizará la copia de seguridad a menos que configure una credencial."
 
-#: inc/networkequipment.class.php:451
+#: inc/networkequipment.class.php:474
 msgid "SNMP authentication (READ/WRITE community): "
 msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 
-#: inc/networkequipment.class.php:617
+#: inc/networkequipment.class.php:640
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
 
-#: inc/networkequipment.class.php:699
+#: inc/networkequipment.class.php:722
 msgid "Unknown protocol"
 msgstr "Protocolo desconocido"
 
