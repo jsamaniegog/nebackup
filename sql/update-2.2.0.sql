@@ -21,3 +21,13 @@ ALTER TABLE `glpi_plugin_nebackup_entities` ADD `telnet_username` CHAR(32) NULL 
 ALTER TABLE `glpi_plugin_nebackup_entities` CHANGE `tftp_server` `server` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '';
 ALTER TABLE `glpi_plugin_nebackup_entities` CHANGE `tftp_passwd` `community` CHAR(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '';
 ALTER TABLE `glpi_plugin_nebackup_entities` CHANGE `telnet_passwd` `telnet_password` CHAR(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '';
+
+ALTER TABLE `glpi_plugin_nebackup_networkequipments` ADD `telnet_username` CHAR(32) NULL DEFAULT NULL AFTER `plugin_fusioninventory_configsecurities_id`;
+ALTER TABLE `glpi_plugin_nebackup_networkequipments` ADD `telnet_password` CHAR(128) NULL DEFAULT NULL AFTER `telnet_username`;
+
+UPDATE glpi_plugin_nebackup_networkequipments nn
+INNER JOIN glpi_plugin_fusioninventory_configsecurities fc ON nn.plugin_fusioninventory_configsecurities_id = fc.id
+SET telnet_username = 'admin', telnet_password = fc.community
+WHERE nn.networkequipments_id in 
+(SELECT id FROM glpi_networkequipments WHERE manufacturers_id = 
+(SELECT value FROM glpi_plugin_nebackup_configs WHERE type = 'hpprocurve_manufacturers_id'));

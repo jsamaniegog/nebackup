@@ -170,30 +170,43 @@ class PluginNebackupBackup extends CommonDBTM {
                 continue;
             }
 
+            // todo: quitar esta particularidad cuando se encuentre un modo mejor que el telnet
+            if ($manufacturer == 'hpprocurve') {
+                // check if there is individual user/password
+                $telnetAuth = PluginNebackupNetworkEquipment::getAuthTelnet($reg['id']);
+                
+                // individual or general configuration for telnet auth.
+                if (trim($telnetAuth['telnet_username']) != '') {
+                    $reg['username'] = $telnetAuth['telnet_username'];
+                    $reg['password'] = $telnetAuth['telnet_password'];
+                } else {
+                    $reg['username'] = $reg['telnet_username'];
+                    $reg['password'] = $reg['telnet_password'];
+                }
+            }
+            
             // si el plugin fusioninventory está activado tomamos los datos de 
             // sus tablas para la comunidad snmp
             if (isset($reg['fi_community'])) {
                 $reg['community'] = $reg['fi_community'];
-
-                $community = escapeshellcmd($reg['community']);
-
-                if (!self::checkServerAlive($server, $reg['protocol'])) {
-                    continue;
-                }
-            } else {
-                // todo: quitar esta particularidad cuando se encuentre un modo mejor que el telnet
-                if ($manufacturer == 'hpprocurve') {
-                    $community = escapeshellcmd($reg['telnet_password']);
-                } else {
-                    $community = escapeshellcmd($reg['community']);
-                }
-
-
-                if (!self::checkServerAlive($server, $reg['protocol'])) {
-                    return;
-                }
             }
 
+            $community = escapeshellcmd($reg['community']);
+            $username = escapeshellcmd($reg['username']);
+            $password = escapeshellcmd($reg['password']);
+
+            // hack para evitar que falle el script
+            if ($username == '') {
+                $username = '-';
+            }
+            if ($password == '') {
+                $password = '-';
+            }
+            
+            if (!self::checkServerAlive($server, $reg['protocol'])) {
+                return;
+            }
+            
             if ($community == '') {
                 continue;
             }
@@ -212,10 +225,6 @@ class PluginNebackupBackup extends CommonDBTM {
             $entitie_name = $reg['entitie_name'];
             // protocolo
             $protocol = $reg['protocol'];
-            // username of the server
-            $username = $reg['username'];
-            // password for username
-            $password = $reg['password'];
 
             // esta variable controla el número del script, hay 3 scripts: 
             // uno inicia la copia, el segundo la comprueba a ver si ha 
@@ -225,16 +234,9 @@ class PluginNebackupBackup extends CommonDBTM {
             $error = ""; // inicializamos $error
 
             do {
-                if ($num_script == 1) {
-                    // hacemos un ping para ver si está viva la ip
-                    // PING con 1 paquete, 1 segundo de time out
-                    $comando = `/bin/ping $ip -c1 -W1`;
-
-                    // Si encuentra esta cadena es que no ha recibido paquetes
-                    if (preg_match('/0 received/', $comando) != 0) {
+                if ($num_script == 1 and !PluginNebackupUtil::ping($ip)) {
                         $error = __("The network equipment does not respond to the ping", "nebackup") . ". IP: " . $ip;
                         break;
-                    }
                 }
 
                 if ($num_script == 2) {
@@ -413,16 +415,26 @@ class PluginNebackupBackup extends CommonDBTM {
         return $resultado;
     }
 
+    /**
+     * Checks if a server responds.
+     * @param type $server
+     * @param type $protocol
+     * @return type
+     */
     static private function checkServerAlive($server, $protocol) {
         switch ($protocol) {
             case '1':
-                $result = self::checkTftpServerAlive($server);
+                if (PluginNebackupUtil::ping($server)) {
+                    $toReturn = self::checkTftpServerAlive($server);
+                } else {
+                    $toReturn = false;
+                }
                 break;
 
-            default: return true;
+            default: $toReturn = PluginNebackupUtil::ping($server);
         }
 
-        return $result;
+        return $toReturn;
     }
 
     /**
@@ -434,9 +446,10 @@ class PluginNebackupBackup extends CommonDBTM {
         if (!$tftp_server)
             return false;
 
-        $command = `tftp $tftp_server -c get TeSt_FiLe_NEBackup`;
-        if (!preg_match('/Transfer timed out/', $command))
+        $command = `tftp $tftp_server -c get TeSt_FiLe_NEBackup 2>&1`;
+        if (!preg_match('/Transfer timed out/', $command)) {
             return true;
+        }
 
         return false;
     }

@@ -33,7 +33,17 @@ if (isset($_POST['update'])) {
     try {
         $config = new PluginNebackupNetworkEquipment();
 
-        $config->setSNMPAuth($_POST['networkequipments_id'], $_POST['plugin_fusioninventory_configsecurities_id']);
+        if (isset($_POST['telnet_username'])) {
+            $config->setAuthTelnet(
+                $_POST['networkequipments_id'],
+                $_POST['telnet_username'],
+                $_POST['telnet_password']
+            );
+        }
+        
+        if (isset($_POST['plugin_fusioninventory_configsecurities_id'])) {
+            $config->setSNMPAuth($_POST['networkequipments_id'], $_POST['plugin_fusioninventory_configsecurities_id']);
+        }
 
     } catch (Exception $e) {
         Session::addMessageAfterRedirect(__("Error on save", "nebackup"), false, ERROR);

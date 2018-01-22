@@ -143,13 +143,23 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             return false;
         }
 
+        $plugin = new Plugin();
+        
+        $use_fusioninventory = ($plugin->isActivated("fusioninventory") 
+            and PluginNebackupConfig::getUseFusionInventory() == 1) ?
+            true :
+            false;
+        
         // first check if we have a record and if type and manufacturer match
         $query = "SELECT nee.username, nee.password, nee.protocol, nee.server, e.name entity_name, ";
         $query .= "(SELECT REPLACE(type, '_manufacturers_id', '')";
+        
         $query .= " FROM glpi_plugin_nebackup_configs";
         $query .= " WHERE type like '%_manufacturers_id' AND value = " . $datos->fields['manufacturers_id'] . ") as manufacturer ";
         $query .= "FROM glpi_plugin_nebackup_entities nee, glpi_entities e ";
+        
         $query .= "WHERE nee.entities_id = e.id AND nee.entities_id = " . $datos->fields['entities_id'];
+        
         if ($result = $DB->query($query)) {
             $result = $result->fetch_assoc();
 
@@ -163,11 +173,28 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
 
         // form SNMP auth if FusionInventory is installed and actived
-        $plugin = new Plugin();
-        if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
+        if ($use_fusioninventory and $manufacturer !== 'hpprocurve') {
             $this->showFormSNMPAuth($datos);
+            
+//            $query = "SELECT pfc.username as fi_username, pfc.auth_passphrase as fi_password ";
+//            $query .= "FROM glpi_networkequipments n, glpi_plugin_nebackup_networkequipments pnn,";
+//            $query .= " glpi_plugin_fusioninventory_configsecurities pfc ";
+//            $query .= "WHERE n.id = " . $datos->fields['id'] . " AND n.id = pnn.networkequipments_id";
+//            $query .= " AND pnn.plugin_fusioninventory_configsecurities_id = pfc.id ";
+//            if ($result_fi = $DB->query($query)) {
+//                $result_fi = $result_fi->fetch_assoc();
+//
+//                if ($result_fi) {
+//                    $result['username'] = $result_fi['fi_username'];
+//                    $result['password'] = $result_fi['fi_password'];
+//                }
+//            }
         }
 
+        if ($manufacturer === 'hpprocurve') {
+            $this->showFormAuthTelnet($datos);
+        }
+        
         // local path to temporal file
         $tmp_file = GLPI_ROOT . "/files/_cache/nebackup_" . $datos->fields['name'] . ".tmp";
 
@@ -181,7 +208,12 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         } else {
 
             // get the file from tftp
-            $remote_path = PluginNebackupConfig::getBackupPath(true, $result['manufacturer'], $result['entity_name']) . '/' . PluginNebackupBackup::escapeName($datos->fields['name']);
+            $remote_path = PluginNebackupConfig::getBackupPath(
+                true, 
+                $result['manufacturer'], 
+                $result['entity_name']) . '/' . PluginNebackupBackup::escapeName($datos->fields['name']
+            );
+            
             $command_result = self::getFileFromServer(
                 $result['server'], 
                 $remote_path, 
@@ -357,27 +389,75 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
      * Show the form to save snmp authentication. Only if FusionInventory plugin
      * is actived.
      */
-    private function showFormSNMPAuth(CommonGLPI $item) {
-        global $CFG_GLPI;
+    private function showFormAuthTelnet(CommonGLPI $item) {
+        global $CFG_GLPI,$DB;
 
-        echo '<h3>' . __("Configuration of the SNMP authentication", 'nebackup') . '</h3>';
+        $sql = "SELECT telnet_username, telnet_password ";
+        $sql .= "FROM glpi_plugin_nebackup_networkequipments ";
+        $sql .= "WHERE networkequipments_id = " . $item->fields['id'];
+
+        if ($result = $DB->query($sql)) {
+            $result = $DB->fetch_assoc($result);
+        }
+        
+        echo '<h3>' . __("Configuration of authentication", 'nebackup') . '</h3>';
+        echo "<h4>"
+            . __('Complete only if this equipment has individual configuration for telnet conections.', 'nebackup') 
+            . "</h4>";
 
         echo "<form name='form' method='post' action='" . $CFG_GLPI['root_doc'] . "/plugins/nebackup/front/networkequipment.form.php" . "'>";
 
         echo "<table><tr>";
+        echo "<td align='center'>" . __('Telnet username (only for HP Procurve):', 'nebackup') . "</td>";
+        echo "<td>";
+        echo Html::hidden('networkequipments_id', array('value' => $item->fields['id']));
+        echo Html::input("telnet_username", array('value' => $result['telnet_username']));
+        echo "</td>";
+        echo "<td align='center'>" . __('Telnet password (only for HP Procurve):', 'nebackup') . "</td>";
+        echo "<td>";
+        echo str_replace('type="text"', 'type="password"', Html::input("telnet_password", array('value' => $result['telnet_password'])));
+        echo "</td>";
+        
+        echo "</td></tr>";
+        echo "<tr><td align='center' colspan='2'>";
+        echo "<input type='submit' name='update' value=\"" . __('Update') . "\" class='submit' >";
+        echo "</td></tr>";
+        echo "</table>";
+
+        Html::closeForm();
+    }
+    
+    /**
+     * Show the form to save snmp authentication. Only if FusionInventory plugin
+     * is actived.
+     */
+    private function showFormSNMPAuth(CommonGLPI $item) {
+        global $CFG_GLPI;
+
+        echo '<h3>' . __("Configuration of SNMP authentication", 'nebackup') . '</h3>';
+
+        echo "<form name='form' method='post' action='" . $CFG_GLPI['root_doc'] . "/plugins/nebackup/front/networkequipment.form.php" . "'>";
+
+        $snmpauth = $this->getSNMPAuth($item->fields['id']);
+        
+        echo "<table><tr>";
+        if (!$snmpauth) {
+            echo "<tr>"
+                . "<td colspan='2' align='center' style='color:orange;'><strong>" 
+                . __('The backup will not be done unless you set up a credential.', 'nebackup') 
+                . "</strong></td>"
+                . "</tr>";
+        }
         echo "<td align='center'>" . __('SNMP authentication (READ/WRITE community): ', 'nebackup') . "</td>";
         echo "<td align='center'>";
         echo Html::hidden('networkequipments_id', array('value' => $item->fields['id']));
 
         if (strstr(Plugin::getInfo('fusioninventory', 'version'), '0.90')) {
-            PluginFusioninventoryConfigSecurity::auth_dropdown(
-                $this->getSNMPAuth($item->fields['id'])
-            );
+            PluginFusioninventoryConfigSecurity::auth_dropdown($snmpauth);
         } else {
-            PluginFusioninventoryConfigSecurity::authDropdown(
-                $this->getSNMPAuth($item->fields['id'])
-            );
+            PluginFusioninventoryConfigSecurity::authDropdown($snmpauth);
         }
+        
         echo "</td></tr>";
         echo "<tr><td align='center' colspan='2'>";
         echo "<input type='submit' name='update' value=\"" . __('Update') . "\" class='submit' >";
@@ -413,6 +493,22 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
     }
 
+    private function existsRecord($networkequipments_id) {
+        global $DB;
+        
+        $sql = "SELECT count(*) cuenta FROM glpi_plugin_nebackup_networkequipments ";
+        $sql .= "WHERE networkequipments_id = $networkequipments_id ";
+
+        if ($result = $DB->query($sql)) {
+            $result = $DB->fetch_assoc($result);
+            if ($result['cuenta'] != 0) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     /**
      * Set SNMP authentication. Only if FusionInventory plugin is actived.
      * @param type $plugin_fusioninventory_configsecurities_id
@@ -421,25 +517,18 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         global $DB;
 
         if ($plugin_fusioninventory_configsecurities_id == 0) {
-            $sql = "DELETE FROM glpi_plugin_nebackup_networkequipments ";
+            $plugin_fusioninventory_configsecurities_id = 'NULL';
+        }
+        
+        if ($this->existsRecord($networkequipments_id)) {
+            $sql = "UPDATE glpi_plugin_nebackup_networkequipments ";
+            $sql .= "SET plugin_fusioninventory_configsecurities_id = $plugin_fusioninventory_configsecurities_id ";
             $sql .= "WHERE networkequipments_id = $networkequipments_id";
         } else {
-            $sql = "SELECT count(*) cuenta FROM glpi_plugin_nebackup_networkequipments ";
-            $sql .= "WHERE networkequipments_id = $networkequipments_id ";
-
-            if ($result = $DB->query($sql)) {
-                $result = $DB->fetch_assoc($result);
-                if ($result['cuenta'] != 0) {
-                    $sql = "UPDATE glpi_plugin_nebackup_networkequipments ";
-                    $sql .= "SET plugin_fusioninventory_configsecurities_id = $plugin_fusioninventory_configsecurities_id ";
-                    $sql .= "WHERE networkequipments_id = $networkequipments_id";
-                } else {
-                    $sql = "INSERT INTO glpi_plugin_nebackup_networkequipments(networkequipments_id, plugin_fusioninventory_configsecurities_id) ";
-                    $sql .= "VALUES($networkequipments_id, $plugin_fusioninventory_configsecurities_id)";
-                }
-            }
+            $sql = "INSERT INTO glpi_plugin_nebackup_networkequipments(networkequipments_id, plugin_fusioninventory_configsecurities_id) ";
+            $sql .= "VALUES($networkequipments_id, $plugin_fusioninventory_configsecurities_id)";
         }
-
+        
         return $DB->query($sql);
     }
 
@@ -463,7 +552,55 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
         }
     }
+    
+    /**
+     * Sets authentication for one network equipment.
+     * @param type $networkequipments_id
+     * @param type $username
+     * @param type $password
+     * @param type $telnet_username
+     * @param type $telnet_password
+     */
+    public function setAuthTelnet($networkequipments_id, $telnet_username, 
+        $telnet_password
+    ) {
+        global $DB;
+        
+        if ($this->existsRecord($networkequipments_id)) {
+            $sql = "UPDATE glpi_plugin_nebackup_networkequipments ";
+            $sql .= "SET telnet_username = '" . $telnet_username . "', ";
+            $sql .= "telnet_password = '" . $telnet_password . "' ";
+            $sql .= "WHERE networkequipments_id = " . $networkequipments_id;
+            
+        } else {
+            $sql = "INSERT INTO glpi_plugin_nebackup_networkequipments";
+            $sql .= "(networkequipments_id, telnet_username, telnet_password) ";
+            $sql .= "VALUES($networkequipments_id, '$telnet_username', '$telnet_password')";
+        }
+        
+        return $DB->query($sql);
+    }
 
+    /**
+     * Return user an password for telnet.
+     * @global type $DB
+     * @param type $networkequipments_id
+     * @return boolean|array Associative array or false.
+     */
+    static public function getAuthTelnet($networkequipments_id) {
+        global $DB;
+        
+        $sql = "SELECT telnet_username, telnet_password ";
+        $sql .= "FROM glpi_plugin_nebackup_networkequipments ";
+        $sql .= "WHERE networkequipments_id = " . $networkequipments_id;
+            
+        if ($result = $DB->query($sql)) {
+            return $DB->fetch_assoc($result);
+        }
+        
+        return false;
+    }
+    
     /**
      * Display form related to the massive action selected
      *

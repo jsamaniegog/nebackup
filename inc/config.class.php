@@ -39,11 +39,6 @@ class PluginNebackupConfig extends CommonDBTM {
     const DEFAULT_SECONDS_TO_TIMEOUT = 60;
 
     /**
-     * Default tftp port 
-     */
-    const DEFAULT_PORT = 69;
-
-    /**
      * For debug
      */
     const DEBUG_NEBACKUP = false;
@@ -126,7 +121,7 @@ class PluginNebackupConfig extends CommonDBTM {
         $cron = new CronTask();
         $cron->dropdownFrequency('backup_interval', self::getBackupInterval());
         echo "</td></tr>";
-        echo "<tr><td>" . __('Root path in TFTP server: ', 'nebackup');
+        echo "<tr><td>" . __('Root path on the server: ', 'nebackup');
         echo "<br>" . __('(Default: "backup/{entity}")', 'nebackup');
         echo "<br>" . __('(Tags: "{entity}": the name of the entity, "{manufacturer}": manufacturer tag like cisco, hpprocurve, etc.)', 'nebackup') . "</td>";
         echo "<td>" . HTML::input('backup_path', array('value' => $this->getBackupPath())) . "</td></tr>";

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2018-01-19 11:35+0100\n"
-"PO-Revision-Date: 2018-01-19 11:36+0100\n"
+"POT-Creation-Date: 2018-01-22 13:14+0100\n"
+"PO-Revision-Date: 2018-01-22 13:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -29,12 +29,12 @@ msgstr "Guardando configuración..."
 msgid "Backup interval must be a number."
 msgstr "El intervalo de tiempo de copia de seguridad debe ser un número."
 
-#: front/config.form.php:67 front/networkequipment.form.php:39
+#: front/config.form.php:67 front/networkequipment.form.php:49
 msgid "Error on save"
 msgstr "Error al guardar"
 
 #: front/config.form.php:71 front/entity.form.php:47
-#: front/networkequipment.form.php:43
+#: front/networkequipment.form.php:53
 msgid "Configuration saved"
 msgstr "Configuración guardada"
 
@@ -47,7 +47,7 @@ msgid "NEBackup - Backup"
 msgstr "NEBackup - Copia de Seguridad"
 
 #: inc/backup.class.php:27 inc/networkequipment.class.php:134
-#: inc/networkequipment.class.php:195 inc/networkequipment.class.php:400
+#: inc/networkequipment.class.php:227 inc/networkequipment.class.php:480
 msgid "Backup"
 msgstr "Copia de Seguridad"
 
@@ -63,11 +63,11 @@ msgstr "Fin de la copia de seguridad del fabricante: "
 msgid "Only SNMP v2c is supported"
 msgstr "Solamente SNMP v2c es soportado"
 
-#: inc/backup.class.php:235
+#: inc/backup.class.php:238
 msgid "The network equipment does not respond to the ping"
 msgstr "El equipo de red no responde al ping"
 
-#: inc/backup.class.php:270
+#: inc/backup.class.php:272
 msgid ""
 "The network equipment returned status failed. Make sure the switch allows "
 "the protocol configured."
@@ -75,47 +75,47 @@ msgstr ""
 "El equipo de red ha devuelto estado failed. Asegurate de que el switch "
 "permite el protocolo configurado."
 
-#: inc/backup.class.php:315
+#: inc/backup.class.php:317
 msgid "Invalid password"
 msgstr "Contraseña inválida"
 
-#: inc/backup.class.php:317
+#: inc/backup.class.php:319
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: inc/backup.class.php:328
+#: inc/backup.class.php:330
 msgid "Timeout expired"
 msgstr "Tiempo de espera agotado"
 
-#: inc/config.class.php:68
+#: inc/config.class.php:63
 msgid "NEBackup"
 msgstr "NEBackup"
 
-#: inc/config.class.php:77
+#: inc/config.class.php:72
 msgid "NEBackup plugin"
 msgstr "Plugin NEBackup"
 
-#: inc/config.class.php:93
+#: inc/config.class.php:88
 msgid "Backup of network equipments configuration"
 msgstr "Copia de seguridad de la configuración de equipos de red"
 
-#: inc/config.class.php:122
+#: inc/config.class.php:117
 msgid "NEBackup Setup"
 msgstr "Configuración de NEBackup"
 
-#: inc/config.class.php:124
+#: inc/config.class.php:119
 msgid "Backup interval: "
 msgstr "Intervalo de copia de seguridad: "
 
-#: inc/config.class.php:129
-msgid "Root path in TFTP server: "
-msgstr "Ruta raíz en el servidor TFTP: "
+#: inc/config.class.php:124
+msgid "Root path on the server: "
+msgstr "Ruta raíz en el servidor: "
 
-#: inc/config.class.php:130
+#: inc/config.class.php:125
 msgid "(Default: \"backup/{entity}\")"
 msgstr "(Por defecto: \"backup/{entity}\")"
 
-#: inc/config.class.php:131
+#: inc/config.class.php:126
 msgid ""
 "(Tags: \"{entity}\": the name of the entity, \"{manufacturer}\": "
 "manufacturer tag like cisco, hpprocurve, etc.)"
@@ -123,43 +123,43 @@ msgstr ""
 "(Etiquetas: \"{entity}\": el nombre de la entidad, \"{manufacturer}\": "
 "etiqueta del fabricante como cisco, hpprocurve, etc.)"
 
-#: inc/config.class.php:134
+#: inc/config.class.php:129
 msgid "Timeout to backup a network equipment (in seconds): "
 msgstr ""
 "Tiempo de espera para hacer la copia de seguridad de un equipo (en "
 "segundos): "
 
-#: inc/config.class.php:139 inc/networkequipment.class.php:480
+#: inc/config.class.php:134 inc/networkequipment.class.php:617
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
-#: inc/config.class.php:146
+#: inc/config.class.php:141
 msgid "Select type to switch backup: "
 msgstr "Selecciona el tipo para la copia de seguridad de switches: "
 
-#: inc/config.class.php:156
+#: inc/config.class.php:151
 msgid "Select the different states to backup (empty value \""
 msgstr ""
 "Seleccione los diferentes estados para realizar la copia de seguridad (valor "
 "vacío \""
 
-#: inc/config.class.php:156
+#: inc/config.class.php:151
 msgid "\" is alwais backed up): "
 msgstr "\" siempre se hace): "
 
-#: inc/config.class.php:171
+#: inc/config.class.php:166
 msgid "Manufacturers"
 msgstr "Fabricantes"
 
-#: inc/config.class.php:174
+#: inc/config.class.php:169
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:174
+#: inc/config.class.php:169
 msgid " network equipments: "
 msgstr " en la electrónica de red "
 
-#: inc/config.class.php:188
+#: inc/config.class.php:183
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -167,7 +167,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:188
+#: inc/config.class.php:183
 msgid "Entities"
 msgstr "Entidades"
 
@@ -179,35 +179,34 @@ msgstr "Servidor"
 msgid "Protocol (make sure the switches allow the protocol)"
 msgstr "Protocolo (asegúrate de que los switches permiten el protocolo)"
 
-#: inc/entity.class.php:105
+#: inc/entity.class.php:111
 msgid "Username (optional depending on the protocol and server configuration)"
 msgstr ""
 "Usuario (opcional en función del protocolo y la configuración del servidor)"
 
-#: inc/entity.class.php:111
+#: inc/entity.class.php:123
 msgid "Password (optional depending on the protocol and server configuration)"
 msgstr ""
 "Contraseña (opcional en función del protocolo y la configuración del "
 "servidor)"
 
-#: inc/entity.class.php:117
+#: inc/entity.class.php:135
 msgid "SNMP Community"
 msgstr "Comunidad SNMP"
 
-#: inc/entity.class.php:123 inc/entity.class.php:135 inc/entity.class.php:146
-msgid "FusionInventory Plugin is installed and active, it is not necesary"
-msgstr ""
-"El complemento FusionInventory está instalado y activo, esto no es necesario"
+#: inc/entity.class.php:140
+msgid "Configured with FusionInventory Plugin."
+msgstr "Configurado con el complemento FusionInventory"
 
-#: inc/entity.class.php:129
+#: inc/entity.class.php:146
 msgid "Telnet username (only for HP Procurve)"
 msgstr "Usuario de Telnet (solo para HP Procurve)"
 
-#: inc/entity.class.php:140
+#: inc/entity.class.php:156
 msgid "Telnet password (only for HP Procurve)"
 msgstr "Contraseña de Telnet (solo para HP Procurve)"
 
-#: inc/entity.class.php:157
+#: inc/entity.class.php:172
 msgid ""
 "Once you have configured the entity you can go to automatic actions to run "
 "for the first time: "
@@ -215,7 +214,7 @@ msgstr ""
 "Una vez que haya configurado la entidad, puede ir a tareas automáticas para "
 "ejecutar por primera vez: "
 
-#: inc/entity.class.php:157
+#: inc/entity.class.php:172
 msgid "NEBackup Task"
 msgstr "Tarea NEBackup"
 
@@ -247,93 +246,118 @@ msgstr "configuración de NEBackup"
 msgid "type and manufacturer must be setted"
 msgstr "el tipo y el fabricante deben ser establecidos"
 
-#: inc/networkequipment.class.php:157
+#: inc/networkequipment.class.php:167
 msgid "No backup configured for this entity."
 msgstr "No hay copia de seguridad configurada para esta entidad."
 
-#: inc/networkequipment.class.php:161
+#: inc/networkequipment.class.php:171
 msgid "Database Error"
 msgstr "Error de la base de datos"
 
-#: inc/networkequipment.class.php:179
+#: inc/networkequipment.class.php:206
 msgid "Server "
 msgstr "Servidor "
 
-#: inc/networkequipment.class.php:179
+#: inc/networkequipment.class.php:206
 msgid " is not alive</b>"
 msgstr " no está vivo</b>"
 
-#: inc/networkequipment.class.php:196
+#: inc/networkequipment.class.php:228
 msgid "File: "
 msgstr "Archivo: "
 
-#: inc/networkequipment.class.php:212
+#: inc/networkequipment.class.php:244
 msgid "Install "
 msgstr "Instala el cliente "
 
-#: inc/networkequipment.class.php:214
+#: inc/networkequipment.class.php:246
 msgid " client on GLPI server to view the backup file"
 msgstr " en el servidor GLPI para ver el fichero de copia de seguridad"
 
-#: inc/networkequipment.class.php:222
+#: inc/networkequipment.class.php:254
 msgid "Transfer timed out, check if your TFTP server is up."
 msgstr ""
 "Tiempo de espera de la transferencia agotado, comprueba si tu servidor TFTP "
 "está activo."
 
-#: inc/networkequipment.class.php:228
+#: inc/networkequipment.class.php:260
 msgid "Backup file not found on the server."
 msgstr "Fichero de copia de seguridad no encontrado en el servidor."
 
-#: inc/networkequipment.class.php:243
+#: inc/networkequipment.class.php:275
 msgid "File Date: "
 msgstr "Fecha del archivo: "
 
-#: inc/networkequipment.class.php:249
+#: inc/networkequipment.class.php:281
 msgid "(Warning: File not copied at last run)"
 msgstr "(Alerta: archivo no copiado en la última ejecución)"
 
-#: inc/networkequipment.class.php:256
+#: inc/networkequipment.class.php:288
 msgid "Last run: "
 msgstr "Última ejecución: "
 
-#: inc/networkequipment.class.php:260
+#: inc/networkequipment.class.php:292
 msgid "No cron date"
 msgstr "Sin fecha de cron"
 
-#: inc/networkequipment.class.php:264 inc/notificationtargetbackup.class.php:51
+#: inc/networkequipment.class.php:296 inc/notificationtargetbackup.class.php:51
 msgid "Error: "
 msgstr "Error: "
 
-#: inc/networkequipment.class.php:268
+#: inc/networkequipment.class.php:300
 msgid "No error"
 msgstr "Sin errores"
 
-#: inc/networkequipment.class.php:273
+#: inc/networkequipment.class.php:305
 msgid "Server: "
 msgstr "Servidor: "
 
-#: inc/networkequipment.class.php:278
+#: inc/networkequipment.class.php:310
 msgid "Server path: "
 msgstr "Ruta del servidor: "
 
-#: inc/networkequipment.class.php:363
-msgid "Configuration of the SNMP authentication"
-msgstr "Configuración de la autentificación SNMP"
+#: inc/networkequipment.class.php:403
+msgid "Configuration of authentication"
+msgstr "Configuración de la autentificación"
 
-#: inc/networkequipment.class.php:368
-msgid "SNMP authentication (READ/WRITE community): "
-msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
+#: inc/networkequipment.class.php:405
+msgid ""
+"Complete only if this equipment has individual configuration for telnet "
+"conections."
+msgstr ""
+"Completar solo si este equipo tiene una configuración individual para "
+"conexiones telnet."
 
-#: inc/networkequipment.class.php:383
+#: inc/networkequipment.class.php:411
+msgid "Telnet username (only for HP Procurve):"
+msgstr "Usuario de Telnet (solo para HP Procurve):"
+
+#: inc/networkequipment.class.php:416
+msgid "Telnet password (only for HP Procurve):"
+msgstr "Contraseña de Telnet (solo para HP Procurve):"
+
+#: inc/networkequipment.class.php:423 inc/networkequipment.class.php:463
 msgid "Update"
 msgstr "Actualizar"
 
-#: inc/networkequipment.class.php:480
+#: inc/networkequipment.class.php:437
+msgid "Configuration of SNMP authentication"
+msgstr "Configuración de la autentificación SNMP"
+
+#: inc/networkequipment.class.php:447
+msgid "The backup will not be done unless you set up a credential."
+msgstr ""
+"No se realizará la copia de seguridad a menos que configure una credencial."
+
+#: inc/networkequipment.class.php:451
+msgid "SNMP authentication (READ/WRITE community): "
+msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
+
+#: inc/networkequipment.class.php:617
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
 
-#: inc/networkequipment.class.php:562
+#: inc/networkequipment.class.php:699
 msgid "Unknown protocol"
 msgstr "Protocolo desconocido"
 
@@ -356,6 +380,11 @@ msgstr "Fecha de la última copia: "
 #: inc/notificationtargetbackup.class.php:56
 msgid "- Empty -"
 msgstr "- Vacío -"
+
+#~ msgid "FusionInventory Plugin is installed and active, it is not necesary"
+#~ msgstr ""
+#~ "El complemento FusionInventory está instalado y activo, esto no es "
+#~ "necesario"
 
 #~ msgid "Protocol"
 #~ msgstr "Protocolo"

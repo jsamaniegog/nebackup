@@ -101,51 +101,66 @@ class PluginNebackupEntity extends CommonDBTM {
         
         echo "</td></tr><tr><td colspan='2'>";
         
+        $isFusioninventoryConfigured = false;
+        $plugin = new Plugin();
+        if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() != 0) {
+            $isFusioninventoryConfigured = true;
+        }
+        
         // username field
         echo __('Username (optional depending on the protocol and server configuration)', 'nebackup') . "</td><td colspan='2'>";
-        echo Html::input("username", array('value' => $row['username']));
+//        if (!$isFusioninventoryConfigured) {
+            echo Html::input("username", array('value' => $row['username']));
+//        } else {
+//            echo "<b style='color:orange;'>"
+//                . __('Configured with FusionInventory Plugin.', 'nebackup')
+//                . "</b>";
+//        }    
         
         echo "</td></tr><tr><td colspan='2'>";
         
         // password field
         echo __('Password (optional depending on the protocol and server configuration)', 'nebackup') . "</td><td colspan='2'>";
-        echo str_replace('type="text"', 'type="password"', Html::input("password", array('value' => $row['password'])));
+//        if (!$isFusioninventoryConfigured) {
+            echo str_replace('type="text"', 'type="password"', Html::input("password", array('value' => $row['password'])));
+//        } else {
+//            echo "<b style='color:orange;'>"
+//                . __('Configured with FusionInventory Plugin.', 'nebackup')
+//                . "</b>";
+//        }
         
         echo "</td></tr><tr><td colspan='2'>";
         
         // snmp field
         echo __('SNMP Community', 'nebackup') . "</td><td colspan='2'>";
-        $plugin = new Plugin();
-        if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
+        if (!$isFusioninventoryConfigured) {
             echo Html::input("community", array('value' => $row['community']));
         } else {
-            echo "<b style='color:red;'>"
-                . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
+            echo "<b style='color:orange;'>"
+                . __('Configured with FusionInventory Plugin.', 'nebackup')
                 . "</b>";
         }
         
         // telnet username and password field
         echo "</td></tr><tr><td colspan='2'>";
         echo __('Telnet username (only for HP Procurve)', 'nebackup') . "</td><td colspan='2'>";
-        $plugin = new Plugin();
-        if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
+//        if (!$isFusioninventoryConfigured) {
             echo Html::input("telnet_username", array('value' => $row['telnet_username']));
-        } else {
-            echo "<b style='color:red;'>"
-                . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
-                . "</b>";
-        }
+//        } else {
+//            echo "<b style='color:orange;'>"
+//                . __('Configured with FusionInventory Plugin.', 'nebackup')
+//                . "</b>";
+//        }
         
         echo "</td></tr><tr><td colspan='2'>";
         echo __('Telnet password (only for HP Procurve)', 'nebackup') . "</td><td colspan='2'>";
-        $plugin = new Plugin();
-        if (!$plugin->isActivated("fusioninventory") or PluginNebackupConfig::getUseFusionInventory() == 0) {
-            echo Html::input("telnet_password", array('value' => $row['telnet_password']));
-        } else {
-            echo "<b style='color:red;'>"
-                . __('FusionInventory Plugin is installed and active, it is not necesary', 'nebackup')
-                . "</b>";
-        }
+//        if (!$isFusioninventoryConfigured) {
+            echo str_replace('type="text"', 'type="password"', Html::input("telnet_password", array('value' => $row['telnet_password'])));
+//        } else {
+//            echo "<b style='color:orange;'>"
+//                . __('Configured with FusionInventory Plugin.', 'nebackup')
+//                . "</b>";
+//        }
         
         echo "</td></tr>";
         
