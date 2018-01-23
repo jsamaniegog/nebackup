@@ -31,3 +31,5 @@ SET telnet_username = 'admin', telnet_password = fc.community
 WHERE nn.networkequipments_id in 
 (SELECT id FROM glpi_networkequipments WHERE manufacturers_id = 
 (SELECT value FROM glpi_plugin_nebackup_configs WHERE type = 'hpprocurve_manufacturers_id'));
+
+INSERT INTO `glpi`.`glpi_plugin_nebackup_configs`(type, value) VALUES ('create_directories', '0');

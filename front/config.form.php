@@ -50,7 +50,9 @@ try {
     
     $config->setBackupPath($post_values['backup_path']);
     
-    $config->setUseFusionInventory($post_values['use_fusioninventory']);
+    $config->setCreateDirectories($post_values['use_fusioninventory']);
+    
+    $config->setUseFusionInventory($post_values['create_directories']);
     
     $config->setTimeout($post_values['timeout']);
     

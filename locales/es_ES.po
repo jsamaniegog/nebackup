@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2018-01-22 14:02+0100\n"
-"PO-Revision-Date: 2018-01-22 14:03+0100\n"
+"POT-Creation-Date: 2018-01-23 07:42+0100\n"
+"PO-Revision-Date: 2018-01-23 07:48+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -87,6 +87,10 @@ msgstr "Error desconocido"
 msgid "Timeout expired"
 msgstr "Tiempo de espera agotado"
 
+#: inc/backup.class.php:497 inc/networkequipment.class.php:722
+msgid "Unknown protocol"
+msgstr "Protocolo desconocido"
+
 #: inc/config.class.php:63
 msgid "NEBackup"
 msgstr "NEBackup"
@@ -129,37 +133,52 @@ msgstr ""
 "Tiempo de espera para hacer la copia de seguridad de un equipo (en "
 "segundos): "
 
-#: inc/config.class.php:134 inc/networkequipment.class.php:640
+#: inc/config.class.php:132
+msgid ""
+"Create directories (Make sure the server allows it. With TFTP protocol it is "
+"not necessary, simply configure the server to do it automatically.): "
+msgstr ""
+"Crear directorios (asegúrese de que el servidor lo permita. Con el protocolo "
+"TFTP no es necesario, simplemente configure el servidor para que lo haga "
+"automáticamente)."
+
+#: inc/config.class.php:142 inc/networkequipment.class.php:640
 msgid "Use FusionInventory SNMP authentication: "
 msgstr "Usar autentificación SNMP de FusionInventory: "
 
-#: inc/config.class.php:141
-msgid "Select type to switch backup: "
-msgstr "Selecciona el tipo para la copia de seguridad de switches: "
+#: inc/config.class.php:149
+msgid "Select network equipment type to backup (empty value \""
+msgstr ""
+"Seleccione los diferentes tipos para realizar la copia de seguridad (valor "
+"vacío \""
 
-#: inc/config.class.php:157
+#: inc/config.class.php:149
+msgid "\" never is backed up): "
+msgstr "\" nunca se hace): "
+
+#: inc/config.class.php:165
 msgid "Select the different states to backup (empty value \""
 msgstr ""
 "Seleccione los diferentes estados para realizar la copia de seguridad (valor "
 "vacío \""
 
-#: inc/config.class.php:157
-msgid "\" is alwais backed up): "
+#: inc/config.class.php:165
+msgid "\" alwais is backed up): "
 msgstr "\" siempre se hace): "
 
-#: inc/config.class.php:172
+#: inc/config.class.php:180
 msgid "Manufacturers"
 msgstr "Fabricantes"
 
-#: inc/config.class.php:175
+#: inc/config.class.php:183
 msgid "Select manufacturer for "
 msgstr "Seleccione el fabricante para "
 
-#: inc/config.class.php:175
+#: inc/config.class.php:183
 msgid " network equipments: "
 msgstr " en la electrónica de red "
 
-#: inc/config.class.php:189
+#: inc/config.class.php:197
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
@@ -167,7 +186,7 @@ msgstr ""
 "Para activar la copia de seguridad vaya a la configuración de la entidad y "
 "seleccione la pestaña NEBackup, haga clic aquí para ir: "
 
-#: inc/config.class.php:189
+#: inc/config.class.php:197
 msgid "Entities"
 msgstr "Entidades"
 
@@ -357,10 +376,6 @@ msgstr "Autentificación SNMP (comunidad de LECTURA y ESCRITURA): "
 msgid "You must activate the option"
 msgstr "Debes activar la opción"
 
-#: inc/networkequipment.class.php:722
-msgid "Unknown protocol"
-msgstr "Protocolo desconocido"
-
 #: inc/notificationtargetbackup.class.php:28
 msgid "Errors report"
 msgstr "Reporte de erroes"
@@ -380,6 +395,9 @@ msgstr "Fecha de la última copia: "
 #: inc/notificationtargetbackup.class.php:56
 msgid "- Empty -"
 msgstr "- Vacío -"
+
+#~ msgid "Select type to switch backup: "
+#~ msgstr "Selecciona el tipo para la copia de seguridad de switches: "
 
 #~ msgid "FusionInventory Plugin is installed and active, it is not necesary"
 #~ msgstr ""

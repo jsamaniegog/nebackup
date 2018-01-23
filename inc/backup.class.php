@@ -146,6 +146,8 @@ class PluginNebackupBackup extends CommonDBTM {
     static private function backup($manufacturer, $networkequipments_id = null) {
         $ne_to_backup = PluginNebackupNetworkEquipment::getNetworkEquipmentsToBackup($manufacturer, $networkequipments_id);
 
+        $create_directories = PluginNebackupConfig::getCreateDirectories();
+        
         foreach ($ne_to_backup as $reg) {
 
             if (PluginNebackupConfig::DEBUG_NEBACKUP)
@@ -154,7 +156,7 @@ class PluginNebackupBackup extends CommonDBTM {
             // datos de conexión al servidor (es el mismo para todos los registros)
             $server = $reg['server'];
 
-            // only snmp v2c
+            // todo: only snmp v2c
             if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
                 $logs = new PluginNebackupLogs();
                 $error = __("Only SNMP v2c is supported", "nebackup");
@@ -255,7 +257,8 @@ class PluginNebackupBackup extends CommonDBTM {
                     $entitie_name, 
                     $protocol, 
                     $username, 
-                    $password
+                    $password,
+                    $create_directories
                 );
 
                 switch ($manufacturer) {
@@ -398,15 +401,20 @@ class PluginNebackupBackup extends CommonDBTM {
      */
     static private function executeCopyScript($num_script, $host, $ip, $rannum, 
         $server, $community, $manufacturer, $entitie_name, $protocol = 1, 
-        $username = "admin", $password = "admin"
+        $username = "admin", $password = "admin", $create_directories = 0
     ) {
         if (PluginNebackupConfig::DEBUG_NEBACKUP)
             Toolbox::logInFile("nebackup", "Script: " . "nebackup_" . $manufacturer . "_$num_script.sh\r");
 
         $host = self::escapeName($host);
-        $host = PluginNebackupConfig::getBackupPath(true, $manufacturer, $entitie_name) . '/' . $host;
+        $path = PluginNebackupConfig::getBackupPath(true, $manufacturer, $entitie_name);
+        $host = $path . '/' . $host;
         $server = gethostbyname($server);
 
+        if ($num_script == 1 and $create_directories == 1) {
+            self::createFolderStructure($server, $protocol, $path, $username, $password);
+        }
+        
         $comando = "sh " . GLPI_ROOT . "/plugins/nebackup/commands/nebackup_" . $manufacturer . "_$num_script.sh $host $ip $rannum $server $community $protocol $username $password";
         if (PluginNebackupConfig::DEBUG_NEBACKUP)
             Toolbox::logInFile("nebackup", "Comando ejecutado: $comando\r" . print_r($reg, true));
@@ -464,4 +472,52 @@ class PluginNebackupBackup extends CommonDBTM {
         return str_replace(" ", "", escapeshellcmd($name));
     }
 
+    /**
+     * Create the folders on the server.
+     * @param type $server
+     * @param type $protocol
+     * @param type $path
+     * @param type $username
+     * @param type $password
+     * @return string
+     * @throws Exception
+     */
+    static private function createFolderStructure($server, $protocol, $path, 
+        $username = 'admin', $password = 'admin'
+    ) {
+        switch ($protocol) {
+            // tftp
+            case 1: 
+                // nothing to do, TFTP server must be configured to create folders automatically
+                return '';
+                break;
+
+            // ftp
+            case 2: 
+                $command = 'ftp -n ' . $server . ' << EOF';
+                $command .= "\nuser " . $username . ' ' . $password . '';
+                foreach (explode("/", $path) as $directory) {
+                    $command .= "\nmkdir " . $directory . '';
+                    $command .= "\ncd " . $directory . '';
+                }
+                $command .= "\nEOF";
+                break;
+
+            // rcp
+            case 3: 
+                $command = 'rsh -l ' . $username . ' ' . $server . ' "mkdir -p ' . $path . '"';
+                break;
+
+            // scp y sftp
+            case 4: case 5: 
+                $command = 'ssh ' . $username . '@' . $server . ' "mkdir -p ' . $path . '"';
+                break;
+            
+            default: throw new Exception(__("Unknown protocol", "nebackup"));
+        }
+
+        $command_result = `$command`;
+
+        return $command_result;
+    }
 }

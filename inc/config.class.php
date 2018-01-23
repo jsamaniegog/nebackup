@@ -129,6 +129,14 @@ class PluginNebackupConfig extends CommonDBTM {
         echo "<tr><td>" . __('Timeout to backup a network equipment (in seconds): ', 'nebackup');
         echo "<td>" . HTML::input('timeout', array('value' => $this->getTimeout())) . "</td></tr>";
 
+        echo "<tr class='tab_bg_2'><td>" . __('Create directories (Make sure '
+            . 'the server allows it. With TFTP protocol it is not necessary, '
+            . 'simply configure the server to do it automatically.): ', 'nebackup') 
+            . "</td>";
+        echo "<td>";
+        Dropdown::showYesNo("create_directories", self::getCreateDirectories());
+        echo "</td></tr>";
+        
         $plugin = new Plugin();
         if ($plugin->isActivated("fusioninventory")) {
             echo "<tr class='tab_bg_2'><td>" . __('Use FusionInventory SNMP authentication: ', 'nebackup') . "</td>";
@@ -340,13 +348,30 @@ class PluginNebackupConfig extends CommonDBTM {
     /**
      * Return bool.
      * @global type $DB
-     * @param type $manufacturer For example: cisco, hp...
      * @return boolean 
      */
     static public function getUseFusionInventory() {
         global $DB;
 
         $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'use_fusioninventory'";
+
+        if ($result = $DB->query($query)) {
+            $row = $result->fetch_assoc(); // cogemos el primero
+            return ($row) ? $row['value'] : 0;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Return bool.
+     * @global type $DB
+     * @return boolean 
+     */
+    static public function getCreateDirectories() {
+        global $DB;
+
+        $query = "SELECT value FROM `glpi_plugin_nebackup_configs` WHERE type = 'create_directories'";
 
         if ($result = $DB->query($query)) {
             $row = $result->fetch_assoc(); // cogemos el primero
@@ -370,6 +395,20 @@ class PluginNebackupConfig extends CommonDBTM {
         return $DB->query($query);
     }
 
+    /**
+     * If use or not fusioninventory plugin.
+     * @param bool $use_fusioninventory
+     */
+    public function setCreateDirectories($create_directories) {
+        global $DB;
+
+        $query = "UPDATE `glpi_plugin_nebackup_configs` ";
+        $query .= "SET value = '" . $create_directories . "' ";
+        $query .= "WHERE type = 'create_directories'";
+
+        return $DB->query($query);
+    }
+    
     /**
      * Set manufacturer.
      * @global type $DB
