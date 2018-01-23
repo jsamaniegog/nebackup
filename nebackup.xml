@@ -6,11 +6,11 @@
     <description>
         <short>
             <es>Copias de seguridad de dispositivos de red.</es>
-            <en>Backups for network equipments</en>
+            <en>Backups for network devices</en>
         </short>
         <long>
-            <es>Este plugin permite realizar copias de seguridad de la configuración de los dispositivos de red sobre un servidor TFTP.</es>
-            <en>This plugin allows you to back up the configuration of the network devices on TFTP server.</en>
+            <es>Este plugin permite realizar copias de seguridad de la configuración de los dispositivos de red sobre un servidor TFTP (FTP, SCP y otros añadido desde la versión 2.2.0).</es>
+            <en>This plugin allows you to back up the configuration of the network devices on TFTP server (FTP, SCP and others added since version 2.2.0).</en>
         </long>
     </description>
     <homepage>https://github.com/jsamaniegog/nebackup</homepage>
