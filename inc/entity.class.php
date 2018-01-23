@@ -129,7 +129,9 @@ class PluginNebackupEntity extends CommonDBTM {
 //                . "</b>";
 //        }
         
-        echo "</td></tr><tr><td colspan='2'>";
+        echo "</td></tr><tr>";
+        echo "<th colspan='4'>" . _n('Network device', 'Network devices', 2) . "</th>";
+        echo "</tr><tr><td colspan='2'>";
         
         // snmp field
         echo __('SNMP Community', 'nebackup') . "</td><td colspan='2'>";
