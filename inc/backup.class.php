@@ -174,6 +174,8 @@ class PluginNebackupBackup extends CommonDBTM {
 
             // todo: quitar esta particularidad cuando se encuentre un modo mejor que el telnet
             if ($manufacturer == 'hpprocurve') {
+                $reg['community'] = '-';
+                
                 // check if there is individual user/password
                 $telnetAuth = PluginNebackupNetworkEquipment::getAuthTelnet($reg['id']);
                 
