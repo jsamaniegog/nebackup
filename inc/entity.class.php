@@ -252,7 +252,7 @@ class PluginNebackupEntity extends CommonDBTM {
                 $data['telnet_password'] = (isset($data['telnet_password'])) ? $data['telnet_password'] : '' ;
                 
                 $query = "INSERT INTO glpi_plugin_nebackup_entities";
-                $query .= "(entities_id, server, community, telnet_password, is_recursive) VALUES ";
+                $query .= "(entities_id, server, community, protocol, username, password, telnet_password, telnet_username, is_recursive) VALUES ";
                 $query .= "(" . $data['entity_id_edited'] . ", ";
                 $query .= "'" . $data['server'] . "', ";
                 $query .= "'" . $data['community'] . "', ";
@@ -263,7 +263,7 @@ class PluginNebackupEntity extends CommonDBTM {
                 $query .= "'" . $data['telnet_username'] . "', ";
                 $query .= "" . $data['is_recursive'] . ")";
 
-                if ($data['is_recursive'] = 1) {
+                if ($data['is_recursive'] == 1) {
                     $sql = "SELECT id FROM glpi_entities ";
                     $sql .= "WHERE ancestors_cache like '%\"" . $data['entity_id_edited'] . "\"%'";
                     $sql .= " AND id != " . $data['entity_id_edited'] . "";
@@ -275,8 +275,12 @@ class PluginNebackupEntity extends CommonDBTM {
                             $query .= ",(" . $data2['id'] . ", ";
                             $query .= "'" . $data['server'] . "', ";
                             $query .= "'" . $data['community'] . "', ";
+                            $query .= "'" . $data['protocol'] . "', ";
+                            $query .= "'" . $data['username'] . "', ";
+                            $query .= "'" . $data['password'] . "', ";
                             $query .= "'" . $data['telnet_password'] . "', ";
-                            $query .= "" . $data['is_recursive'] . ") ";
+                            $query .= "'" . $data['telnet_username'] . "', ";
+                            $query .= "" . $data['is_recursive'] . ")";
                         }
                     }
                 }
