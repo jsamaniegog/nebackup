@@ -67,6 +67,12 @@
             <compatibility>9.1</compatibility>
             <compatibility>9.2</compatibility>
         </version>
+        <version>
+            <num>2.2.1</num>
+            <compatibility>0.90.x</compatibility>
+            <compatibility>9.1</compatibility>
+            <compatibility>9.2</compatibility>
+        </version>
     </versions>
     <langs>
         <lang>es_ES</lang>
