@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NEBackup Plugin\n"
 "POT-Creation-Date: 2017-03-27 09:13+0200\n"
-"PO-Revision-Date: 2018-03-15 19:45+0100\n"
+"PO-Revision-Date: 2018-06-08 08:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs_CZ\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.4\n"
 "X-Poedit-Basepath: ..\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -27,7 +27,7 @@ msgstr "Ukládání nastavení…"
 
 #: front/config.form.php:43
 msgid "Backup interval must be a number."
-msgstr "Je třeba, aby inverval zálohování bylo celé číslo."
+msgstr "Je třeba, aby interval zálohování bylo celé číslo."
 
 #: front/config.form.php:63 front/networkequipment.form.php:39
 msgid "Error on save"
@@ -40,7 +40,7 @@ msgstr "Nastavení uloženo"
 
 #: hook.php:221
 msgid "NEBackup - SNMP auth (R/W)"
-msgstr "NEBackup – SNMP ověřování (R/W)"
+msgstr "NEBackup – SNMP přihlašování (čtení/zápis)"
 
 #: hook.php:222
 msgid "NEBackup - Backup"
@@ -53,7 +53,7 @@ msgstr "Záloha"
 
 #: inc/backup.class.php:155
 msgid "Only SNMP v2c is supported"
-msgstr "Je podporováno pouze SNMP v2c"
+msgstr "Je podporováno pouze SNMP verze 2c"
 
 #: inc/backup.class.php:224
 msgid "The network equipment does not respond to the ping"
@@ -97,7 +97,7 @@ msgstr "Interval zálohování: "
 
 #: inc/config.class.php:106
 msgid "Root path in TFTP server: "
-msgstr "Popis umístění kořene v TFTP serveru:"
+msgstr "Popis umístění kořene na TFTP serveru: "
 
 #: inc/config.class.php:107
 msgid "(Default: \"backup/{entity}\")"
@@ -108,20 +108,20 @@ msgid ""
 "(Tags: \"{entity}\": the name of the entity, \"{manufacturer}\": "
 "manufacturer tag like cisco, hpprocurve, etc.)"
 msgstr ""
-"(Značky: „{entity}“: název entity, „{výrobce}“: značka výrobce jako cisco, "
-"hpprocurve, atd.)"
+"(Značky: „{entity}“: název entity, „{manufacturer}“: značka výrobce jako "
+"cisco, hpprocurve, atd.)"
 
 #: inc/config.class.php:111
 msgid "Timeout: "
-msgstr "Časový limit:"
+msgstr "Časový limit: "
 
 #: inc/config.class.php:116 inc/networkequipment.class.php:458
 msgid "Use FusionInventory SNMP authentication: "
-msgstr "Použít SNMP ověření z FusionInventory: "
+msgstr "Použít SNMP přihlašovací údaje z FusionInventory: "
 
 #: inc/config.class.php:123
 msgid "Select type to switch backup: "
-msgstr "Vyberte typ pro zálohu přepínače: "
+msgstr "Pro zálohování přepínače vyberte typ: "
 
 #: inc/config.class.php:131
 msgid "Manufacturers"
@@ -129,18 +129,18 @@ msgstr "Výrobci"
 
 #: inc/config.class.php:134
 msgid "Select manufacturer for "
-msgstr "Vybrat výrobce pro"
+msgstr "Vyberte výrobce pro "
 
 #: inc/config.class.php:134
 msgid " network equipments: "
-msgstr "síťové prvky:"
+msgstr " síťové prvky: "
 
 #: inc/config.class.php:167
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
 msgstr ""
-"Pro aktivaci zálohy jděte na nastavení entity a vyberte panel NEBackup, tam "
+"Pro aktivaci zálohy jděte do nastavení entity a vyberte panel NEBackup, tam "
 "klikněte na: "
 
 #: inc/config.class.php:167
@@ -189,14 +189,14 @@ msgid ""
 "asset, it currently only supports these: "
 msgstr ""
 "V případě výrobce přiřazeného tomuto zařízení není nastavená nebo "
-"podporovaná záloha, v současnosti jsou podporovaní pouze tito:"
+"podporovaná záloha, v současnosti jsou podporovaní pouze tito: "
 
 #: inc/networkequipment.class.php:141
 msgid ""
 "Check that the selected type and manufacturer of this asset corresponds to "
 "the setted in the"
 msgstr ""
-"Zkontrolujte že vybraný typ a výrobce tohoto zařízení odpovídá tomu "
+"Zkontrolujte zda vybraný typ a výrobce tohoto zařízení odpovídá tomu "
 "nastavenému v"
 
 #: inc/networkequipment.class.php:141
@@ -209,36 +209,36 @@ msgstr "je třeba nastavit typ a výrobce"
 
 #: inc/networkequipment.class.php:157
 msgid "No backup configured for this entity."
-msgstr "Pro tuto entitu není nastavená záloha."
+msgstr "Pro tuto entitu není nastaveno zálohování."
 
 #: inc/networkequipment.class.php:161
 msgid "Database Error"
-msgstr "Database Error"
+msgstr "Chyba databáze"
 
 #: inc/networkequipment.class.php:179
 msgid "TFTP server "
-msgstr "TFTP server"
+msgstr "TFTP server "
 
 #: inc/networkequipment.class.php:198
 msgid "File: "
-msgstr "Soubor:"
+msgstr "Soubor: "
 
 #: inc/networkequipment.class.php:210
 msgid "File Date: "
-msgstr "Datum souboru:"
+msgstr "Datum souboru: "
 
 #: inc/networkequipment.class.php:216
 msgid "(Warning: File not copied at last run)"
-msgstr "(varování: soubor nebyl při posledním běhu zkopírován)"
+msgstr "(varování: soubor nebyl při minulém průchodu zkopírován)"
 
 #: inc/networkequipment.class.php:223
 msgid "Last run: "
-msgstr "Minulý běh:"
+msgstr "Minulý průchod: "
 
 #: inc/networkequipment.class.php:227 inc/networkequipment.class.php:260
 #: inc/networkequipment.class.php:267 inc/notificationtargetbackup.class.php:51
 msgid "Error: "
-msgstr "Chyba:"
+msgstr "Chyba: "
 
 #: inc/networkequipment.class.php:231 inc/networkequipment.class.php:264
 #: inc/networkequipment.class.php:268
@@ -247,32 +247,33 @@ msgstr "Žádná chyba"
 
 #: inc/networkequipment.class.php:236
 msgid "TFTP Server: "
-msgstr "TFTP server:"
+msgstr "TFTP server: "
 
 #: inc/networkequipment.class.php:241
 msgid "Server path: "
-msgstr "Popis umístění na serveru:"
+msgstr "Popis umístění na serveru: "
 
 #: inc/networkequipment.class.php:245
 msgid "Install TFTP client on server to view the backup file"
-msgstr "Install TFTP client on server to view the backup file"
+msgstr ""
+"Pro zobrazení souboru zálohy nainstalujte na server s GLPI TFTP klienta"
 
 #: inc/networkequipment.class.php:249
 msgid "Transfer timed out, check if your TFTP server is up."
 msgstr ""
-"Překročen časový limit přenosu, zkontrolujte že je TFTP server dostupný."
+"Překročen časový limit pro přenos – zkontrolujte zda je TFTP server dostupný."
 
 #: inc/networkequipment.class.php:253
 msgid "Backup file not found."
-msgstr "Záložní soubor nenalezen."
+msgstr "Soubor zálohy nenalezen."
 
 #: inc/networkequipment.class.php:341
 msgid "Configuration of the SNMP authentication"
-msgstr "Nastavení SNMP ověřování"
+msgstr "Nastavení SNMP přihlašování"
 
 #: inc/networkequipment.class.php:346
 msgid "SNMP authentication (READ/WRITE community): "
-msgstr "SNMP ověřování (READ/WRITE komunita):"
+msgstr "SNMP ověřování (READ/WRITE komunita): "
 
 #: inc/networkequipment.class.php:361
 msgid "Update"
@@ -292,11 +293,11 @@ msgstr "Chyby"
 
 #: inc/notificationtargetbackup.class.php:50
 msgid "Network Equipment Name: "
-msgstr "Název síťového prvku:"
+msgstr "Název síťového prvku: "
 
 #: inc/notificationtargetbackup.class.php:52
 msgid "Date of last copy: "
-msgstr "Datum poslední kopie:"
+msgstr "Datum poslední kopie: "
 
 #: inc/notificationtargetbackup.class.php:56
 msgid "- Empty -"
