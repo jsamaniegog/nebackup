@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NEBackup Plugin\n"
-"POT-Creation-Date: 2017-03-27 09:13+0200\n"
-"PO-Revision-Date: 2017-03-27 09:13+0200\n"
+"POT-Creation-Date: 2018-07-16 08:13+0200\n"
+"PO-Revision-Date: 2018-07-16 08:14+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_EN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.9\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: __\n"
@@ -23,153 +23,197 @@ msgstr ""
 #: front/config.form.php:32 front/entity.form.php:32
 #: front/networkequipment.form.php:28
 msgid "Saving configuration..."
-msgstr "Saving configuration..."
+msgstr ""
 
-#: front/config.form.php:43
+#: front/config.form.php:45
 msgid "Backup interval must be a number."
-msgstr "Backup interval must be a number."
+msgstr ""
 
-#: front/config.form.php:63 front/networkequipment.form.php:39
+#: front/config.form.php:69 front/networkequipment.form.php:49
 msgid "Error on save"
 msgstr ""
 
-#: front/config.form.php:67 front/entity.form.php:47
-#: front/networkequipment.form.php:43
+#: front/config.form.php:73 front/entity.form.php:47
+#: front/networkequipment.form.php:53
 msgid "Configuration saved"
 msgstr ""
 
-#: hook.php:221
+#: hook.php:231
 msgid "NEBackup - SNMP auth (R/W)"
 msgstr ""
 
-#: hook.php:222
+#: hook.php:232
 msgid "NEBackup - Backup"
 msgstr ""
 
 #: inc/backup.class.php:27 inc/networkequipment.class.php:134
-#: inc/networkequipment.class.php:189 inc/networkequipment.class.php:378
+#: inc/networkequipment.class.php:227 inc/networkequipment.class.php:503
 msgid "Backup"
 msgstr ""
 
-#: inc/backup.class.php:155
+#: inc/backup.class.php:36
+msgid "Start backup of manufacturer: "
+msgstr ""
+
+#: inc/backup.class.php:38
+msgid "End backup of manufacturer: "
+msgstr ""
+
+#: inc/backup.class.php:162
 msgid "Only SNMP v2c is supported"
 msgstr ""
 
-#: inc/backup.class.php:224
+#: inc/backup.class.php:242
 msgid "The network equipment does not respond to the ping"
 msgstr ""
 
-#: inc/backup.class.php:247
-msgid "The network equipment returned status failed"
+#: inc/backup.class.php:277
+msgid ""
+"The network equipment returned status failed. Make sure the switch allows "
+"the protocol configured."
 msgstr ""
 
-#: inc/backup.class.php:278
+#: inc/backup.class.php:322
 msgid "Invalid password"
 msgstr ""
 
-#: inc/backup.class.php:280
+#: inc/backup.class.php:324
 msgid "Unknown error"
 msgstr ""
 
-#: inc/backup.class.php:291
+#: inc/backup.class.php:335
 msgid "Timeout expired"
 msgstr ""
 
-#: inc/config.class.php:52
-msgid "NEBackup"
-msgstr "NEBackup"
-
-#: inc/config.class.php:58
-msgid "NEBackup plugin"
-msgstr "NEBackup plugin"
-
-#: inc/config.class.php:75
-msgid "Backup of network equipments configuration"
-msgstr "Backup of network equipments configuration"
-
-#: inc/config.class.php:99
-msgid "NEBackup Setup"
-msgstr "NEBackup Setup"
-
-#: inc/config.class.php:101
-msgid "Backup interval: "
-msgstr "Backup interval: "
-
-#: inc/config.class.php:106
-msgid "Root path in TFTP server: "
+#: inc/backup.class.php:518 inc/networkequipment.class.php:722
+msgid "Unknown protocol"
 msgstr ""
 
-#: inc/config.class.php:107
+#: inc/config.class.php:63
+msgid "NEBackup"
+msgstr ""
+
+#: inc/config.class.php:72
+msgid "NEBackup plugin"
+msgstr ""
+
+#: inc/config.class.php:88
+msgid "Backup of network equipments configuration"
+msgstr ""
+
+#: inc/config.class.php:117
+msgid "NEBackup Setup"
+msgstr ""
+
+#: inc/config.class.php:119
+msgid "Backup interval: "
+msgstr ""
+
+#: inc/config.class.php:124
+msgid "Root path on the server: "
+msgstr ""
+
+#: inc/config.class.php:125
 msgid "(Default: \"backup/{entity}\")"
 msgstr ""
 
-#: inc/config.class.php:108
+#: inc/config.class.php:126
 msgid ""
 "(Tags: \"{entity}\": the name of the entity, \"{manufacturer}\": "
 "manufacturer tag like cisco, hpprocurve, etc.)"
 msgstr ""
 
-#: inc/config.class.php:111
-msgid "Timeout: "
+#: inc/config.class.php:129
+msgid "Timeout to backup a network equipment (in seconds): "
 msgstr ""
 
-#: inc/config.class.php:116 inc/networkequipment.class.php:458
+#: inc/config.class.php:132
+msgid ""
+"Create directories (Make sure the server allows it. With TFTP protocol it is "
+"not necessary, simply configure the server to do it automatically.): "
+msgstr ""
+
+#: inc/config.class.php:142 inc/networkequipment.class.php:640
 msgid "Use FusionInventory SNMP authentication: "
 msgstr ""
 
-#: inc/config.class.php:123
-msgid "Select type to switch backup: "
-msgstr "Select type to switch backup: "
+#: inc/config.class.php:149
+msgid "Select network equipment type to backup (empty value \""
+msgstr ""
 
-#: inc/config.class.php:131
+#: inc/config.class.php:149
+msgid "\" never is backed up): "
+msgstr ""
+
+#: inc/config.class.php:165
+msgid "Select the different states to backup (empty value \""
+msgstr ""
+
+#: inc/config.class.php:165
+msgid "\" alwais is backed up): "
+msgstr ""
+
+#: inc/config.class.php:180
 msgid "Manufacturers"
 msgstr ""
 
-#: inc/config.class.php:134
+#: inc/config.class.php:183
 msgid "Select manufacturer for "
-msgstr "Select manufacturer for "
+msgstr ""
 
-#: inc/config.class.php:134
+#: inc/config.class.php:183
 msgid " network equipments: "
-msgstr " network equipments: "
+msgstr ""
 
-#: inc/config.class.php:167
+#: inc/config.class.php:197
 msgid ""
 "To activate the backup go to the entity configuration and select the "
 "NEBackup tab, click here to go: "
 msgstr ""
 
-#: inc/config.class.php:167
+#: inc/config.class.php:197
 msgid "Entities"
 msgstr ""
 
-#: inc/entity.class.php:34
-msgid "TFTP Server"
+#: inc/entity.class.php:34 inc/entity.class.php:99
+msgid "Server"
 msgstr ""
 
 #: inc/entity.class.php:89
-msgid "TFTP server"
-msgstr "TFTP server"
-
-#: inc/entity.class.php:95
-msgid "SNMP Community"
-msgstr "SNMP Community"
-
-#: inc/entity.class.php:101 inc/entity.class.php:113
-msgid "FusionInventory Plugin is installed and active, it is not necesary"
+msgid "Protocol (make sure the switches allow the protocol)"
 msgstr ""
 
-#: inc/entity.class.php:107
+#: inc/entity.class.php:111
+msgid "Username (optional depending on the protocol and server configuration)"
+msgstr ""
+
+#: inc/entity.class.php:123
+msgid "Password (optional depending on the protocol and server configuration)"
+msgstr ""
+
+#: inc/entity.class.php:137
+msgid "SNMP Community"
+msgstr ""
+
+#: inc/entity.class.php:142
+msgid "Configured with FusionInventory Plugin."
+msgstr ""
+
+#: inc/entity.class.php:148
+msgid "Telnet username (only for HP Procurve)"
+msgstr ""
+
+#: inc/entity.class.php:158
 msgid "Telnet password (only for HP Procurve)"
 msgstr ""
 
-#: inc/entity.class.php:124
+#: inc/entity.class.php:174
 msgid ""
 "Once you have configured the entity you can go to automatic actions to run "
 "for the first time: "
 msgstr ""
 
-#: inc/entity.class.php:124
+#: inc/entity.class.php:174
 msgid "NEBackup Task"
 msgstr ""
 
@@ -197,77 +241,109 @@ msgstr ""
 msgid "type and manufacturer must be setted"
 msgstr ""
 
-#: inc/networkequipment.class.php:157
+#: inc/networkequipment.class.php:167
 msgid "No backup configured for this entity."
 msgstr ""
 
-#: inc/networkequipment.class.php:161
+#: inc/networkequipment.class.php:171
 msgid "Database Error"
-msgstr "Database Error"
-
-#: inc/networkequipment.class.php:179
-msgid "TFTP server "
 msgstr ""
 
-#: inc/networkequipment.class.php:198
+#: inc/networkequipment.class.php:206
+msgid "Server "
+msgstr ""
+
+#: inc/networkequipment.class.php:206
+msgid " is not alive</b>"
+msgstr ""
+
+#: inc/networkequipment.class.php:228
 msgid "File: "
 msgstr ""
 
-#: inc/networkequipment.class.php:210
-msgid "File Date: "
+#: inc/networkequipment.class.php:244
+msgid "Install "
 msgstr ""
 
-#: inc/networkequipment.class.php:216
-msgid "(Warning: File not copied at last run)"
+#: inc/networkequipment.class.php:246
+msgid " client on GLPI server to view the backup file"
 msgstr ""
 
-#: inc/networkequipment.class.php:223
-msgid "Last run: "
-msgstr ""
-
-#: inc/networkequipment.class.php:227 inc/networkequipment.class.php:260
-#: inc/networkequipment.class.php:267 inc/notificationtargetbackup.class.php:51
-msgid "Error: "
-msgstr ""
-
-#: inc/networkequipment.class.php:231 inc/networkequipment.class.php:264
-#: inc/networkequipment.class.php:268
-msgid "No error"
-msgstr ""
-
-#: inc/networkequipment.class.php:236
-msgid "TFTP Server: "
-msgstr ""
-
-#: inc/networkequipment.class.php:241
-msgid "Server path: "
-msgstr ""
-
-#: inc/networkequipment.class.php:245
-msgid "Install TFTP client on server to view the backup file"
-msgstr "Install TFTP client on server to view the backup file"
-
-#: inc/networkequipment.class.php:249
+#: inc/networkequipment.class.php:254
 msgid "Transfer timed out, check if your TFTP server is up."
 msgstr ""
 
-#: inc/networkequipment.class.php:253
-msgid "Backup file not found."
+#: inc/networkequipment.class.php:260
+msgid "Backup file not found on the server."
 msgstr ""
 
-#: inc/networkequipment.class.php:341
-msgid "Configuration of the SNMP authentication"
+#: inc/networkequipment.class.php:275
+msgid "File Date: "
 msgstr ""
 
-#: inc/networkequipment.class.php:346
-msgid "SNMP authentication (READ/WRITE community): "
+#: inc/networkequipment.class.php:281
+msgid "(Warning: File not copied at last run)"
 msgstr ""
 
-#: inc/networkequipment.class.php:361
+#: inc/networkequipment.class.php:288
+msgid "Last cron execution: "
+msgstr ""
+
+#: inc/networkequipment.class.php:292
+msgid "No cron date"
+msgstr ""
+
+#: inc/networkequipment.class.php:296 inc/notificationtargetbackup.class.php:51
+msgid "Error: "
+msgstr ""
+
+#: inc/networkequipment.class.php:300
+msgid "No error"
+msgstr ""
+
+#: inc/networkequipment.class.php:305
+msgid "Server: "
+msgstr ""
+
+#: inc/networkequipment.class.php:310
+msgid "Server path: "
+msgstr ""
+
+#: inc/networkequipment.class.php:426
+msgid "Configuration of authentication"
+msgstr ""
+
+#: inc/networkequipment.class.php:428
+msgid ""
+"Complete only if this equipment has individual configuration for telnet "
+"conections."
+msgstr ""
+
+#: inc/networkequipment.class.php:434
+msgid "Telnet username (only for HP Procurve):"
+msgstr ""
+
+#: inc/networkequipment.class.php:439
+msgid "Telnet password (only for HP Procurve):"
+msgstr ""
+
+#: inc/networkequipment.class.php:446 inc/networkequipment.class.php:486
 msgid "Update"
 msgstr ""
 
-#: inc/networkequipment.class.php:458
+#: inc/networkequipment.class.php:460
+msgid "Configuration of SNMP authentication"
+msgstr ""
+
+#: inc/networkequipment.class.php:470
+msgid "The backup will not be done unless you set up a credential."
+msgstr ""
+
+#: inc/networkequipment.class.php:474
+msgid "SNMP authentication (READ/WRITE community): "
+msgstr ""
+
+#: inc/networkequipment.class.php:640
 msgid "You must activate the option"
 msgstr ""
 
@@ -291,6 +367,12 @@ msgstr ""
 msgid "- Empty -"
 msgstr ""
 
+#~ msgid "Select type to switch backup: "
+#~ msgstr "Select type to switch backup: "
+
+#~ msgid "TFTP server"
+#~ msgstr "TFTP server"
+
 #~ msgid "nebackup"
 #~ msgstr "nebackup"
 
@@ -305,9 +387,6 @@ msgstr ""
 
 #~ msgid "Download backup"
 #~ msgstr "Download backup"
-
-#~ msgid "Backup file not found"
-#~ msgstr "Backup file not found"
 
 #~ msgid ""
 #~ "You must delete the configuration in the parent entity to delete this "
