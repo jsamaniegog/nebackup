@@ -7,10 +7,12 @@
         <short>
             <es>Copias de seguridad de dispositivos de red.</es>
             <en>Backups for network devices</en>
+            <cs>Zálohy pro síťová zařízení</cs>
         </short>
         <long>
             <es>Este plugin permite realizar copias de seguridad de la configuración de los dispositivos de red sobre un servidor TFTP (FTP, SCP y otros añadido desde la versión 2.2.0).</es>
             <en>This plugin allows you to back up the configuration of the network devices on TFTP server (FTP, SCP and others added since version 2.2.0).</en>
+            <cs>Tento zásuvný modul umožňuje zálohovat nastavení síťových prvnků na TFTP server (FTP, SCP a ostatní přidány od verze 2.2.0).</cs>
         </long>
     </description>
     <homepage>https://github.com/jsamaniegog/nebackup</homepage>
@@ -103,6 +105,10 @@
             <tag>backup</tag>
             <tag>network</tag>
         </en>
+        <cs>
+            <tag>záloha</tag>
+            <tag>síť</tag>
+        </cs>
     </tags>
     <!--<screenshots>-->
     <!--<screenshot></screenshot>-->
