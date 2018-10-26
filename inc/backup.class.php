@@ -46,6 +46,15 @@ class PluginNebackupBackup extends CommonDBTM {
     static function sendErrorsByMail() {
         global $DB;
 
+        $ids = array();
+        
+        foreach (explode(",", PluginNebackupConfig::SUPPORTED_MANUFACTURERS) as $manufacturer) {
+            $sql = PluginNebackupNetworkEquipment::getSqlNetworkEquipmentsToBakcup($manufacturer);
+            foreach ($DB->request($sql) as $data) {
+                $ids[] = $data['id'];
+            }
+        }
+        
         $plugin = new Plugin();
         $use_fusioninventory = false;
         if ($plugin->isActivated("fusioninventory") and PluginNebackupConfig::getUseFusionInventory() == 1) {
@@ -60,6 +69,7 @@ class PluginNebackupBackup extends CommonDBTM {
         $sql .= "WHERE l.networkequipments_id = n.id AND l.error is not null AND n.entities_id = e.entities_id";
         $sql .= " AND n.networkequipmenttypes_id = (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type = 'networkequipmenttype_id' LIMIT 1)";
         $sql .= " AND n.manufacturers_id in (SELECT c.value FROM glpi_plugin_nebackup_configs c WHERE c.type like '%manufacturers_id')";
+        $sql .= " AND n.id in (" . implode(",", $ids) . ") ";
         if ($use_fusioninventory) {
             $sql .= " AND pnn.networkequipments_id = n.id ";
         }

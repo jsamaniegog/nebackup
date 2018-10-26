@@ -331,11 +331,19 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
     static function getNetworkEquipmentsToBackup($manufacturer, $networkequipment_id = null) {
         global $DB;
 
-        $plugin = new Plugin();
-
         $toreturn = array();
 
+        foreach ($DB->request(self::getSqlNetworkEquipmentsToBakcup($manufacturer, $networkequipment_id)) as $data) {
+            $toreturn[] = $data;
+        }
+
+        return $toreturn;
+    }
+
+    static function getSqlNetworkEquipmentsToBakcup($manufacturer, $networkequipment_id = null) {
         $use_fusioninventory = PluginNebackupConfig::getUseFusionInventory();
+        
+        $plugin = new Plugin();
 
         $sql = "SELECT n.id, n.name, ip.name as ip, nee.protocol, nee.server, "
             . "nee.username, nee.password, nee.community, "
@@ -400,14 +408,10 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
         }
 
         $sql .= "GROUP BY n.name";
-
-        foreach ($DB->request($sql) as $data) {
-            $toreturn[] = $data;
-        }
-
-        return $toreturn;
+        
+        return $sql;
     }
-
+    
     /**
      * Show the form to save snmp authentication. Only if FusionInventory plugin
      * is actived.
