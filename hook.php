@@ -52,7 +52,7 @@ function plugin_nebackup_install() {
         `tftp_passwd` char(32) NOT NULL default '',
         `telnet_passwd` char(32) NOT NULL default '',
         `is_recursive` tinyint(1) NOT NULL default 0
-        )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+        )ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->query($query) or die($DB->error());
     }
 
@@ -63,7 +63,7 @@ function plugin_nebackup_install() {
         `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         `type` varchar(32) NOT NULL default '' UNIQUE,
         `value` varchar(32) NOT NULL default ''
-        )ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+        )ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         $DB->query($query) or die($DB->error());
 
         // ruta de configuración predeterminada para version >= 2.0.0
