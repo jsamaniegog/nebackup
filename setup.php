@@ -109,11 +109,11 @@ function plugin_init_nebackup() {
  */
 function plugin_version_nebackup() {
     return array('name' => 'nebackup',
-        'version' => '2.2.2',
+        'version' => '2.2.3',
         'author' => 'Javier Samaniego',
         'license' => 'AGPLv3+',
         'homepage' => 'https://github.com/jsamaniegog/nebackup',
-        'minGlpiVersion' => '0.90');
+        'minGlpiVersion' => '9.4');
 }
 
 /**
@@ -121,8 +121,8 @@ function plugin_version_nebackup() {
  * @return boolean
  */
 function plugin_nebackup_check_prerequisites() {
-    if (version_compare(GLPI_VERSION, '0.90', 'lt')) {
-        _e('This plugin requires GLPI >= 0.90', 'nebackup');
+    if (version_compare(GLPI_VERSION, '9.4', 'lt')) {
+        _e('This plugin requires GLPI >= 9.4', 'nebackup');
         return false;
     }
 
