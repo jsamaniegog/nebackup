@@ -39,11 +39,12 @@ function plugin_nebackup_install() {
     global $DB;
 
     // actualización si es la version 1.0.0
-    if (TableExists("glpi_plugin_nebackup_config")) {
+    if (!$DB->tableExists("glpi_plugin_nebackup_config")) {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-1.0.0.sql");
     }
 
-    if (!TableExists("glpi_plugin_nebackup_entities")) {
+
+    if (!$DB->tableExists("glpi_plugin_nebackup_entities")) {
         // Création de la table config
         $query = "CREATE TABLE `glpi_plugin_nebackup_entities` (
         `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -57,7 +58,7 @@ function plugin_nebackup_install() {
     }
 
     // Création de la table uniquement lors de la première installation
-    if (!TableExists("glpi_plugin_nebackup_configs")) {
+    if (!$DB->tableExists("glpi_plugin_nebackup_configs")) {
         // Création de la table config
         $query = "CREATE TABLE `glpi_plugin_nebackup_configs` (
         `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -100,12 +101,12 @@ function plugin_nebackup_install() {
     }
 
     // actualización version => 2.0.0
-    if (TableExists("glpi_plugin_nebackup_configs")) {
+    if (!$DB->tableExists("glpi_plugin_nebackup_configs")) {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.0.0.sql");
     }
 
     // actualización version => 2.1.0
-    if (TableExists("glpi_plugin_nebackup_logs")) {
+    if (!$DB->tableExists("glpi_plugin_nebackup_logs")) {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.1.0.sql");
 
         $n_template = new NotificationTemplate();
@@ -142,14 +143,14 @@ function plugin_nebackup_install() {
             ));
         }
     }
-    
+
     // actualización version => 2.1.3
-    if (TableExists("glpi_plugin_nebackup_configs")) {
+    if (!$DB->tableExists("glpi_plugin_nebackup_configs")) {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.1.3.sql");
     }
-    
+
     // actualización version => 2.2.0
-    if (TableExists("glpi_plugin_nebackup_entities")) {
+    if (!$DB->tableExists("glpi_plugin_nebackup_entities")) {
         $DB->runFile(GLPI_ROOT . "/plugins/nebackup/sql/update-2.2.0.sql");
     }
 
@@ -173,19 +174,19 @@ function plugin_nebackup_uninstall() {
     foreach ($tables as $table) {
         $DB->query("DROP TABLE IF EXISTS `$table`;");
     }
-    
-    
+
+
     // delete notifications
     $n_template = new NotificationTemplate();
     if ($template = $n_template->find("name = 'NEBackup errors'")) {
         $template = array_values($template);
-        
+
         $n_templatetranslations = new NotificationTemplateTranslation();
         if ($translation = $n_templatetranslations->find("notificationtemplates_id = " . $template[0]['id'])) {
             $translation = array_values($translation);
             $n_templatetranslations->delete(array('id' => $translation[0]['id']));
         }
-        
+
         $n_template->delete(array('id' => $template[0]['id']));
     }
 
@@ -194,7 +195,7 @@ function plugin_nebackup_uninstall() {
         $notif = array_values($notif);
         $notification->delete(array('id' => $notif[0]['id']));
     }
-    
+
     return true;
 }
 
