@@ -170,7 +170,7 @@ class PluginNebackupBackup extends CommonDBTM {
             if (isset($reg['snmpversion']) and $reg['snmpversion'] != '2') {
                 $logs = new PluginNebackupLogs();
                 $error = __("Only SNMP v2c is supported", "nebackup");
-                if ($logs->getFromDB("WHERE networkequipments_id = " . $reg['id'])) {
+                if ($logs->getFromDBByCrit(["networkequipments_id" => $reg['id']])) {
                     $logs->fields['error'] = $error;
                     $logs->updateInDB(array('datetime', 'error'));
                 } else {
@@ -363,7 +363,7 @@ class PluginNebackupBackup extends CommonDBTM {
             // add datetime to log
             $logs = new PluginNebackupLogs();
             if ($error == "") {
-                if ($logs->getFromDB("WHERE networkequipments_id = " . $reg['id'])) {
+                if ($logs->getFromDBByCrit(["networkequipments_id" => $reg['id']])) {
                     $logs->fields['datetime'] = date("Y-m-d H:i:s");
                     $logs->fields['error'] = "NULL";
                     $logs->updateInDB(array('datetime', 'error'));
@@ -376,7 +376,7 @@ class PluginNebackupBackup extends CommonDBTM {
                 }
             } else {
                 // add error log
-                if ($logs->getFromDB("WHERE networkequipments_id = " . $reg['id'])) {
+                if ($logs->getFromDBByCrit(["networkequipments_id" => $reg['id']])) {
                     $logs->fields['error'] = $error;
                     $logs->updateInDB(array('datetime', 'error'));
                 } else {

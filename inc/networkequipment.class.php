@@ -274,7 +274,7 @@ class PluginNebackupNetworkEquipment extends CommonDBTM {
             // datetime of last good backup
             echo '<tr><td>' . __('File Date: ', 'nebackup') . '</td><td>';
             $logs = new PluginNebackupLogs();
-            if ($logs->getFromDB("WHERE networkequipments_id = " . $datos->fields['id'])) {
+            if ($logs->getFromDBByCrit(["networkequipments_id" => $datos->fields['id']])) {
 
                 $t1 = strtotime($cron->fields['lastrun']);
                 $t2 = strtotime($logs->fields['datetime']);
